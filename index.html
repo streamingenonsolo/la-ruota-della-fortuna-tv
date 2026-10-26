@@ -243,7 +243,6 @@ h1 span{display:block;font-size:.62em;color:#fff;text-shadow:0 3px 0 #2a3a9e,0 6
 <canvas id="confetti" aria-hidden="true"></canvas>
 <div class="modal" id="modal" role="dialog" aria-modal="true"><div class="modal-card" id="modalCard"></div></div>
 <div class="toast" id="toast" role="status"></div>
-<!-- PeerJS da CDN con fallback: prima era /peerjs.min.js locale e non esisteva -->
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js" onerror="var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js';document.head.appendChild(s);"></script>
 <script>
 'use strict';
@@ -252,52 +251,478 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': 
 const eur = n => n.toLocaleString('it-IT') + ' €';
 const rnd = n => Math.floor(Math.random() * n);
 const PREFIX = 'ruotafortuna-it-v1-';
-/* Codice stanza FISSO a due cifre: chi crea e chi entra usa sempre 11 */
 const ROOM_CODE = '11';
 const VOWELS = 'AEIOU';
 const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const CONS_ORDER = 'RNTLSCDPMVGBFZHQKJWXY';
 const isVowel = l => VOWELS.includes(l);
 const isLetter = c => c >= 'A' && c <= 'Z';
-const VOWEL_COST = 250, MIN_WIN = 1000, ROUNDS = 3, FINAL_TIME = 15000;
+const VOWEL_COST = 250, MIN_WIN = 1000, ROUNDS = 3;
+const FINAL_TIME = 30000;
 const FINAL_LETTERS = ['R', 'S', 'T', 'L', 'N', 'E'];
 const PRIZES = [10000, 15000, 20000, 25000, 30000, 50000, 100000];
 const COLORS = ['#e53935', '#f5b400', '#1e7bff'];
 const CPU_NAMES = ['Giulia', 'Marco', 'Sofia', 'Luca', 'Chiara', 'Paolo'];
-/* Ruota con spicchi grandi: uno spicchio MEGA contiene 3 mini spicchi BANCAROTTA / RADDOPPIA / BANCAROTTA */
 const WEDGES = [1500, 300, 500, 400, 'BANCAROTTA', 600, 350, 'MEGA', 900, 'PASSA', 650, 300, 'JOLLY', 400, 550, 800];
 const N = WEDGES.length, SEG = 360 / N;
 const MEGA_SUBS = ['BANCAROTTA', 'RADDOPPIA', 'BANCAROTTA'];
 const PALETTE = ['#e53935', '#ffb300', '#1e88e5', '#43a047', '#8e24aa', '#fb8c00', '#d81b60', '#00acc1'];
-const PUZZLES = [
-['Proverbio', 'CHI DORME NON PIGLIA PESCI'], ['Proverbio', 'CHI VA PIANO VA SANO E VA LONTANO'], ["Proverbio", "L'ABITO NON FA IL MONACO"],
-['Proverbio', 'RIDE BENE CHI RIDE ULTIMO'], ['Proverbio', 'MEGLIO TARDI CHE MAI'], ['Proverbio', 'CHI TROPPO VUOLE NULLA STRINGE'],
-['Proverbio', 'TUTTE LE STRADE PORTANO A ROMA'], ['Proverbio', 'CAN CHE ABBAIA NON MORDE'], ["Proverbio", "L'APPETITO VIEN MANGIANDO"],
-['Proverbio', 'OCCHIO NON VEDE CUORE NON DUOLE'], ['Proverbio', 'CHI CERCA TROVA'], ["Proverbio", "IL MATTINO HA L'ORO IN BOCCA"],
-['Proverbio', 'MOGLIE E BUOI DEI PAESI TUOI'], ['Proverbio', 'PATTI CHIARI AMICIZIA LUNGA'], ['Proverbio', 'CHI SEMINA VENTO RACCOGLIE TEMPESTA'],
-['Proverbio', 'A CAVAL DONATO NON SI GUARDA IN BOCCA'], ['Proverbio', 'IL BUONGIORNO SI VEDE DAL MATTINO'], ['Proverbio', 'UNA MELA AL GIORNO TOGLIE IL MEDICO DI TORNO'],
-['Modo di dire', 'ACQUA IN BOCCA'], ['Modo di dire', 'IN BOCCA AL LUPO'], ['Modo di dire', 'ESSERE AL SETTIMO CIELO'],
-['Modo di dire', 'PRENDERE DUE PICCIONI CON UNA FAVA'], ['Modo di dire', 'AVERE LE MANI BUCATE'], ['Modo di dire', 'FARE ORECCHIE DA MERCANTE'],
-['Modo di dire', 'CERCARE UN AGO NEL PAGLIAIO'], ['Modo di dire', 'ROMPERE IL GHIACCIO'], ['Modo di dire', 'PIOVE SUL BAGNATO'],
-['Modo di dire', 'NON VEDERE LA LUCE IN FONDO AL TUNNEL'], ['Modo di dire', 'AVERE LA TESTA TRA LE NUVOLE'],
-['Luogo', 'LA TORRE PENDENTE DI PISA'], ['Luogo', 'IL COLOSSEO DI ROMA'], ['Luogo', 'PIAZZA SAN MARCO A VENEZIA'],
-['Luogo', 'LE CINQUE TERRE'], ['Luogo', 'LA COSTIERA AMALFITANA'], ['Luogo', 'IL LAGO DI COMO'], ['Luogo', 'LE DOLOMITI'],
-['Luogo', 'LA GALLERIA DEGLI UFFIZI'], ['Luogo', 'LA TORRE EIFFEL'], ['Luogo', 'IL GRAND CANYON'], ['Luogo', 'IL DUOMO DI MILANO'],
-['Cosa', 'IL TELECOMANDO DELLA TELEVISIONE'], ['Cosa', 'UNO SPAZZOLINO DA DENTI'], ['Cosa', 'LA CAFFETTIERA NAPOLETANA'],
-['Cosa', 'UN OMBRELLO A RIGHE'], ['Cosa', 'IL MONOPATTINO ELETTRICO'], ['Cosa', 'UN MAZZO DI CARTE NAPOLETANE'], ['Cosa', 'LA MACCHINA FOTOGRAFICA'],
-['In cucina', 'SPAGHETTI ALLA CARBONARA'], ['In cucina', 'PIZZA MARGHERITA'], ['In cucina', 'LASAGNE AL FORNO'],
-['In cucina', 'RISOTTO ALLA MILANESE'], ['In cucina', 'CANNOLI SICILIANI'], ['In cucina', 'PESTO ALLA GENOVESE'],
-['In cucina', 'PARMIGIANO REGGIANO'], ['In cucina', 'BRUSCHETTA AL POMODORO'], ['In cucina', 'GELATO AL PISTACCHIO'], ['In cucina', 'ARANCINI DI RISO'],
-['Personaggio', 'LEONARDO DA VINCI'], ['Personaggio', 'CRISTOFORO COLOMBO'], ['Personaggio', 'GIUSEPPE GARIBALDI'],
-['Personaggio', 'DANTE ALIGHIERI'], ['Personaggio', 'MARCO POLO'], ['Personaggio', 'GALILEO GALILEI'], ['Personaggio', 'GIULIO CESARE'],
-['Personaggio', 'BABBO NATALE'], ['Personaggio', 'MICHELANGELO BUONARROTI'],
-['Titolo', 'NUOVO CINEMA PARADISO'], ['Titolo', 'LA DOLCE VITA'], ['Titolo', 'IL BUONO IL BRUTTO IL CATTIVO'],
-['Titolo', 'LE AVVENTURE DI PINOCCHIO'], ['Titolo', 'I PROMESSI SPOSI'], ['Titolo', 'IL PICCOLO PRINCIPE'],
-['Titolo', 'LA DIVINA COMMEDIA'], ['Titolo', 'VIA COL VENTO'], ['Titolo', 'IL SIGNORE DEGLI ANELLI'], ['Titolo', 'LA BELLA ADDORMENTATA NEL BOSCO'],
-['Sport', 'CALCIO DI RIGORE'], ["Sport", "IL GIRO D'ITALIA"], ['Sport', 'LE OLIMPIADI INVERNALI'], ['Sport', 'LA FINALE DEI MONDIALI'], ['Sport', 'UNA PARTITA DI TENNIS'],
-['Animali', 'UN GATTO NERO'], ['Animali', 'IL LEONE RE DELLA FORESTA'], ['Animali', 'UNA FAMIGLIA DI PINGUINI'], ['Animali', 'IL CANGURO AUSTRALIANO'],
-['Evento', 'UNA FESTA A SORPRESA'], ['Evento', 'IL CENONE DI CAPODANNO'], ['Evento', 'LA NOTTE DI SAN LORENZO'], ['Evento', 'UN MATRIMONIO IN SPIAGGIA'],
-];
+/* ============ ARCHIVIO FRASI (file unico) ============
+   Una riga = una frase, formato: Categoria|FRASE
+   Per aggiungerne altre (anche migliaia): aggiungi righe qui dentro.
+   Le frasi che non stanno nel tabellone 14x4 vengono scartate da sole. */
+const RAW = `
+Proverbio|CHI DORME NON PIGLIA PESCI
+Proverbio|CHI VA PIANO VA SANO E VA LONTANO
+Proverbio|L'ABITO NON FA IL MONACO
+Proverbio|RIDE BENE CHI RIDE ULTIMO
+Proverbio|MEGLIO TARDI CHE MAI
+Proverbio|CHI TROPPO VUOLE NULLA STRINGE
+Proverbio|TUTTE LE STRADE PORTANO A ROMA
+Proverbio|CAN CHE ABBAIA NON MORDE
+Proverbio|L'APPETITO VIEN MANGIANDO
+Proverbio|OCCHIO NON VEDE CUORE NON DUOLE
+Proverbio|CHI CERCA TROVA
+Proverbio|IL MATTINO HA L'ORO IN BOCCA
+Proverbio|MOGLIE E BUOI DEI PAESI TUOI
+Proverbio|PATTI CHIARI AMICIZIA LUNGA
+Proverbio|CHI SEMINA VENTO RACCOGLIE TEMPESTA
+Proverbio|A CAVAL DONATO NON SI GUARDA IN BOCCA
+Proverbio|IL BUONGIORNO SI VEDE DAL MATTINO
+Proverbio|UNA MELA AL GIORNO TOGLIE IL MEDICO DI TORNO
+Proverbio|CHI LA DURA LA VINCE
+Proverbio|CHI NON RISICA NON ROSICA
+Proverbio|TRA IL DIRE E IL FARE
+Proverbio|IL LUPO PERDE IL PELO
+Proverbio|A BUON INTENDITOR POCHE PAROLE
+Proverbio|NON TUTTO IL MALE VIEN PER NUOGERE
+Proverbio|DIMMI CON CHI VAI E TI DIRO CHI SEI
+Proverbio|LA GATTA FRETTOLOSA FECE I GATTINI CIECHI
+Modo di dire|ACQUA IN BOCCA
+Modo di dire|IN BOCCA AL LUPO
+Modo di dire|ESSERE AL SETTIMO CIELO
+Modo di dire|PRENDERE DUE PICCIONI CON UNA FAVA
+Modo di dire|AVERE LE MANI BUCATE
+Modo di dire|FARE ORECCHIE DA MERCANTE
+Modo di dire|CERCARE UN AGO NEL PAGLIAIO
+Modo di dire|ROMPERE IL GHIACCIO
+Modo di dire|PIOVE SUL BAGNATO
+Modo di dire|NON VEDERE LA LUCE IN FONDO AL TUNNEL
+Modo di dire|AVERE LA TESTA TRA LE NUVOLE
+Modo di dire|ESSERE IN GAMBA
+Modo di dire|AVERE FEGATO
+Modo di dire|DORMIRE SUGLI ALLORI
+Modo di dire|PRENDERE LA PALLA AL BALZO
+Modo di dire|ESSERE AL VERDE
+Modo di dire|AVERE VOCE IN CAPITOLO
+Modo di dire|TAGLIARE LA TESTA AL TORO
+Modo di dire|VIVERE ALLA GIORNATA
+Modo di dire|PIANGERE MISERIE
+Modo di dire|FELICE COME UNA PASQUA
+Modo di dire|RIMANERE DI SASSO
+Modo di dire|FARE IL DIAVOLO A QUATTRO
+Modo di dire|ESSERE UN CANE IN CHIESA
+Luogo|LA TORRE PENDENTE DI PISA
+Luogo|IL COLOSSEO DI ROMA
+Luogo|PIAZZA SAN MARCO A VENEZIA
+Luogo|LE CINQUE TERRE
+Luogo|LA COSTIERA AMALFITANA
+Luogo|IL LAGO DI COMO
+Luogo|LE DOLOMITI
+Luogo|LA GALLERIA DEGLI UFFIZI
+Luogo|LA TORRE EIFFEL
+Luogo|IL GRAND CANYON
+Luogo|IL DUOMO DI MILANO
+Luogo|FONTANA DI TREVI
+Luogo|TRULLI DI ALBEROBELLO
+Luogo|SASSI DI MATERA
+Luogo|COSTA SMERALDA
+Luogo|VESUVIO
+Luogo|MOLE ANTONELLIANA
+Luogo|TEATRO ALLA SCALA
+Luogo|CAMPANILE DI GIOTTO
+Luogo|PONTE VECCHIO
+Luogo|VALLE DEI TEMPLI
+Luogo|MUSEI VATICANI
+Luogo|CATTEDRALE DI NOTRE DAME
+Luogo|BIG BEN
+Luogo|MACHU PICCHU
+Luogo|CAPO NORD
+Luogo|FIORDI NORVEGESI
+Luogo|SAFARI IN KENYA
+Luogo|GRANDE BARRIERA CORALLINA
+Cosa|IL TELECOMANDO DELLA TELEVISIONE
+Cosa|UNO SPAZZOLINO DA DENTI
+Cosa|LA CAFFETTIERA NAPOLETANA
+Cosa|UN OMBRELLO A RIGHE
+Cosa|IL MONOPATTINO ELETTRICO
+Cosa|UN MAZZO DI CARTE NAPOLETANE
+Cosa|LA MACCHINA FOTOGRAFICA
+Cosa|LA BILANCIA
+Cosa|UN PAIO DI OCCHIALI
+Cosa|LA CHIAVE INGLESE
+Cosa|IL CARRELLO DELLA SPESA
+Cosa|UNA VALIGIA PIENA
+Cosa|IL FISCHIETTO
+Cosa|LA CALAMITA
+Cosa|UN AQUILONE
+Cosa|LO STENDIBIANCHI
+Cosa|L'APRIBOTTIGLIE
+Cosa|IL MAPPAMONDO
+Cosa|LA CLESSIDRA
+Cosa|UN BINOCOLO
+Cosa|LA MACCHINA DA SCRIVERE
+Cosa|IL SALVADANAIO
+In cucina|SPAGHETTI ALLA CARBONARA
+In cucina|PIZZA MARGHERITA
+In cucina|LASAGNE AL FORNO
+In cucina|RISOTTO ALLA MILANESE
+In cucina|CANNOLI SICILIANI
+In cucina|PESTO ALLA GENOVESE
+In cucina|PARMIGIANO REGGIANO
+In cucina|BRUSCHETTA AL POMODORO
+In cucina|GELATO AL PISTACCHIO
+In cucina|ARANCINI DI RISO
+In cucina|TIRAMISU
+In cucina|FETTINE PANATE
+In cucina|MINESTRONE
+In cucina|MOZZARELLA DI BUFALA
+In cucina|PROSCIUTTO CRUDO
+In cucina|OLIO EXTRAVERGINE
+In cucina|ACETO BALSAMICO
+In cucina|CAFFE ESPRESSO
+In cucina|FICHI SECCHI
+In cucina|PANE CARASAU
+In cucina|FOCACCIA BARESE
+In cucina|ORECCHIETTE ALLE CIME DI RAPA
+In cucina|VITELLO TONNATO
+In cucina|COTOLETTA ALLA MILANESE
+In cucina|PASTA E FAGIOLI
+In cucina|RIBOLLITA TOSCANA
+In cucina|CARCIOFI ALLA GIUDIA
+In cucina|MELANZANE ALLA PARMIGIANA
+In cucina|SUPPLI AL TELEFONO
+In cucina|CROSTATA DI MARMELLATA
+In cucina|PANETTONE ARTIGIANALE
+In cucina|COLOMBA PASQUALE
+In cucina|ZEPPOLE DI SAN GIUSEPPE
+In cucina|BABA AL RUM
+In cucina|SFOGLIATELLA NAPOLETANA
+In cucina|GELATO ALLA CREMA
+In cucina|GRANITA AL LIMONE
+In cucina|SPUMANTE ITALIANO
+Personaggio|LEONARDO DA VINCI
+Personaggio|CRISTOFORO COLOMBO
+Personaggio|GIUSEPPE GARIBALDI
+Personaggio|DANTE ALIGHIERI
+Personaggio|MARCO POLO
+Personaggio|GALILEO GALILEI
+Personaggio|GIULIO CESARE
+Personaggio|BABBO NATALE
+Personaggio|MICHELANGELO BUONARROTI
+Personaggio|LA BEFANA
+Personaggio|GIULIETTA E ROMEO
+Personaggio|SHERLOCK HOLMES
+Personaggio|ZORRO
+Personaggio|SUPERMAN
+Personaggio|BATMAN
+Personaggio|PETER PAN
+Personaggio|HARRY POTTER
+Personaggio|IL CAPITANO UNCINO
+Personaggio|MARY POPPINS
+Personaggio|IL GENIO DELLA LAMPADA
+Personaggio|ROBIN HOOD
+Personaggio|D'ARTAGNAN
+Personaggio|IL CONTE DRACULA
+Personaggio|FRANKENSTEIN
+Titolo|NUOVO CINEMA PARADISO
+Titolo|LA DOLCE VITA
+Titolo|IL BUONO IL BRUTTO IL CATTIVO
+Titolo|LE AVVENTURE DI PINOCCHIO
+Titolo|I PROMESSI SPOSI
+Titolo|IL PICCOLO PRINCIPE
+Titolo|LA DIVINA COMMEDIA
+Titolo|VIA COL VENTO
+Titolo|IL SIGNORE DEGLI ANELLI
+Titolo|LA BELLA ADDORMENTATA NEL BOSCO
+Titolo|GUERRA E PACE
+Titolo|ORGOGLIO E PREGIUDIZIO
+Titolo|IL CONTE DI MONTECRISTO
+Titolo|VENTIMILA LEGHE SOTTO I MARI
+Titolo|L'ISOLA DEL TESORO
+Titolo|I TRE MOSCHETTIERI
+Titolo|IL MAGO DI OZ
+Titolo|ALICE NEL PAESE DELLE MERAVIGLIE
+Titolo|CIME TEMPESTOSE
+Titolo|JANE EYRE
+Titolo|DRACULA
+Titolo|IL GIRO DEL MONDO IN 80 GIORNI
+Titolo|PINOCCHIO NEL PAESE DEI BALOCCHI
+Sport|CALCIO DI RIGORE
+Sport|IL GIRO D'ITALIA
+Sport|LE OLIMPIADI INVERNALI
+Sport|LA FINALE DEI MONDIALI
+Sport|UNA PARTITA DI TENNIS
+Sport|TIRO ALLA FUNE
+Sport|SCHERMA
+Sport|PALLANUOTO
+Sport|ARRAMPICATA
+Sport|CORRERE LA MARATONA
+Sport|SALTO IN LUNGO
+Sport|PATTINAGGIO
+Sport|CANOTTAGGIO
+Sport|TIRO A SEGNO
+Sport|EQUITAZIONE
+Sport|NUOTO SINCRONIZZATO
+Sport|BOB A QUATTRO
+Sport|SLALOM GIGANTE
+Sport|TIRO CON L'ARCO
+Sport|CANOA SUL FIUME
+Sport|SURF SULL'ONDA
+Sport|SKATEBOARD
+Sport|ARTI MARZIALI
+Sport|SOLLEVAMENTO PESI
+Sport|CORSA CAMPESTRE
+Animali|UN GATTO NERO
+Animali|IL LEONE RE DELLA FORESTA
+Animali|UNA FAMIGLIA DI PINGUINI
+Animali|IL CANGURO AUSTRALIANO
+Animali|VOLPE ASTUTA
+Animali|GUFO SAGGIO
+Animali|DELFINO
+Animali|BALENA AZZURRA
+Animali|SCOIATTOLO
+Animali|RICCIO
+Animali|TARTARUGA LENTA
+Animali|AQUILA REALE
+Animali|CANARINO
+Animali|POLPO
+Animali|PANDA GIGANTE
+Animali|KOALA
+Animali|ORSO POLARE
+Animali|LUPO GRIGIO
+Animali|PAVONE VARIOPINTO
+Animali|CAMMELLO
+Animali|STRUZZO VELOCE
+Animali|IPPOPOTAMO
+Animali|GIRAFFA DAL COLLO LUNGO
+Animali|PINGUINO IMPERATORE
+Evento|UNA FESTA A SORPRESA
+Evento|IL CENONE DI CAPODANNO
+Evento|LA NOTTE DI SAN LORENZO
+Evento|UN MATRIMONIO IN SPIAGGIA
+Evento|CONCERTO ROCK
+Evento|SAGRA PAESANA
+Evento|MERCATINO
+Evento|FUOCHI ARTIFICIALI
+Evento|LOTTERIA
+Evento|SPETTACOLO CIRCENSE
+Evento|MOSTRA DI PITTURA
+Evento|PARATA
+Evento|INAUGURAZIONE
+Evento|FIERA
+Evento|TOMBOLA DI NATALE
+Evento|PALIO DI SIENA
+Evento|REGATA STORICA
+Evento|CARNEVALE DI VENEZIA
+Evento|FESTIVAL MUSICALE
+Evento|NOTTE BIANCA
+Musica|NEL BLU DIPINTO DI BLU
+Musica|LA CANZONE DEL SOLE
+Musica|SINFONIA NUMERO NOVE
+Musica|NOTE SUL PENTAGRAMMA
+Musica|CHITARRA ACUSTICA
+Musica|BATTI IL TEMPO
+Musica|VOCE E PIANO
+Musica|RITMO VIVACE
+Musica|CORO A CAPPELLA
+Musica|MUSICA LEGGERA
+Musica|SANREMO
+Musica|TAMBURELLO
+Musica|QUARTETTO D'ARCHI
+Musica|ASSOLO DI VIOLINO
+Musica|BANDA MUSICALE
+Musica|CORO GOSPEL
+Musica|VINILE D'ANNATA
+Musica|MUSICASSETTA
+Musica|METRONOMO
+Scienza|FORZA DI GRAVITA
+Scienza|IL SISTEMA SOLARE
+Scienza|TEORIA DELLA RELATIVITA
+Scienza|ESPERIMENTO CHIMICO
+Scienza|CELLULA STAMINALE
+Scienza|VULCANO ATTIVO
+Scienza|OSSERVA LE STELLE
+Scienza|ROBOT INTELLIGENTE
+Scienza|ENERGIA RINNOVABILE
+Scienza|MICROSCOPIO
+Scienza|EVOLUZIONE DELLA SPECIE
+Scienza|FOTOSINTESI
+Scienza|ECOSISTEMA
+Scienza|BIODIVERSITA
+Scienza|SUPERCOMPUTER
+Scienza|SATELLITE ARTIFICIALE
+Scienza|ORBITA LUNARE
+Scienza|ECLISSI SOLARE
+Tecnologia|SCHERMO TOUCH
+Tecnologia|INTELLIGENZA ARTIFICIALE
+Tecnologia|PASSWORD SEGRETA
+Tecnologia|AGGIORNAMENTO SOFTWARE
+Tecnologia|SMARTPHONE NUOVO
+Tecnologia|APP DI MESSAGGI
+Tecnologia|RICARICA LA BATTERIA
+Tecnologia|VISORE VIRTUALE
+Tecnologia|FIBRA OTTICA
+Tecnologia|DRONE DA RIPRESE
+Tecnologia|STAMPANTE LASER
+Tecnologia|MOUSE SENZA FILI
+Tecnologia|TASTIERA MECCANICA
+Mestieri|IL FALEGNAME
+Mestieri|DOTTORE IN CORSIA
+Mestieri|MAESTRA ELEMENTARE
+Mestieri|VIGILE DEL FUOCO
+Mestieri|AUTISTA DI BUS
+Mestieri|PARRUCCHIERA
+Mestieri|CHEF RISTORANTE
+Mestieri|IDRAULICO
+Mestieri|GIORNALISTA
+Mestieri|ASTRONAUTA
+Mestieri|FIORAIO
+Mestieri|OROLOGIAIO
+Mestieri|TIPOGRAFO
+Mestieri|VETERINARIO
+Mestieri|FARMACISTA
+Mestieri|ARCHITETTO
+Mestieri|INGEGNERE
+Mestieri|PIZZAIOLO
+Mestieri|CAMERIERE
+Mestieri|MAGAZZINIERE
+Natura|TRAMONTO SUL MARE
+Natura|ARCOBALENO
+Natura|CASCATA IN MONTAGNA
+Natura|PRATO FIORITO
+Natura|BOSCO DI QUERCE
+Natura|LAGO ALPINO
+Natura|DESERTO CALDO
+Natura|GHIACCIAIO
+Natura|STELLE CADENTI
+Natura|AURORA BOREALE
+Natura|ALBA IN MONTAGNA
+Natura|CIELO STELLATO
+Natura|MAREGGIATA
+Natura|BRINA MATTUTINA
+Natura|FOLIAGE AUTUNNALE
+Natura|MACCHIA MEDITERRANEA
+Natura|DUNA DI SABBIA
+Casa|SALOTTO ACCOGLIENTE
+Casa|CUCINA MODERNA
+Casa|TERRAZZA CON VISTA
+Casa|SOTTOTETTO
+Casa|GIARDINO FIORITO
+Casa|CANTINA BUIA
+Casa|SCALA A CHIOCCIOLA
+Casa|PORTA D'INGRESSO
+Casa|FINESTRA APERTA
+Casa|TETTO DI TEGOLE
+Casa|CAMINO ACCESO
+Casa|SOFFITTO A TRAVI
+Casa|RIPOSTIGLIO
+Casa|LA SERRA
+Scuola|ZAINO PESANTE
+Scuola|LAVAGNA NERA
+Scuola|COMPITI IN CLASSE
+Scuola|INTERROGAZIONE
+Scuola|QUADERNO A RIGHE
+Scuola|PENNARELLO COLORATO
+Scuola|RICREAZIONE
+Scuola|GITA SCOLASTICA
+Scuola|DIZIONARIO
+Scuola|PAGELLA
+Scuola|ASTUCCIO PIENO
+Scuola|GESSO BIANCO
+Scuola|BANCO DOPPIO
+Scuola|CAMPANELLA
+Scuola|ESAME DI MATURITA
+Storia|ANTICA ROMA
+Storia|IMPERO ROMANO
+Storia|CASTELLO MEDIEVALE
+Storia|FARAONE EGIZIO
+Storia|PIRAMIDI
+Storia|CAVALIERE ERRANTE
+Storia|RINASCIMENTO
+Storia|SCOPERTA AMERICA
+Storia|GLADIATORI
+Storia|LEGIONE ROMANA
+Storia|TORNEO MEDIEVALE
+Storia|ANTICA GRECIA
+Fiabe|CAPPUCCETTO ROSSO
+Fiabe|BIANCANEVE
+Fiabe|IL BRUTTO ANATROCCOLO
+Fiabe|PINOCCHIO
+Fiabe|CENERENTOLA
+Fiabe|IL GATTO CON GLI STIVALI
+Fiabe|LA SIRENETTA
+Fiabe|HANSEL E GRETEL
+Fiabe|TOPOLINO
+Fiabe|LA FATA TURCHINA
+Fiabe|IL GRILLO PARLANTE
+Fiabe|GEPPETTO
+Fiabe|LA VOLPE E IL GATTO
+Fiabe|LO SCHIACCIANOCI
+Mondo|PARIGI
+Mondo|LONDRA
+Mondo|NEW YORK
+Mondo|TOKYO
+Mondo|SYDNEY
+Mondo|RIO DE JANEIRO
+Mondo|IL NILO
+Mondo|LE ALPI
+Mondo|OCEANO PACIFICO
+Mondo|ISOLA DESERTA
+Mondo|BERLINO
+Mondo|MADRID
+Mondo|LISBONA
+Mondo|VIENNA
+Corpo umano|MANO DESTRA
+Corpo umano|OCCHI AZZURRI
+Corpo umano|SORRISO
+Corpo umano|CAPELLI RICCI
+Corpo umano|GOMITO
+Corpo umano|GINOCCHIO
+Corpo umano|SPALLE LARGHE
+Corpo umano|CUORE
+Corpo umano|DITA DELLA MANO
+Corpo umano|NASO ALL'INSU
+Corpo umano|CIGLIA LUNGHE
+Corpo umano|GUANCE ROSSE
+Meteo|PIOGGIA ESTIVA
+Meteo|NEVE FRESCA
+Meteo|VENTO FORTE
+Meteo|NUVOLE GRIGIE
+Meteo|SOLE CALDO
+Meteo|GRANDINE
+Meteo|TEMPORALE
+Meteo|NEBBIA IN VALLE
+Meteo|ARCOBALENO DOPO LA PIOGGIA
+Meteo|BREZZA MARINA
+Meteo|AFA ESTIVA
+Meteo|GELATA NOTTURNA
+Feste|NATALE IN FAMIGLIA
+Feste|PASQUA
+Feste|CARNEVALE DI VIAREGGIO
+Feste|FERRAGOSTO
+Feste|HALLOWEEN
+Feste|CAPODANNO
+Feste|TORTA DI COMPLEANNO
+Feste|SCARTARE I REGALI
+Feste|STELLE DI NATALE
+Feste|BRINDISI
+Feste|EPIFANIA
+Feste|SAN VALENTINO
+Feste|FESTA DELLA MAMMA
+Feste|PRIMO MAGGIO
+`;
+const PUZZLES = RAW.trim().split('\n').map(l => { const i = l.indexOf('|'); return [l.slice(0, i).trim(), l.slice(i + 1).trim()]; });
 function layout(text) {
 const words = text.split(' ');
 const greedy = caps => {
@@ -324,7 +749,19 @@ for (let j = 0; j < ln.length; j++) if (ln[j] !== ' ') cells.push({ i: r * 14 + 
 });
 return cells;
 }
-const LAYOUTS = PUZZLES.map(p => layout(p[1]));
+let LAYOUTS = PUZZLES.map(p => layout(p[1]));
+function mergePuzzles(list) {
+if (!Array.isArray(list)) return;
+for (const e of list) {
+if (!Array.isArray(e) || typeof e[0] !== 'string' || typeof e[1] !== 'string') continue;
+const t = e[1].toUpperCase().trim();
+if (!t || PUZZLES.some(p => p[1] === t)) continue;
+const lay = layout(t);
+if (!lay) continue;
+PUZZLES.push([e[0].trim() || 'Varie', t]);
+LAYOUTS.push(lay);
+}
+}
 const clone = o => JSON.parse(JSON.stringify(o));
 const norm = s => String(s).toUpperCase().replace(/[^A-Z]/g, '');
 const curP = s => s.players[s.cur];
@@ -714,7 +1151,6 @@ const d = ph === 'finalSolve' ? 3000 + Math.random() * 10000 : ph === 'finalPick
 tCpu = setTimeout(cpuAct, d);
 }
 }
-/* Codice stanza fisso: sempre 11 */
 function genCode() { return ROOM_CODE; }
 function myName() { return ($('#myName').value.trim() || 'Giocatore').slice(0, 12); }
 function hostCreate() {
@@ -1241,16 +1677,21 @@ function initLogo() {
 const cv = $('#logoWheel'), w = cv.parentElement.clientWidth || 220;
 drawWheel(cv, w);
 }
+function boot() {
 updateMuteIcon();
 renderLocal();
-(document.fonts ? document.fonts.ready : Promise.resolve()).then(() => { initLogo(); wheelSize = 0; sizeWheel(); });
 initLogo();
+wheelSize = 0; sizeWheel();
 const qsRoom = new URLSearchParams(location.search).get('stanza');
 if (qsRoom) { $('#roomCode').value = qsRoom.replace(/\D/g, '').slice(0, 2); setStatus('Inserisci il tuo nome e premi "Entra nella stanza" (codice 11).'); show('online'); }
 if (location.hostname === 'localhost') {
 const bad = PUZZLES.filter((p, i) => !LAYOUTS[i]).map(p => p[1]);
-if (bad.length) console.log('[v0] Frasi troppo lunghe:', bad);
+if (bad.length) console.log('[rdf] Frasi scartate (troppo lunghe per il tabellone):', bad);
+console.log('[rdf] Frasi giocabili:', LAYOUTS.filter(Boolean).length);
 }
+}
+/* Opzionale: se esiste frasi.json accanto al file, unisce anche quelle */
+fetch('frasi.json').then(r => r.ok ? r.json() : null).then(j => { if (j) mergePuzzles(j); }).catch(() => {}).finally(boot);
 </script>
 </body>
 </html>
