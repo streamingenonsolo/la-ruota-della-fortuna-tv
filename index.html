@@ -113,8 +113,6 @@ h1 span{display:block;font-size:.62em;color:#fff;text-shadow:0 3px 0 #2a3a9e,0 6
 .timer i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,#ff3d3d,#ffc83d)}
 .timer b{position:relative;display:grid;place-items:center;height:100%;font-size:13px}
 .stage{position:relative;flex:1;min-height:0;overflow:hidden;border-radius:18px}
-/* RUOTA A META': centro (mozzo) sul bordo inferiore dello stage, cioe' sopra il pulsante VOCALE.
-   Il diametro e' calcolato in JS per andare da meta' GIRA a meta' RISOLVI. */
 .wheel-box{position:absolute;left:50%;top:100%;transform:translate(-50%,-50%);touch-action:none;cursor:grab}
 .wheel-box::before{content:'';position:absolute;inset:-5px;border-radius:50%;box-shadow:0 0 28px rgba(255,200,61,.5),0 0 0 3px rgba(255,200,61,.35);animation:glow 1.8s ease-in-out infinite}
 @keyframes glow{50%{box-shadow:0 0 42px rgba(255,200,61,.85),0 0 0 3px rgba(255,236,160,.6)}}
@@ -201,15 +199,15 @@ h1 span{display:block;font-size:.62em;color:#fff;text-shadow:0 3px 0 #2a3a9e,0 6
 <div class="body">
 <div class="stack"><button class="btn big gold" id="createRoom">Crea una stanza</button></div>
 <div class="divider">oppure</div>
-<label class="field">Codice stanza<input id="roomCode" class="inp code-inp" maxlength="5" autocomplete="off" autocapitalize="characters" placeholder="ABCDE"></label>
+<label class="field">Codice stanza (sempre 11)<input id="roomCode" class="inp code-inp" maxlength="2" inputmode="numeric" autocomplete="off" placeholder="11"></label>
 <div class="stack"><button class="btn big blue" id="joinRoom">Entra nella stanza</button></div>
-<p class="note" id="onlineStatus">Crea una stanza e condividi il codice con i tuoi amici.</p>
+<p class="note" id="onlineStatus">La stanza usa sempre il codice <b>11</b>: creala, oppure entra digitando 11.</p>
 </div>
 </section>
 <section id="scr-lobby" class="screen" aria-label="Sala d'attesa">
 <div class="head"><button class="icon-btn" id="leaveLobby" aria-label="Esci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg></button><h2>Sala d&apos;attesa</h2></div>
 <div class="body">
-<div class="code-box"><small>Codice stanza</small><div class="code" id="lobbyCode">-----</div></div>
+<div class="code-box"><small>Codice stanza</small><div class="code" id="lobbyCode">--</div></div>
 <div class="row" id="shareRow"><button class="btn ghost" id="copyLink">Copia link</button><button class="btn ghost" id="shareLink">Condividi</button></div>
 <div class="seats" id="lobbySeats"></div>
 <p class="note" id="lobbyWait"><span class="spinner"></span>&nbsp; In attesa che l&apos;host avvii la partita...</p>
@@ -245,7 +243,8 @@ h1 span{display:block;font-size:.62em;color:#fff;text-shadow:0 3px 0 #2a3a9e,0 6
 <canvas id="confetti" aria-hidden="true"></canvas>
 <div class="modal" id="modal" role="dialog" aria-modal="true"><div class="modal-card" id="modalCard"></div></div>
 <div class="toast" id="toast" role="status"></div>
-<script src="/peerjs.min.js"></script>
+<!-- PeerJS da CDN con fallback: prima era /peerjs.min.js locale e non esisteva -->
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js" onerror="var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js';document.head.appendChild(s);"></script>
 <script>
 'use strict';
 const $ = s => document.querySelector(s);
@@ -253,6 +252,8 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': 
 const eur = n => n.toLocaleString('it-IT') + ' €';
 const rnd = n => Math.floor(Math.random() * n);
 const PREFIX = 'ruotafortuna-it-v1-';
+/* Codice stanza FISSO a due cifre: chi crea e chi entra usa sempre 11 */
+const ROOM_CODE = '11';
 const VOWELS = 'AEIOU';
 const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const CONS_ORDER = 'RNTLSCDPMVGBFZHQKJWXY';
@@ -340,7 +341,6 @@ function wedgeAt(angle) {
 const a = ((360 - (angle % 360)) % 360 + 360) % 360;
 return Math.floor(a / SEG) % N;
 }
-/* Valore finale: dentro lo spicchio MEGA conta quale dei 3 mini spicchi punta la freccia */
 function wedgeValueAt(angle) {
 const a = ((360 - (angle % 360)) % 360 + 360) % 360;
 const idx = Math.floor(a / SEG) % N;
@@ -714,14 +714,15 @@ const d = ph === 'finalSolve' ? 3000 + Math.random() * 10000 : ph === 'finalPick
 tCpu = setTimeout(cpuAct, d);
 }
 }
-function genCode() { const A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let s = ''; for (let i = 0; i < 5; i++) s += A[rnd(A.length)]; return s; }
+/* Codice stanza fisso: sempre 11 */
+function genCode() { return ROOM_CODE; }
 function myName() { return ($('#myName').value.trim() || 'Giocatore').slice(0, 12); }
 function hostCreate() {
-if (!window.Peer) return toast('Modalità online non disponibile');
+if (!window.Peer) return toast('Online in caricamento: riprova tra qualche secondo');
 netCleanup();
 NET.mode = 'host'; NET.code = genCode();
 NET.seats = [{ type: 'human', name: myName(), peer: 'host' }, { type: 'empty' }, { type: 'empty' }];
-setStatus('<span class="spinner"></span>&nbsp; Creazione stanza...');
+setStatus('<span class="spinner"></span>&nbsp; Creazione stanza con codice 11...');
 const peer = new Peer(PREFIX + NET.code, { debug: 0 });
 NET.peer = peer;
 peer.on('open', () => { NET.myId = peer.id; show('lobby'); renderLobby(); });
@@ -732,7 +733,14 @@ conn.on('error', () => onGuestLeave(conn));
 });
 peer.on('disconnected', () => { try { peer.reconnect(); } catch (e) { /* ignore */ } });
 peer.on('error', e => {
-if (e.type === 'unavailable-id') { hostCreate(); return; }
+if (e.type === 'unavailable-id') {
+try { peer.destroy(); } catch (err) { /* ignore */ }
+NET.peer = null; NET.mode = 'local'; NET.started = false;
+show('online');
+setStatus('Esiste già una stanza attiva con codice 11: usa "Entra nella stanza" e digita 11.');
+toast('Stanza già esistente: entra con codice 11');
+return;
+}
 if (e.type === 'peer-unavailable') return;
 setStatus('Errore di connessione. Riprova.'); toast('Errore di rete: ' + e.type);
 });
@@ -769,25 +777,25 @@ if (p) { p.type = 'cpu'; p.peer = null; s.msg = `${p.name} si è disconnesso: or
 toast(`${name} ha lasciato la partita`);
 }
 function guestJoin(code) {
-if (!window.Peer) return toast('Modalità online non disponibile');
-code = code.toUpperCase().replace(/[^A-Z0-9]/g, '');
-if (code.length !== 5) return toast('Inserisci un codice di 5 caratteri');
+if (!window.Peer) return toast('Online in caricamento: riprova tra qualche secondo');
+code = String(code || '').replace(/\D/g, '').slice(0, 2);
+if (code !== ROOM_CODE) return toast('Il codice della stanza è sempre 11: digita 11');
 netCleanup();
-NET.mode = 'guest'; NET.code = code;
-setStatus('<span class="spinner"></span>&nbsp; Connessione alla stanza ' + esc(code) + '...');
+NET.mode = 'guest'; NET.code = ROOM_CODE;
+setStatus('<span class="spinner"></span>&nbsp; Connessione alla stanza 11...');
 const peer = new Peer({ debug: 0 });
 NET.peer = peer;
 peer.on('open', id => {
 NET.myId = id;
-const conn = peer.connect(PREFIX + code, { reliable: true });
+const conn = peer.connect(PREFIX + ROOM_CODE, { reliable: true });
 NET.host = conn;
-const failT = setTimeout(() => { if (!conn.open) { setStatus('Impossibile connettersi. Controlla il codice.'); netCleanup(); } }, 12000);
+const failT = setTimeout(() => { if (!conn.open) { setStatus('Impossibile connettersi: nessuna stanza attiva con codice 11.'); netCleanup(); } }, 12000);
 conn.on('open', () => { clearTimeout(failT); conn.send({ t: 'hello', name: myName() }); });
 conn.on('data', onGuestData);
 conn.on('close', () => { if (NET.mode === 'guest') { toast("Connessione con l'host persa"); goMenu(); } });
 });
 peer.on('error', e => {
-if (e.type === 'peer-unavailable') setStatus('Stanza non trovata. Controlla il codice.');
+if (e.type === 'peer-unavailable') setStatus('Stanza non trovata: nessuno ha creato la stanza con codice 11.');
 else setStatus('Errore di connessione. Riprova.');
 netCleanup();
 });
@@ -1071,13 +1079,6 @@ card.innerHTML = html + `<div class="row">${buttons.map((b, i) => `<button class
 m.classList.add('open');
 card.querySelectorAll('[data-mi]').forEach(btn => btn.onclick = () => { m.classList.remove('open'); const fn = buttons[+btn.dataset.mi].fn; if (fn) fn(); });
 }
-/* ===== GEOMETRIA RUOTA A META' =====
-   - I 3 pulsanti (GIRA / VOCALE / RISOLVI) hanno flex uguale, quindi:
-     centro GIRA = b/2, centro RISOLVI = W - b/2 (con b = (W-16)/3)
-     => il diametro che va da meta' GIRA a meta' RISOLVI e' (2W+16)/3
-     => il suo centro coincide esattamente con il centro di VOCALE (e dello stage)
-   - Il mozzo (centro ruota) sta sul bordo inferiore dello stage = sopra VOCALE
-   - Meta' superiore + punta devono stare dentro lo stage: serve 0.55*size <= H */
 function sizeWheel() {
 const st = $('#stage'); if (!st.clientWidth) return;
 const W = st.clientWidth, H = st.clientHeight;
@@ -1122,7 +1123,7 @@ show('game'); broadcast(); render(); schedule();
 }
 function renderLobby() {
 const host = NET.mode === 'host';
-$('#lobbyCode').textContent = NET.code || '-----';
+$('#lobbyCode').textContent = NET.code || '--';
 $('#lobbySeats').innerHTML = (NET.seats || []).map((s, i) => {
 let label, right = '';
 if (s.type === 'empty') { label = '<em>Posto libero...</em>'; if (host) right = `<button class="mini" data-cpu="${i}">+ CPU</button>`; }
@@ -1137,7 +1138,7 @@ $('#shareRow').style.display = host ? '' : 'none';
 $('#lobbyWait').style.display = host ? 'none' : '';
 $('#lobbyStart').disabled = (NET.seats || []).filter(s => s.type !== 'empty').length < 2;
 }
-function shareUrl() { return location.origin + location.pathname + '?stanza=' + NET.code; }
+function shareUrl() { return location.origin + location.pathname + '?stanza=' + ROOM_CODE; }
 function rulesModal() {
 modal(`<h3>Come si gioca</h3><ul>
 <li><b>3 round</b> + Round Finale. Gira la ruota e chiama una consonante: vinci il valore dello spicchio per ogni lettera presente.</li>
@@ -1147,6 +1148,7 @@ modal(`<h3>Come si gioca</h3><ul>
 <li><b>JOLLY</b>: lo conservi e ti salva automaticamente la prossima volta che perderesti il turno.</li>
 <li>Lettera assente o soluzione sbagliata: il turno passa al prossimo concorrente.</li>
 <li>Chi risolve incassa il montepremi del round (minimo ${eur(MIN_WIN)}).</li>
+<li><b>Online</b>: la stanza usa sempre il codice <b>11</b>.</li>
 <li><b>Round Finale</b>: il concorrente con più soldi riceve R S T L N E, sceglie 3 consonanti e 1 vocale e ha ${FINAL_TIME / 1000} secondi per vincere il premio misterioso.</li></ul>`,
 [{ label: 'Ho capito', cls: 'gold' }]);
 }
@@ -1154,7 +1156,7 @@ document.addEventListener('pointerdown', () => SFX.unlock(), { once: true });
 $('#myName').value = localStorage.getItem('rdf-name') || '';
 $('#myName').addEventListener('input', e => localStorage.setItem('rdf-name', e.target.value.trim()));
 $('#goLocal').onclick = () => { localSeats[0].name = localSeats[0].name || myName(); renderLocal(); show('local'); };
-$('#goOnline').onclick = () => { setStatus('Crea una stanza e condividi il codice con i tuoi amici.'); show('online'); };
+$('#goOnline').onclick = () => { setStatus('La stanza usa sempre il codice <b>11</b>: creala, oppure entra digitando 11.'); show('online'); };
 $('#goRules').onclick = rulesModal;
 document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => { netCleanup(); show('menu'); });
 $('#localSeats').addEventListener('click', e => {
@@ -1167,7 +1169,7 @@ $('#localSeats').addEventListener('input', e => { if (e.target.dataset.i !== und
 $('#startLocal').onclick = startLocal;
 $('#createRoom').onclick = hostCreate;
 $('#joinRoom').onclick = () => guestJoin($('#roomCode').value);
-$('#roomCode').addEventListener('input', e => { e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); });
+$('#roomCode').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 2); });
 $('#roomCode').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing && e.keyCode !== 229) guestJoin(e.target.value); });
 $('#lobbySeats').addEventListener('click', e => {
 if (NET.mode !== 'host') return;
@@ -1244,7 +1246,7 @@ renderLocal();
 (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => { initLogo(); wheelSize = 0; sizeWheel(); });
 initLogo();
 const qsRoom = new URLSearchParams(location.search).get('stanza');
-if (qsRoom) { $('#roomCode').value = qsRoom.toUpperCase().slice(0, 5); setStatus('Inserisci il tuo nome e premi "Entra nella stanza".'); show('online'); }
+if (qsRoom) { $('#roomCode').value = qsRoom.replace(/\D/g, '').slice(0, 2); setStatus('Inserisci il tuo nome e premi "Entra nella stanza" (codice 11).'); show('online'); }
 if (location.hostname === 'localhost') {
 const bad = PUZZLES.filter((p, i) => !LAYOUTS[i]).map(p => p[1]);
 if (bad.length) console.log('[v0] Frasi troppo lunghe:', bad);
