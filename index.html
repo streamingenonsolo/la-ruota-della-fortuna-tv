@@ -9,9 +9,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>La Ruota della Fortuna</title>
 <meta name="description" content="La Ruota della Fortuna: gira la ruota, indovina le lettere e risolvi la frase. Gioca in locale o online con gli amici.">
-<link rel="manifest" href="/manifest.json">
-<link rel="icon" href="/icon-512.png">
-<link rel="apple-touch-icon" href="/icon-512.png">
+<!-- Icona e manifest vengono generati al volo dal codice (nessun file esterno) -->
+<link rel="manifest" id="manifestLink">
+<link rel="icon" id="faviconLink" type="image/png">
+<link rel="apple-touch-icon" id="appleIconLink">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Rubik:wght@500;700;900&display=swap" rel="stylesheet">
@@ -267,10 +268,10 @@ const WEDGES = [1500, 300, 500, 400, 'BANCAROTTA', 600, 350, 'MEGA', 900, 'PASSA
 const N = WEDGES.length, SEG = 360 / N;
 const MEGA_SUBS = ['BANCAROTTA', 'RADDOPPIA', 'BANCAROTTA'];
 const PALETTE = ['#e53935', '#ffb300', '#1e88e5', '#43a047', '#8e24aa', '#fb8c00', '#d81b60', '#00acc1'];
-/* ============ ARCHIVIO FRASI (file unico) ============
+/* ============ ARCHIVIO FRASI (tutto nello stesso file) ============
    Una riga = una frase, formato: Categoria|FRASE
-   Per aggiungerne altre (anche migliaia): aggiungi righe qui dentro.
-   Le frasi che non stanno nel tabellone 14x4 vengono scartate da sole. */
+   Per aggiungerne altre: aggiungi righe qui. Quelle che non stanno
+   nel tabellone 14x4 vengono scartate automaticamente. */
 const RAW = `
 Proverbio|CHI DORME NON PIGLIA PESCI
 Proverbio|CHI VA PIANO VA SANO E VA LONTANO
@@ -322,6 +323,21 @@ Modo di dire|FELICE COME UNA PASQUA
 Modo di dire|RIMANERE DI SASSO
 Modo di dire|FARE IL DIAVOLO A QUATTRO
 Modo di dire|ESSERE UN CANE IN CHIESA
+Espressioni|CHE SFORTUNA
+Espressioni|PER BACCO
+Espressioni|ACCIDENTI
+Espressioni|MAMMA MIA
+Espressioni|NON MI DIRE
+Espressioni|QUASI QUASI
+Espressioni|NEMMENO PER IDEA
+Espressioni|CI MANCHEREBBE
+Espressioni|VAI A SAPERE
+Espressioni|PUO DARSI
+Espressioni|DI SICURO
+Espressioni|A OCCHIO E CROCE
+Espressioni|SENZA DUBBIO
+Espressioni|DI CORSA
+Espressioni|MAGARI
 Luogo|LA TORRE PENDENTE DI PISA
 Luogo|IL COLOSSEO DI ROMA
 Luogo|PIAZZA SAN MARCO A VENEZIA
@@ -351,6 +367,32 @@ Luogo|CAPO NORD
 Luogo|FIORDI NORVEGESI
 Luogo|SAFARI IN KENYA
 Luogo|GRANDE BARRIERA CORALLINA
+Città|ROMA
+Città|MILANO
+Città|NAPOLI
+Città|TORINO
+Città|FIRENZE
+Città|BOLOGNA
+Città|PALERMO
+Città|GENOVA
+Città|BARI
+Città|CATANIA
+Città|VERONA
+Città|VENEZIA
+Città|PADOVA
+Città|PARMA
+Città|SIENA
+Città|PERUGIA
+Città|LECCE
+Città|CAGLIARI
+Città|TRENTO
+Città|TRIESTE
+Città|RAVENNA
+Città|RIMINI
+Città|MANTOVA
+Città|MODENA
+Città|URBINO
+Città|ASSISI
 Cosa|IL TELECOMANDO DELLA TELEVISIONE
 Cosa|UNO SPAZZOLINO DA DENTI
 Cosa|LA CAFFETTIERA NAPOLETANA
@@ -373,6 +415,23 @@ Cosa|LA CLESSIDRA
 Cosa|UN BINOCOLO
 Cosa|LA MACCHINA DA SCRIVERE
 Cosa|IL SALVADANAIO
+Oggetti|PORTAFOGLIO DI PELLE
+Oggetti|PORTACHIAVI
+Oggetti|CALAMITA DA FRIGO
+Oggetti|APRISCATOLE
+Oggetti|CAVATAPPI
+Oggetti|TORCIA ELETTRICA
+Oggetti|BILANCIA DA BAGNO
+Oggetti|ASPIRAPOLVERE
+Oggetti|FERRO DA STIRO
+Oggetti|STENDIPANNI
+Oggetti|SCOPA E PALETTA
+Oggetti|SECCHIO E STRACCIO
+Oggetti|DETERSIVO PIATTI
+Oggetti|SPUGNA NUOVA
+Oggetti|OROLOGIO DA POLSO
+Oggetti|SVEGLIA ANALOGICA
+Oggetti|SPECCHIO RETROVISORE
 In cucina|SPAGHETTI ALLA CARBONARA
 In cucina|PIZZA MARGHERITA
 In cucina|LASAGNE AL FORNO
@@ -411,6 +470,22 @@ In cucina|SFOGLIATELLA NAPOLETANA
 In cucina|GELATO ALLA CREMA
 In cucina|GRANITA AL LIMONE
 In cucina|SPUMANTE ITALIANO
+Bevande|ESPRESSO MACCHIATO
+Bevande|CAPPUCCINO
+Bevande|LATTE MACCHIATO
+Bevande|TE AL LIMONE
+Bevande|TISANA CALDA
+Bevande|SUCCO DI FRUTTA
+Bevande|ARANCIATA FRESCA
+Bevande|ACQUA FRIZZANTE
+Bevande|VINO ROSSO
+Bevande|BIRRA CHIARA
+Bevande|SPUMANTE BRUT
+Bevande|AMARO DIGESTIVO
+Bevande|FRULLATO DI BANANA
+Bevande|CENTRIFUGA DI CAROTE
+Bevande|CICCOLATA CALDA
+Bevande|GAZZOSA
 Personaggio|LEONARDO DA VINCI
 Personaggio|CRISTOFORO COLOMBO
 Personaggio|GIUSEPPE GARIBALDI
@@ -614,6 +689,20 @@ Natura|BRINA MATTUTINA
 Natura|FOLIAGE AUTUNNALE
 Natura|MACCHIA MEDITERRANEA
 Natura|DUNA DI SABBIA
+In giardino|VANGA E RASTRELLO
+In giardino|VASO DI GERANI
+In giardino|SIEPE DI ALLORO
+In giardino|ALBERO DI LIMONI
+In giardino|PRATO DA TAGLIARE
+In giardino|TOSAERBA
+In giardino|ANNAFFIATOIO
+In giardino|ROSA RAMPICANTE
+In giardino|TULIPANO
+In giardino|MARGHERITA BIANCA
+In giardino|SEMINA DI PRIMAVERA
+In giardino|AMACA
+In giardino|ORTICELLO
+In giardino|GAZEBO
 Casa|SALOTTO ACCOGLIENTE
 Casa|CUCINA MODERNA
 Casa|TERRAZZA CON VISTA
@@ -707,6 +796,34 @@ Meteo|ARCOBALENO DOPO LA PIOGGIA
 Meteo|BREZZA MARINA
 Meteo|AFA ESTIVA
 Meteo|GELATA NOTTURNA
+Al mare|OMBRELLONE E SDRAIO
+Al mare|COSTUME DA BAGNO
+Al mare|PINNE E MASCHERA
+Al mare|CASTELLO DI SABBIA
+Al mare|ONDA ALTA
+Al mare|MAREA CHE SALE
+Al mare|GABBIANO AFFAMATO
+Al mare|GRANITA SOTTO IL SOLE
+Al mare|SALE SULLA PELLE
+Al mare|TRAMONTO IN SPIAGGIA
+Al mare|BARCA A VELA
+Al mare|FARO NELLA NOTTE
+Al mare|CONCHIGLIA RARA
+Al mare|SCOGLIO
+Al mare|ALGA MARINA
+In montagna|SENTIERO DI MONTAGNA
+In montagna|RIFUGIO ALPINO
+In montagna|FUNIVIA PANORAMICA
+In montagna|SCI DA DISCESA
+In montagna|SLITTINO
+In montagna|RACCHETTE DA NEVE
+In montagna|VETTA INNEVATA
+In montagna|TORRENTE DI MONTAGNA
+In montagna|MARMOTTA CURIOSA
+In montagna|STELLE ALPINE
+In montagna|BOSCO DI ABETI
+In montagna|BAITA DI LEGNO
+In montagna|RAMPONI
 Feste|NATALE IN FAMIGLIA
 Feste|PASQUA
 Feste|CARNEVALE DI VIAREGGIO
@@ -749,19 +866,7 @@ for (let j = 0; j < ln.length; j++) if (ln[j] !== ' ') cells.push({ i: r * 14 + 
 });
 return cells;
 }
-let LAYOUTS = PUZZLES.map(p => layout(p[1]));
-function mergePuzzles(list) {
-if (!Array.isArray(list)) return;
-for (const e of list) {
-if (!Array.isArray(e) || typeof e[0] !== 'string' || typeof e[1] !== 'string') continue;
-const t = e[1].toUpperCase().trim();
-if (!t || PUZZLES.some(p => p[1] === t)) continue;
-const lay = layout(t);
-if (!lay) continue;
-PUZZLES.push([e[0].trim() || 'Varie', t]);
-LAYOUTS.push(lay);
-}
-}
+const LAYOUTS = PUZZLES.map(p => layout(p[1]));
 const clone = o => JSON.parse(JSON.stringify(o));
 const norm = s => String(s).toUpperCase().replace(/[^A-Z]/g, '');
 const curP = s => s.players[s.cur];
@@ -969,7 +1074,7 @@ function cpuAct() {
 const s = S; if (!s) return;
 const p = curP(s); if (p.type !== 'cpu') return;
 const letters = s.puzzle.cells.filter(c => isLetter(c.ch));
-const shown = letters.filter(c => s.called.includes(c.ch)).length / letters.length;
+const shown = letters.filter(c => s.called.includes(c.ch)).length / Math.max(1, letters.length);
 switch (s.phase) {
 case 'turn':
 if (!canSpin(s) && !canBuy(s)) return dispatch({ t: 'solveStart' });
@@ -984,8 +1089,13 @@ case 'finalPick': {
 const v = s.finalPicks.filter(isVowel).length;
 return dispatch({ t: 'finalPick', l: cpuPick(s, v === 0 && s.finalPicks.length === 3) });
 }
-case 'finalSolve':
-if (Math.random() < 0.5) dispatch({ t: 'finalSolve', guess: s.puzzle.text });
+case 'finalSolve': {
+/* BUG FIX: la CPU ora RISPONDE SEMPRE entro il tempo, con probabilita'
+   di successo legata alle lettere gia' scoperte (prima tirava a meta'
+   e se decideva di non rispondere perdeva allo scadere dei 30s). */
+const win = Math.random() < Math.min(0.9, 0.5 + shown * 0.4);
+return dispatch({ t: 'finalSolve', guess: win ? s.puzzle.text : 'RISPOSTA SBAGLIATA' });
+}
 }
 }
 const SFX = (() => {
@@ -1105,6 +1215,64 @@ c.lineWidth = R * 0.012; c.strokeStyle = '#5c3d00'; c.stroke();
 c.fillStyle = '#7a1010'; c.font = `900 ${hr * 0.42}px "Bowlby One", Rubik, sans-serif`; c.textAlign = 'center'; c.textBaseline = 'middle';
 c.fillText('RdF', 0, hr * 0.04);
 }
+/* ================= ICONA PWA (generata nel file) ================= */
+function makeIcon(size) {
+const cv = document.createElement('canvas'); cv.width = cv.height = size;
+const c = cv.getContext('2d'); const S = size;
+const bg = c.createRadialGradient(S / 2, S * 0.35, S * 0.1, S / 2, S / 2, S * 0.78);
+bg.addColorStop(0, '#22307f'); bg.addColorStop(1, '#070d2b');
+c.fillStyle = bg; c.fillRect(0, 0, S, S);
+c.save(); c.translate(S / 2, S / 2); c.globalAlpha = 0.12; c.fillStyle = '#ffc83d';
+for (let i = 0; i < 12; i++) { c.rotate(Math.PI / 6); c.beginPath(); c.moveTo(0, 0); c.arc(0, 0, S * 0.72, -0.12, 0.12); c.closePath(); c.fill(); }
+c.restore(); c.globalAlpha = 1;
+const cx = S / 2, cy = S * 0.56, R = S * 0.36;
+const rim = c.createLinearGradient(cx - R, cy - R, cx + R, cy + R);
+rim.addColorStop(0, '#ffe28a'); rim.addColorStop(0.5, '#c88a14'); rim.addColorStop(1, '#ffd76a');
+c.beginPath(); c.arc(cx, cy, R, 0, Math.PI * 2); c.fillStyle = rim; c.fill();
+const cols = ['#e53935', '#ffb300', '#1e88e5', '#43a047', '#8e24aa', '#fb8c00', '#d81b60', '#00acc1', '#e53935', '#ffb300', '#1e88e5', '#43a047'];
+const r = R * 0.82;
+for (let i = 0; i < 12; i++) {
+const a0 = -Math.PI / 2 + i * Math.PI / 6, a1 = a0 + Math.PI / 6;
+c.beginPath(); c.moveTo(cx, cy); c.arc(cx, cy, r, a0, a1); c.closePath();
+c.fillStyle = cols[i]; c.fill();
+c.strokeStyle = 'rgba(255,240,200,.8)'; c.lineWidth = S * 0.006; c.stroke();
+}
+for (let i = 0; i < 16; i++) {
+const a = i * Math.PI / 8;
+const x = cx + Math.cos(a) * (R * 0.91), y = cy + Math.sin(a) * (R * 0.91);
+c.beginPath(); c.arc(x, y, S * 0.014, 0, Math.PI * 2); c.fillStyle = '#fffbe6'; c.fill();
+}
+const hr2 = r * 0.24;
+const hub = c.createRadialGradient(cx - hr2 * 0.3, cy - hr2 * 0.3, hr2 * 0.1, cx, cy, hr2);
+hub.addColorStop(0, '#fff6cc'); hub.addColorStop(0.5, '#ffc83d'); hub.addColorStop(1, '#8a5a00');
+c.beginPath(); c.arc(cx, cy, hr2, 0, Math.PI * 2); c.fillStyle = hub; c.fill();
+c.beginPath();
+c.moveTo(cx - S * 0.055, cy - R - S * 0.07); c.lineTo(cx + S * 0.055, cy - R - S * 0.07); c.lineTo(cx, cy - R + S * 0.05);
+c.closePath(); c.fillStyle = '#e53935'; c.fill();
+c.strokeStyle = '#ffc83d'; c.lineWidth = S * 0.01; c.stroke();
+return cv.toDataURL('image/png');
+}
+function setupPwa() {
+try {
+const i180 = makeIcon(180), i192 = makeIcon(192), i512 = makeIcon(512);
+const fav = $('#faviconLink'); if (fav) fav.href = i192;
+const ap = $('#appleIconLink'); if (ap) ap.href = i180;
+const man = {
+name: 'La Ruota della Fortuna', short_name: 'Ruota Fortuna',
+description: 'Gira la ruota, indovina le lettere e risolvi la frase.',
+start_url: '.', scope: '.', display: 'standalone', orientation: 'portrait',
+background_color: '#050920', theme_color: '#0a1236',
+icons: [
+{ src: i192, sizes: '192x192', type: 'image/png', purpose: 'any' },
+{ src: i512, sizes: '512x512', type: 'image/png', purpose: 'any' },
+{ src: i512, sizes: '512x512', type: 'image/png', purpose: 'maskable' }
+]
+};
+const ml = $('#manifestLink');
+if (ml) ml.href = URL.createObjectURL(new Blob([JSON.stringify(man)], { type: 'application/manifest+json' }));
+} catch (e) { /* ignore */ }
+}
+/* ================= NETWORK ================= */
 const NET = { mode: 'local', peer: null, conns: new Map(), host: null, myId: null, code: null, seats: null, started: false };
 let S = null;
 const isMine = p => NET.mode === 'host' ? p.peer === 'host' : NET.mode === 'guest' ? p.peer === NET.myId : p.type === 'human';
@@ -1147,7 +1315,7 @@ else if (ph === 'revealing') tPhase = setTimeout(() => dispatch({ t: 'revealDone
 else if (ph === 'roundEnd') tPhase = setTimeout(() => dispatch({ t: 'nextRound' }), 5500);
 else if (ph === 'finalSolve') tPhase = setTimeout(() => dispatch({ t: 'finalTimeout' }), FINAL_TIME + 300);
 if (curP(S).type === 'cpu' && ['turn', 'consonant', 'vowel', 'solve', 'finalPick', 'finalSolve'].includes(ph)) {
-const d = ph === 'finalSolve' ? 3000 + Math.random() * 10000 : ph === 'finalPick' ? 900 : 1300 + Math.random() * 800;
+const d = ph === 'finalSolve' ? 4000 + Math.random() * 12000 : ph === 'finalPick' ? 900 : 1300 + Math.random() * 800;
 tCpu = setTimeout(cpuAct, d);
 }
 }
@@ -1678,6 +1846,7 @@ const cv = $('#logoWheel'), w = cv.parentElement.clientWidth || 220;
 drawWheel(cv, w);
 }
 function boot() {
+setupPwa();
 updateMuteIcon();
 renderLocal();
 initLogo();
@@ -1690,8 +1859,7 @@ if (bad.length) console.log('[rdf] Frasi scartate (troppo lunghe per il tabellon
 console.log('[rdf] Frasi giocabili:', LAYOUTS.filter(Boolean).length);
 }
 }
-/* Opzionale: se esiste frasi.json accanto al file, unisce anche quelle */
-fetch('frasi.json').then(r => r.ok ? r.json() : null).then(j => { if (j) mergePuzzles(j); }).catch(() => {}).finally(boot);
+boot();
 </script>
 </body>
 </html>
