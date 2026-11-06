@@ -19,11 +19,11 @@
 <style>
 :root{--navy:#0a1236;--gold:#ffc83d;--gold2:#ff9f1c;--muted:#aab4e8;--disp:'Bowlby One',Impact,sans-serif}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;overflow:hidden;overscroll-behavior:none;background:#050920;color:#fff;font-family:Rubik,system-ui,sans-serif;touch-action:manipulation;-webkit-user-select:none;user-select:none}
-body{position:fixed;inset:0}
+html,body{height:100%;height:100dvh;overflow:hidden;overscroll-behavior:none;background:#050920;color:#fff;font-family:Rubik,system-ui,sans-serif;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+body{position:fixed;inset:0;height:100dvh}
 button{font-family:inherit;cursor:pointer;color:inherit}
 input{font-family:inherit;-webkit-user-select:text;user-select:text}
-#app{position:relative;height:100%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;padding:max(8px,env(safe-area-inset-top)) 10px max(8px,env(safe-area-inset-bottom));background:radial-gradient(120% 55% at 50% -5%,#3346c4 0%,transparent 60%),radial-gradient(90% 45% at 50% 105%,#5a1f8f 0%,transparent 70%),var(--navy);overflow:hidden;isolation:isolate}
+#app{position:relative;height:100%;height:100dvh;max-width:520px;margin:0 auto;display:flex;flex-direction:column;padding:max(8px,env(safe-area-inset-top)) 10px max(8px,env(safe-area-inset-bottom));background:radial-gradient(120% 55% at 50% -5%,#3346c4 0%,transparent 60%),radial-gradient(90% 45% at 50% 105%,#5a1f8f 0%,transparent 70%),var(--navy);overflow:hidden;isolation:isolate}
 #app::before{content:'';position:absolute;inset:-50%;z-index:-1;background:repeating-conic-gradient(from 0deg at 50% 50%,rgba(255,255,255,.035) 0 7deg,transparent 7deg 15deg);animation:rays 60s linear infinite;pointer-events:none}
 @keyframes rays{to{transform:rotate(360deg)}}
 .screen{display:none;flex:1;min-height:0;flex-direction:column;gap:7px}
@@ -88,7 +88,7 @@ h1 span{display:block;font-size:.62em;color:#fff;text-shadow:0 3px 0 #2a3a9e,0 6
 .pl-round{font-size:clamp(15px,4.6vw,20px);font-weight:900;font-variant-numeric:tabular-nums;line-height:1.1;text-shadow:0 2px 0 rgba(0,0,0,.35)}
 .pl-round.bump{animation:bump .5s}
 @keyframes bump{40%{transform:scale(1.25);color:var(--gold)}}
-.pl-tot{font-size:10px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl-tot{font-size:11px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .jk{display:inline-block;background:linear-gradient(#ffe07a,#ff9f1c);color:#3a2300;font-weight:900;border-radius:4px;padding:0 4px;margin-left:3px}
 .board-frame{flex-shrink:0;width:min(100%,56dvh);margin:2px auto 0;padding:5px;border-radius:12px;background:linear-gradient(#ffe38a,#c88a14 60%,#ffd76a);box-shadow:inset 0 0 0 2px #7a5200,0 8px 22px rgba(0,0,0,.55)}
 .board{container-type:inline-size;display:grid;grid-template-columns:repeat(14,1fr);gap:2px;padding:4px;border-radius:7px;background:#04281a;perspective:600px}
@@ -124,8 +124,9 @@ h1 span{display:block;font-size:.62em;color:#fff;text-shadow:0 3px 0 #2a3a9e,0 6
 .pointer::after{content:'';position:absolute;inset:14% 24% 32%;background:linear-gradient(#ff5252,#b71c1c);clip-path:polygon(0 0,100% 0,50% 100%)}
 .swipe-hint{position:absolute;left:50%;top:4px;transform:translateX(-50%);font-size:11px;color:var(--muted);font-weight:700;letter-spacing:1px;pointer-events:none;opacity:0;transition:opacity .3s;white-space:nowrap}
 .swipe-hint.on{opacity:.9}
-.sheet,.panel{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;padding:10px;border-radius:18px;background:rgba(8,14,48,.94);border:1px solid rgba(255,255,255,.14);box-shadow:0 -10px 30px rgba(0,0,0,.5);transform:translateY(112%);transition:transform .38s cubic-bezier(.2,.9,.3,1.15)}
+.sheet,.panel{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;justify-content:flex-start;gap:8px;padding:10px;border-radius:18px;background:rgba(8,14,48,.94);border:1px solid rgba(255,255,255,.14);box-shadow:0 -10px 30px rgba(0,0,0,.5);overflow-y:auto;overscroll-behavior:contain;transform:translateY(112%);transition:transform .38s cubic-bezier(.2,.9,.3,1.15)}
 .sheet.open,.panel.open{transform:none}
+.sheet>:first-child{margin-top:auto}
 .sheet h3,.panel h3{font-size:15px;text-align:center;color:var(--gold);letter-spacing:.5px}
 .keys{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
 .key{height:clamp(44px,7dvh,56px);border-radius:10px;border:none;background:linear-gradient(#fff,#dbe3f4);color:#0b1236;font-weight:900;font-size:20px;box-shadow:0 3px 0 #7d8abd;transition:transform .06s}
@@ -160,16 +161,26 @@ h1 span{display:block;font-size:.62em;color:#fff;text-shadow:0 3px 0 #2a3a9e,0 6
 .sp.rd{background:linear-gradient(#ffd700,#ff8c00);color:#1a1a1a;box-shadow:0 0 0 4px #ffd700,0 20px 60px rgba(0,0,0,.8)}
 @keyframes splash{0%{transform:scale(.2) rotate(-8deg);opacity:0}18%{transform:scale(1.1) rotate(2deg);opacity:1}30%{transform:scale(1) rotate(0)}80%{transform:scale(1);opacity:1}100%{transform:scale(1.3);opacity:0}}
 #confetti{position:fixed;inset:0;z-index:55;pointer-events:none;display:none}
-.modal{position:fixed;inset:0;z-index:70;display:none;place-items:center;padding:20px;background:rgba(3,6,24,.7);backdrop-filter:blur(4px)}
+.modal{position:fixed;inset:0;z-index:70;display:none;place-items:center;padding:20px;background:rgba(3,6,24,.7);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
 .modal.open{display:grid;animation:fadeIn .25s}
 .modal-card{width:100%;max-width:380px;max-height:100%;overflow:auto;background:linear-gradient(#18246e,#0c1445);border:1.5px solid rgba(255,200,61,.5);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:12px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
 .modal-card h3{font-family:var(--disp);font-weight:400;color:var(--gold);font-size:22px;text-align:center}
 .modal-card p,.modal-card li{font-size:14px;line-height:1.45;color:#dfe5ff}
 .modal-card ul{padding-left:18px;display:flex;flex-direction:column;gap:4px}
-.toast{position:fixed;left:50%;top:max(14px,env(safe-area-inset-top));transform:translate(-50%,-150%);z-index:80;background:#fff;color:#0b1236;font-weight:700;font-size:14px;padding:10px 16px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.4);transition:transform .3s;max-width:90vw;text-align:center}
-.toast.on{transform:translate(-50%,0)}
+.toast{position:fixed;left:50%;top:max(14px,env(safe-area-inset-top));transform:translate(-50%,-150%);z-index:80;background:#fff;color:#0b1236;font-weight:700;font-size:14px;padding:10px 16px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.4);transition:transform .3s,opacity .3s,visibility .3s;max-width:90vw;text-align:center;opacity:0;visibility:hidden;pointer-events:none}
+.toast.on{transform:translate(-50%,0);opacity:1;visibility:visible}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-@media (max-height:620px){.pl-tot{display:none}.msg{min-height:30px;font-size:13px}.round-lbl{font-size:14px}}
+.btn.hint{flex:0 0 66px;background:linear-gradient(#8a6bff,#4b2ec9);font-size:10px;letter-spacing:0;gap:1px}
+.btn.hint .bulb{font-size:17px;line-height:1}
+.cb{display:inline-block;background:linear-gradient(#ff8a65,#e64a19);color:#fff;font-weight:900;border-radius:4px;padding:0 3px;margin-left:3px;font-size:9px}
+.menu-links{display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:center}
+.recs{display:flex;flex-direction:column;gap:5px;width:100%}
+.recs h4{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);margin:6px 0 2px}
+.rec{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:10px;background:rgba(255,255,255,.07);font-weight:700;font-size:13px}
+.rec b{font-family:var(--disp);color:var(--gold);font-size:14px;width:18px;flex:none}
+.rec span{flex:1;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rec em{font-style:normal;color:var(--muted);font-size:11px;font-weight:700;flex:none}
+@media (max-height:620px){.pl-tot{font-size:10px}.pl-name .tag{font-size:7px;padding:0 3px}.msg{min-height:30px;font-size:13px}.round-lbl{font-size:14px}}
 @media (prefers-reduced-motion:reduce){#app::before,.logo-wheel canvas{animation:none}}
 </style>
 </head>
@@ -185,7 +196,7 @@ h1 span{display:block;font-size:.62em;color:#fff;text-shadow:0 3px 0 #2a3a9e,0 6
 <button class="btn big gold" id="goLocal">Gioca in locale</button>
 <button class="btn big blue" id="goOnline">Gioca online</button>
 </div>
-<button class="link" id="goRules">Come si gioca</button>
+<div class="menu-links"><button class="link" id="goRules">Come si gioca</button><button class="link" id="goRecords">Record</button></div>
 </section>
 <section id="scr-local" class="screen" aria-label="Partita locale">
 <div class="head"><button class="icon-btn" data-back aria-label="Indietro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg></button><h2>Partita locale</h2></div>
@@ -198,11 +209,11 @@ h1 span{display:block;font-size:.62em;color:#fff;text-shadow:0 3px 0 #2a3a9e,0 6
 <section id="scr-online" class="screen" aria-label="Gioca online">
 <div class="head"><button class="icon-btn" data-back aria-label="Indietro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg></button><h2>Gioca online</h2></div>
 <div class="body">
-<div class="stack"><button class="btn big gold" id="createRoom">Crea una stanza</button></div>
+<div class="stack"><button class="btn big gold" id="quickPlay">Gioca subito<small>crea o entra, codice 11</small></button></div>
 <div class="divider">oppure</div>
+<div class="row"><button class="btn ghost" id="createRoom">Crea stanza</button><button class="btn ghost" id="joinRoom">Entra</button></div>
 <label class="field">Codice stanza (sempre 11)<input id="roomCode" class="inp code-inp" maxlength="2" inputmode="numeric" autocomplete="off" placeholder="11"></label>
-<div class="stack"><button class="btn big blue" id="joinRoom">Entra nella stanza</button></div>
-<p class="note" id="onlineStatus">La stanza usa sempre il codice <b>11</b>: creala, oppure entra digitando 11.</p>
+<p class="note" id="onlineStatus">Un tocco solo: se la stanza esiste entri, altrimenti la crei tu. Il codice è sempre <b>11</b>.</p>
 </div>
 </section>
 <section id="scr-lobby" class="screen" aria-label="Sala d'attesa">
@@ -260,6 +271,7 @@ const isVowel = l => VOWELS.includes(l);
 const isLetter = c => c >= 'A' && c <= 'Z';
 const VOWEL_COST = 250, MIN_WIN = 1000, ROUNDS = 3;
 const FINAL_TIME = 30000;
+const FINAL_TRIES = 2;
 const FINAL_LETTERS = ['R', 'S', 'T', 'L', 'N', 'E'];
 const PRIZES = [10000, 15000, 20000, 25000, 30000, 50000, 100000];
 const COLORS = ['#e53935', '#f5b400', '#1e7bff'];
@@ -268,37 +280,3236 @@ const WEDGES = [1500, 300, 500, 400, 'BANCAROTTA', 600, 350, 'MEGA', 900, 'PASSA
 const N = WEDGES.length, SEG = 360 / N;
 const MEGA_SUBS = ['BANCAROTTA', 'RADDOPPIA', 'BANCAROTTA'];
 const PALETTE = ['#e53935', '#ffb300', '#1e88e5', '#43a047', '#8e24aa', '#fb8c00', '#d81b60', '#00acc1'];
+const HINT_FREE = 1;
+const ICE_CFG = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:global.stun.twilio.com:3478' }] };
+const PEER_OPTS = { debug: 0, config: ICE_CFG };
 /* ============ ARCHIVIO FRASI (tutto nello stesso file) ============
    Una riga = una frase, formato: Categoria|FRASE
    Per aggiungerne altre: aggiungi righe qui. Quelle che non stanno
    nel tabellone 14x4 vengono scartate automaticamente. */
 const RAW = `
-Proverbio|CHI DORME NON PIGLIA PESCI
-Proverbio|CHI VA PIANO VA SANO E VA LONTANO
-Proverbio|L'ABITO NON FA IL MONACO
-Proverbio|RIDE BENE CHI RIDE ULTIMO
-Proverbio|MEGLIO TARDI CHE MAI
-Proverbio|CHI TROPPO VUOLE NULLA STRINGE
-Proverbio|TUTTE LE STRADE PORTANO A ROMA
-Proverbio|CAN CHE ABBAIA NON MORDE
-Proverbio|L'APPETITO VIEN MANGIANDO
-Proverbio|OCCHIO NON VEDE CUORE NON DUOLE
-Proverbio|CHI CERCA TROVA
-Proverbio|IL MATTINO HA L'ORO IN BOCCA
-Proverbio|MOGLIE E BUOI DEI PAESI TUOI
-Proverbio|PATTI CHIARI AMICIZIA LUNGA
-Proverbio|CHI SEMINA VENTO RACCOGLIE TEMPESTA
-Proverbio|A CAVAL DONATO NON SI GUARDA IN BOCCA
-Proverbio|IL BUONGIORNO SI VEDE DAL MATTINO
-Proverbio|UNA MELA AL GIORNO TOGLIE IL MEDICO DI TORNO
-Proverbio|CHI LA DURA LA VINCE
-Proverbio|CHI NON RISICA NON ROSICA
-Proverbio|TRA IL DIRE E IL FARE
-Proverbio|IL LUPO PERDE IL PELO
-Proverbio|A BUON INTENDITOR POCHE PAROLE
-Proverbio|NON TUTTO IL MALE VIEN PER NUOGERE
-Proverbio|DIMMI CON CHI VAI E TI DIRO CHI SEI
-Proverbio|LA GATTA FRETTOLOSA FECE I GATTINI CIECHI
+Cucina|SPAGHETTI AL PESTO GENOVESE
+Cucina|SPAGHETTI ALLA CARBONARA
+Cucina|SPAGHETTI AL RAGU BOLOGNESE
+Cucina|SPAGHETTI AI FUNGHI PORCINI
+Cucina|SPAGHETTI ALLA NORMA
+Cucina|SPAGHETTI AL POMODORO FRESCO
+Cucina|SPAGHETTI ALLE VONGOLE
+Cucina|SPAGHETTI AI FRUTTI DI MARE
+Cucina|SPAGHETTI ALLA BOLOGNESE
+Cucina|SPAGHETTI AL BURRO E SALVIA
+Cucina|SPAGHETTI AI QUATTRO FORMAGGI
+Cucina|SPAGHETTI ALLA PUTTANESCA
+Cucina|SPAGHETTI ALLE CIME DI RAPA
+Cucina|SPAGHETTI ALLA SORRENTINA
+Cucina|SPAGHETTI AL TARTUFO NERO
+Cucina|SPAGHETTI ALLA PASTORA
+Cucina|SPAGHETTI AI CARCIOFI
+Cucina|SPAGHETTI ALLO SCOGLIO
+Cucina|SPAGHETTI AL PESTO DI RUCOLA
+Cucina|SPAGHETTI ALLA GRICIA
+Cucina|SPAGHETTI AI PEPERONI
+Cucina|SPAGHETTI ALLE ZUCCHINE
+Cucina|SPAGHETTI ALLA CONTADINA
+Cucina|PENNE AL PESTO GENOVESE
+Cucina|PENNE ALLA CARBONARA
+Cucina|PENNE AL RAGU BOLOGNESE
+Cucina|PENNE AI FUNGHI PORCINI
+Cucina|PENNE ALLA NORMA
+Cucina|PENNE AL POMODORO FRESCO
+Cucina|PENNE ALLE VONGOLE
+Cucina|PENNE AI FRUTTI DI MARE
+Cucina|PENNE ALLA BOLOGNESE
+Cucina|PENNE AL BURRO E SALVIA
+Cucina|PENNE AI QUATTRO FORMAGGI
+Cucina|PENNE ALLA PUTTANESCA
+Cucina|PENNE ALLE CIME DI RAPA
+Cucina|PENNE ALLA SORRENTINA
+Cucina|PENNE AL TARTUFO NERO
+Cucina|PENNE ALLA PASTORA
+Cucina|PENNE AI CARCIOFI
+Cucina|PENNE ALLO SCOGLIO
+Cucina|PENNE AL PESTO DI RUCOLA
+Cucina|PENNE ALLA GRICIA
+Cucina|PENNE AI PEPERONI
+Cucina|PENNE ALLE ZUCCHINE
+Cucina|PENNE ALLA CONTADINA
+Cucina|RIGATONI AL PESTO GENOVESE
+Cucina|RIGATONI ALLA CARBONARA
+Cucina|RIGATONI AL RAGU BOLOGNESE
+Cucina|RIGATONI AI FUNGHI PORCINI
+Cucina|RIGATONI ALLA NORMA
+Cucina|RIGATONI AL POMODORO FRESCO
+Cucina|RIGATONI ALLE VONGOLE
+Cucina|RIGATONI AI FRUTTI DI MARE
+Cucina|RIGATONI ALLA BOLOGNESE
+Cucina|RIGATONI AL BURRO E SALVIA
+Cucina|RIGATONI AI QUATTRO FORMAGGI
+Cucina|RIGATONI ALLA PUTTANESCA
+Cucina|RIGATONI ALLE CIME DI RAPA
+Cucina|RIGATONI ALLA SORRENTINA
+Cucina|RIGATONI AL TARTUFO NERO
+Cucina|RIGATONI ALLA PASTORA
+Cucina|RIGATONI AI CARCIOFI
+Cucina|RIGATONI ALLO SCOGLIO
+Cucina|RIGATONI AL PESTO DI RUCOLA
+Cucina|RIGATONI ALLA GRICIA
+Cucina|RIGATONI AI PEPERONI
+Cucina|RIGATONI ALLE ZUCCHINE
+Cucina|RIGATONI ALLA CONTADINA
+Cucina|FUSILLI AL PESTO GENOVESE
+Cucina|FUSILLI ALLA CARBONARA
+Cucina|FUSILLI AL RAGU BOLOGNESE
+Cucina|FUSILLI AI FUNGHI PORCINI
+Cucina|FUSILLI ALLA NORMA
+Cucina|FUSILLI AL POMODORO FRESCO
+Cucina|FUSILLI ALLE VONGOLE
+Cucina|FUSILLI AI FRUTTI DI MARE
+Cucina|FUSILLI ALLA BOLOGNESE
+Cucina|FUSILLI AL BURRO E SALVIA
+Cucina|FUSILLI AI QUATTRO FORMAGGI
+Cucina|FUSILLI ALLA PUTTANESCA
+Cucina|FUSILLI ALLE CIME DI RAPA
+Cucina|FUSILLI ALLA SORRENTINA
+Cucina|FUSILLI AL TARTUFO NERO
+Cucina|FUSILLI ALLA PASTORA
+Cucina|FUSILLI AI CARCIOFI
+Cucina|FUSILLI ALLO SCOGLIO
+Cucina|FUSILLI AL PESTO DI RUCOLA
+Cucina|FUSILLI ALLA GRICIA
+Cucina|FUSILLI AI PEPERONI
+Cucina|FUSILLI ALLE ZUCCHINE
+Cucina|FUSILLI ALLA CONTADINA
+Cucina|FARFALLE AL PESTO GENOVESE
+Cucina|FARFALLE ALLA CARBONARA
+Cucina|FARFALLE AL RAGU BOLOGNESE
+Cucina|FARFALLE AI FUNGHI PORCINI
+Cucina|FARFALLE ALLA NORMA
+Cucina|FARFALLE AL POMODORO FRESCO
+Cucina|FARFALLE ALLE VONGOLE
+Cucina|FARFALLE AI FRUTTI DI MARE
+Cucina|FARFALLE ALLA BOLOGNESE
+Cucina|FARFALLE AL BURRO E SALVIA
+Cucina|FARFALLE AI QUATTRO FORMAGGI
+Cucina|FARFALLE ALLA PUTTANESCA
+Cucina|FARFALLE ALLE CIME DI RAPA
+Cucina|FARFALLE ALLA SORRENTINA
+Cucina|FARFALLE AL TARTUFO NERO
+Cucina|FARFALLE ALLA PASTORA
+Cucina|FARFALLE AI CARCIOFI
+Cucina|FARFALLE ALLO SCOGLIO
+Cucina|FARFALLE AL PESTO DI RUCOLA
+Cucina|FARFALLE ALLA GRICIA
+Cucina|FARFALLE AI PEPERONI
+Cucina|FARFALLE ALLE ZUCCHINE
+Cucina|FARFALLE ALLA CONTADINA
+Cucina|ORECCHIETTE AL PESTO GENOVESE
+Cucina|ORECCHIETTE ALLA CARBONARA
+Cucina|ORECCHIETTE AL RAGU BOLOGNESE
+Cucina|ORECCHIETTE AI FUNGHI PORCINI
+Cucina|ORECCHIETTE ALLA NORMA
+Cucina|ORECCHIETTE AL POMODORO FRESCO
+Cucina|ORECCHIETTE ALLE VONGOLE
+Cucina|ORECCHIETTE AI FRUTTI DI MARE
+Cucina|ORECCHIETTE ALLA BOLOGNESE
+Cucina|ORECCHIETTE AL BURRO E SALVIA
+Cucina|ORECCHIETTE AI QUATTRO FORMAGGI
+Cucina|ORECCHIETTE ALLA PUTTANESCA
+Cucina|ORECCHIETTE ALLE CIME DI RAPA
+Cucina|ORECCHIETTE ALLA SORRENTINA
+Cucina|ORECCHIETTE AL TARTUFO NERO
+Cucina|ORECCHIETTE ALLA PASTORA
+Cucina|ORECCHIETTE AI CARCIOFI
+Cucina|ORECCHIETTE ALLO SCOGLIO
+Cucina|ORECCHIETTE AL PESTO DI RUCOLA
+Cucina|ORECCHIETTE ALLA GRICIA
+Cucina|ORECCHIETTE AI PEPERONI
+Cucina|ORECCHIETTE ALLE ZUCCHINE
+Cucina|ORECCHIETTE ALLA CONTADINA
+Cucina|TAGLIATELLE AL PESTO GENOVESE
+Cucina|TAGLIATELLE ALLA CARBONARA
+Cucina|TAGLIATELLE AL RAGU BOLOGNESE
+Cucina|TAGLIATELLE AI FUNGHI PORCINI
+Cucina|TAGLIATELLE ALLA NORMA
+Cucina|TAGLIATELLE AL POMODORO FRESCO
+Cucina|TAGLIATELLE ALLE VONGOLE
+Cucina|TAGLIATELLE AI FRUTTI DI MARE
+Cucina|TAGLIATELLE ALLA BOLOGNESE
+Cucina|TAGLIATELLE AL BURRO E SALVIA
+Cucina|TAGLIATELLE AI QUATTRO FORMAGGI
+Cucina|TAGLIATELLE ALLA PUTTANESCA
+Cucina|TAGLIATELLE ALLE CIME DI RAPA
+Cucina|TAGLIATELLE ALLA SORRENTINA
+Cucina|TAGLIATELLE AL TARTUFO NERO
+Cucina|TAGLIATELLE ALLA PASTORA
+Cucina|TAGLIATELLE AI CARCIOFI
+Cucina|TAGLIATELLE ALLO SCOGLIO
+Cucina|TAGLIATELLE AL PESTO DI RUCOLA
+Cucina|TAGLIATELLE ALLA GRICIA
+Cucina|TAGLIATELLE AI PEPERONI
+Cucina|TAGLIATELLE ALLE ZUCCHINE
+Cucina|TAGLIATELLE ALLA CONTADINA
+Cucina|LINGUINE AL PESTO GENOVESE
+Cucina|LINGUINE ALLA CARBONARA
+Cucina|LINGUINE AL RAGU BOLOGNESE
+Cucina|LINGUINE AI FUNGHI PORCINI
+Cucina|LINGUINE ALLA NORMA
+Cucina|LINGUINE AL POMODORO FRESCO
+Cucina|LINGUINE ALLE VONGOLE
+Cucina|LINGUINE AI FRUTTI DI MARE
+Cucina|LINGUINE ALLA BOLOGNESE
+Cucina|LINGUINE AL BURRO E SALVIA
+Cucina|LINGUINE AI QUATTRO FORMAGGI
+Cucina|LINGUINE ALLA PUTTANESCA
+Cucina|LINGUINE ALLE CIME DI RAPA
+Cucina|LINGUINE ALLA SORRENTINA
+Cucina|LINGUINE AL TARTUFO NERO
+Cucina|LINGUINE ALLA PASTORA
+Cucina|LINGUINE AI CARCIOFI
+Cucina|LINGUINE ALLO SCOGLIO
+Cucina|LINGUINE AL PESTO DI RUCOLA
+Cucina|LINGUINE ALLA GRICIA
+Cucina|LINGUINE AI PEPERONI
+Cucina|LINGUINE ALLE ZUCCHINE
+Cucina|LINGUINE ALLA CONTADINA
+Cucina|TORTELLINI AL PESTO GENOVESE
+Cucina|TORTELLINI ALLA CARBONARA
+Cucina|TORTELLINI AL RAGU BOLOGNESE
+Cucina|TORTELLINI AI FUNGHI PORCINI
+Cucina|TORTELLINI ALLA NORMA
+Cucina|TORTELLINI AL POMODORO FRESCO
+Cucina|TORTELLINI ALLE VONGOLE
+Cucina|TORTELLINI AI FRUTTI DI MARE
+Cucina|TORTELLINI ALLA BOLOGNESE
+Cucina|TORTELLINI AL BURRO E SALVIA
+Cucina|TORTELLINI AI QUATTRO FORMAGGI
+Cucina|TORTELLINI ALLA PUTTANESCA
+Cucina|TORTELLINI ALLE CIME DI RAPA
+Cucina|TORTELLINI ALLA SORRENTINA
+Cucina|TORTELLINI AL TARTUFO NERO
+Cucina|TORTELLINI ALLA PASTORA
+Cucina|TORTELLINI AI CARCIOFI
+Cucina|TORTELLINI ALLO SCOGLIO
+Cucina|TORTELLINI AL PESTO DI RUCOLA
+Cucina|TORTELLINI ALLA GRICIA
+Cucina|TORTELLINI AI PEPERONI
+Cucina|TORTELLINI ALLE ZUCCHINE
+Cucina|TORTELLINI ALLA CONTADINA
+Cucina|GNOCCHI AL PESTO GENOVESE
+Cucina|GNOCCHI ALLA CARBONARA
+Cucina|GNOCCHI AL RAGU BOLOGNESE
+Cucina|GNOCCHI AI FUNGHI PORCINI
+Cucina|GNOCCHI ALLA NORMA
+Cucina|GNOCCHI AL POMODORO FRESCO
+Cucina|GNOCCHI ALLE VONGOLE
+Cucina|GNOCCHI AI FRUTTI DI MARE
+Cucina|GNOCCHI ALLA BOLOGNESE
+Cucina|GNOCCHI AL BURRO E SALVIA
+Cucina|GNOCCHI AI QUATTRO FORMAGGI
+Cucina|GNOCCHI ALLA PUTTANESCA
+Cucina|GNOCCHI ALLE CIME DI RAPA
+Cucina|GNOCCHI ALLA SORRENTINA
+Cucina|GNOCCHI AL TARTUFO NERO
+Cucina|GNOCCHI ALLA PASTORA
+Cucina|GNOCCHI AI CARCIOFI
+Cucina|GNOCCHI ALLO SCOGLIO
+Cucina|GNOCCHI AL PESTO DI RUCOLA
+Cucina|GNOCCHI ALLA GRICIA
+Cucina|GNOCCHI AI PEPERONI
+Cucina|GNOCCHI ALLE ZUCCHINE
+Cucina|GNOCCHI ALLA CONTADINA
+Cucina|LASAGNE AL PESTO GENOVESE
+Cucina|LASAGNE ALLA CARBONARA
+Cucina|LASAGNE AL RAGU BOLOGNESE
+Cucina|LASAGNE AI FUNGHI PORCINI
+Cucina|LASAGNE ALLA NORMA
+Cucina|LASAGNE AL POMODORO FRESCO
+Cucina|LASAGNE ALLE VONGOLE
+Cucina|LASAGNE AI FRUTTI DI MARE
+Cucina|LASAGNE ALLA BOLOGNESE
+Cucina|LASAGNE AL BURRO E SALVIA
+Cucina|LASAGNE AI QUATTRO FORMAGGI
+Cucina|LASAGNE ALLA PUTTANESCA
+Cucina|LASAGNE ALLE CIME DI RAPA
+Cucina|LASAGNE ALLA SORRENTINA
+Cucina|LASAGNE AL TARTUFO NERO
+Cucina|LASAGNE ALLA PASTORA
+Cucina|LASAGNE AI CARCIOFI
+Cucina|LASAGNE ALLO SCOGLIO
+Cucina|LASAGNE AL PESTO DI RUCOLA
+Cucina|LASAGNE ALLA GRICIA
+Cucina|LASAGNE AI PEPERONI
+Cucina|LASAGNE ALLE ZUCCHINE
+Cucina|LASAGNE ALLA CONTADINA
+Cucina|CANNELLONI AL PESTO GENOVESE
+Cucina|CANNELLONI ALLA CARBONARA
+Cucina|CANNELLONI AL RAGU BOLOGNESE
+Cucina|CANNELLONI AI FUNGHI PORCINI
+Cucina|CANNELLONI ALLA NORMA
+Cucina|CANNELLONI AL POMODORO FRESCO
+Cucina|CANNELLONI ALLE VONGOLE
+Cucina|CANNELLONI AI FRUTTI DI MARE
+Cucina|CANNELLONI ALLA BOLOGNESE
+Cucina|CANNELLONI AL BURRO E SALVIA
+Cucina|CANNELLONI AI QUATTRO FORMAGGI
+Cucina|CANNELLONI ALLA PUTTANESCA
+Cucina|CANNELLONI ALLE CIME DI RAPA
+Cucina|CANNELLONI ALLA SORRENTINA
+Cucina|CANNELLONI AL TARTUFO NERO
+Cucina|CANNELLONI ALLA PASTORA
+Cucina|CANNELLONI AI CARCIOFI
+Cucina|CANNELLONI ALLO SCOGLIO
+Cucina|CANNELLONI AL PESTO DI RUCOLA
+Cucina|CANNELLONI ALLA GRICIA
+Cucina|CANNELLONI AI PEPERONI
+Cucina|CANNELLONI ALLE ZUCCHINE
+Cucina|CANNELLONI ALLA CONTADINA
+Cucina|PAPPARDELLE AL PESTO GENOVESE
+Cucina|PAPPARDELLE ALLA CARBONARA
+Cucina|PAPPARDELLE AL RAGU BOLOGNESE
+Cucina|PAPPARDELLE AI FUNGHI PORCINI
+Cucina|PAPPARDELLE ALLA NORMA
+Cucina|PAPPARDELLE AL POMODORO FRESCO
+Cucina|PAPPARDELLE ALLE VONGOLE
+Cucina|PAPPARDELLE AI FRUTTI DI MARE
+Cucina|PAPPARDELLE ALLA BOLOGNESE
+Cucina|PAPPARDELLE AL BURRO E SALVIA
+Cucina|PAPPARDELLE AI QUATTRO FORMAGGI
+Cucina|PAPPARDELLE ALLA PUTTANESCA
+Cucina|PAPPARDELLE ALLE CIME DI RAPA
+Cucina|PAPPARDELLE ALLA SORRENTINA
+Cucina|PAPPARDELLE AL TARTUFO NERO
+Cucina|PAPPARDELLE ALLA PASTORA
+Cucina|PAPPARDELLE AI CARCIOFI
+Cucina|PAPPARDELLE ALLO SCOGLIO
+Cucina|PAPPARDELLE AL PESTO DI RUCOLA
+Cucina|PAPPARDELLE ALLA GRICIA
+Cucina|PAPPARDELLE AI PEPERONI
+Cucina|PAPPARDELLE ALLE ZUCCHINE
+Cucina|PAPPARDELLE ALLA CONTADINA
+Cucina|BUCATINI AL PESTO GENOVESE
+Cucina|BUCATINI ALLA CARBONARA
+Cucina|BUCATINI AL RAGU BOLOGNESE
+Cucina|BUCATINI AI FUNGHI PORCINI
+Cucina|BUCATINI ALLA NORMA
+Cucina|BUCATINI AL POMODORO FRESCO
+Cucina|BUCATINI ALLE VONGOLE
+Cucina|BUCATINI AI FRUTTI DI MARE
+Cucina|BUCATINI ALLA BOLOGNESE
+Cucina|BUCATINI AL BURRO E SALVIA
+Cucina|BUCATINI AI QUATTRO FORMAGGI
+Cucina|BUCATINI ALLA PUTTANESCA
+Cucina|BUCATINI ALLE CIME DI RAPA
+Cucina|BUCATINI ALLA SORRENTINA
+Cucina|BUCATINI AL TARTUFO NERO
+Cucina|BUCATINI ALLA PASTORA
+Cucina|BUCATINI AI CARCIOFI
+Cucina|BUCATINI ALLO SCOGLIO
+Cucina|BUCATINI AL PESTO DI RUCOLA
+Cucina|BUCATINI ALLA GRICIA
+Cucina|BUCATINI AI PEPERONI
+Cucina|BUCATINI ALLE ZUCCHINE
+Cucina|BUCATINI ALLA CONTADINA
+Cucina|ZITI AL PESTO GENOVESE
+Cucina|ZITI ALLA CARBONARA
+Cucina|ZITI AL RAGU BOLOGNESE
+Cucina|ZITI AI FUNGHI PORCINI
+Cucina|ZITI ALLA NORMA
+Cucina|ZITI AL POMODORO FRESCO
+Cucina|ZITI ALLE VONGOLE
+Cucina|ZITI AI FRUTTI DI MARE
+Cucina|ZITI ALLA BOLOGNESE
+Cucina|ZITI AL BURRO E SALVIA
+Cucina|ZITI AI QUATTRO FORMAGGI
+Cucina|ZITI ALLA PUTTANESCA
+Cucina|ZITI ALLE CIME DI RAPA
+Cucina|ZITI ALLA SORRENTINA
+Cucina|ZITI AL TARTUFO NERO
+Cucina|ZITI ALLA PASTORA
+Cucina|ZITI AI CARCIOFI
+Cucina|ZITI ALLO SCOGLIO
+Cucina|ZITI AL PESTO DI RUCOLA
+Cucina|ZITI ALLA GRICIA
+Cucina|ZITI AI PEPERONI
+Cucina|ZITI ALLE ZUCCHINE
+Cucina|ZITI ALLA CONTADINA
+Cucina|CONCHIGLIE AL PESTO GENOVESE
+Cucina|CONCHIGLIE ALLA CARBONARA
+Cucina|CONCHIGLIE AL RAGU BOLOGNESE
+Cucina|CONCHIGLIE AI FUNGHI PORCINI
+Cucina|CONCHIGLIE ALLA NORMA
+Cucina|CONCHIGLIE AL POMODORO FRESCO
+Cucina|CONCHIGLIE ALLE VONGOLE
+Cucina|CONCHIGLIE AI FRUTTI DI MARE
+Cucina|CONCHIGLIE ALLA BOLOGNESE
+Cucina|CONCHIGLIE AL BURRO E SALVIA
+Cucina|CONCHIGLIE AI QUATTRO FORMAGGI
+Cucina|CONCHIGLIE ALLA PUTTANESCA
+Cucina|CONCHIGLIE ALLE CIME DI RAPA
+Cucina|CONCHIGLIE ALLA SORRENTINA
+Cucina|CONCHIGLIE AL TARTUFO NERO
+Cucina|CONCHIGLIE ALLA PASTORA
+Cucina|CONCHIGLIE AI CARCIOFI
+Cucina|CONCHIGLIE ALLO SCOGLIO
+Cucina|CONCHIGLIE AL PESTO DI RUCOLA
+Cucina|CONCHIGLIE ALLA GRICIA
+Cucina|CONCHIGLIE AI PEPERONI
+Cucina|CONCHIGLIE ALLE ZUCCHINE
+Cucina|CONCHIGLIE ALLA CONTADINA
+Cucina|CAPPELLETTI AL PESTO GENOVESE
+Cucina|CAPPELLETTI ALLA CARBONARA
+Cucina|CAPPELLETTI AL RAGU BOLOGNESE
+Cucina|CAPPELLETTI AI FUNGHI PORCINI
+Cucina|CAPPELLETTI ALLA NORMA
+Cucina|CAPPELLETTI AL POMODORO FRESCO
+Cucina|CAPPELLETTI ALLE VONGOLE
+Cucina|CAPPELLETTI AI FRUTTI DI MARE
+Cucina|CAPPELLETTI ALLA BOLOGNESE
+Cucina|CAPPELLETTI AL BURRO E SALVIA
+Cucina|CAPPELLETTI AI QUATTRO FORMAGGI
+Cucina|CAPPELLETTI ALLA PUTTANESCA
+Cucina|CAPPELLETTI ALLE CIME DI RAPA
+Cucina|CAPPELLETTI ALLA SORRENTINA
+Cucina|CAPPELLETTI AL TARTUFO NERO
+Cucina|CAPPELLETTI ALLA PASTORA
+Cucina|CAPPELLETTI AI CARCIOFI
+Cucina|CAPPELLETTI ALLO SCOGLIO
+Cucina|CAPPELLETTI AL PESTO DI RUCOLA
+Cucina|CAPPELLETTI ALLA GRICIA
+Cucina|CAPPELLETTI AI PEPERONI
+Cucina|CAPPELLETTI ALLE ZUCCHINE
+Cucina|CAPPELLETTI ALLA CONTADINA
+Cucina|TROFIE AL PESTO GENOVESE
+Cucina|TROFIE ALLA CARBONARA
+Cucina|TROFIE AL RAGU BOLOGNESE
+Cucina|TROFIE AI FUNGHI PORCINI
+Cucina|TROFIE ALLA NORMA
+Cucina|TROFIE AL POMODORO FRESCO
+Cucina|TROFIE ALLE VONGOLE
+Cucina|TROFIE AI FRUTTI DI MARE
+Cucina|TROFIE ALLA BOLOGNESE
+Cucina|TROFIE AL BURRO E SALVIA
+Cucina|TROFIE AI QUATTRO FORMAGGI
+Cucina|TROFIE ALLA PUTTANESCA
+Cucina|TROFIE ALLE CIME DI RAPA
+Cucina|TROFIE ALLA SORRENTINA
+Cucina|TROFIE AL TARTUFO NERO
+Cucina|TROFIE ALLA PASTORA
+Cucina|TROFIE AI CARCIOFI
+Cucina|TROFIE ALLO SCOGLIO
+Cucina|TROFIE AL PESTO DI RUCOLA
+Cucina|TROFIE ALLA GRICIA
+Cucina|TROFIE AI PEPERONI
+Cucina|TROFIE ALLE ZUCCHINE
+Cucina|TROFIE ALLA CONTADINA
+Cucina|BAVETTE AL PESTO GENOVESE
+Cucina|BAVETTE ALLA CARBONARA
+Cucina|BAVETTE AL RAGU BOLOGNESE
+Cucina|BAVETTE AI FUNGHI PORCINI
+Cucina|BAVETTE ALLA NORMA
+Cucina|BAVETTE AL POMODORO FRESCO
+Cucina|BAVETTE ALLE VONGOLE
+Cucina|BAVETTE AI FRUTTI DI MARE
+Cucina|BAVETTE ALLA BOLOGNESE
+Cucina|BAVETTE AL BURRO E SALVIA
+Cucina|BAVETTE AI QUATTRO FORMAGGI
+Cucina|BAVETTE ALLA PUTTANESCA
+Cucina|BAVETTE ALLE CIME DI RAPA
+Cucina|BAVETTE ALLA SORRENTINA
+Cucina|BAVETTE AL TARTUFO NERO
+Cucina|BAVETTE ALLA PASTORA
+Cucina|BAVETTE AI CARCIOFI
+Cucina|BAVETTE ALLO SCOGLIO
+Cucina|BAVETTE AL PESTO DI RUCOLA
+Cucina|BAVETTE ALLA GRICIA
+Cucina|BAVETTE AI PEPERONI
+Cucina|BAVETTE ALLE ZUCCHINE
+Cucina|BAVETTE ALLA CONTADINA
+Cucina|TRENETTE AL PESTO GENOVESE
+Cucina|TRENETTE ALLA CARBONARA
+Cucina|TRENETTE AL RAGU BOLOGNESE
+Cucina|TRENETTE AI FUNGHI PORCINI
+Cucina|TRENETTE ALLA NORMA
+Cucina|TRENETTE AL POMODORO FRESCO
+Cucina|TRENETTE ALLE VONGOLE
+Cucina|TRENETTE AI FRUTTI DI MARE
+Cucina|TRENETTE ALLA BOLOGNESE
+Cucina|TRENETTE AL BURRO E SALVIA
+Cucina|TRENETTE AI QUATTRO FORMAGGI
+Cucina|TRENETTE ALLA PUTTANESCA
+Cucina|TRENETTE ALLE CIME DI RAPA
+Cucina|TRENETTE ALLA SORRENTINA
+Cucina|TRENETTE AL TARTUFO NERO
+Cucina|TRENETTE ALLA PASTORA
+Cucina|TRENETTE AI CARCIOFI
+Cucina|TRENETTE ALLO SCOGLIO
+Cucina|TRENETTE AL PESTO DI RUCOLA
+Cucina|TRENETTE ALLA GRICIA
+Cucina|TRENETTE AI PEPERONI
+Cucina|TRENETTE ALLE ZUCCHINE
+Cucina|TRENETTE ALLA CONTADINA
+Cucina|CASARECCE AL PESTO GENOVESE
+Cucina|CASARECCE ALLA CARBONARA
+Cucina|CASARECCE AL RAGU BOLOGNESE
+Cucina|CASARECCE AI FUNGHI PORCINI
+Cucina|CASARECCE ALLA NORMA
+Cucina|CASARECCE AL POMODORO FRESCO
+Cucina|CASARECCE ALLE VONGOLE
+Cucina|CASARECCE AI FRUTTI DI MARE
+Cucina|CASARECCE ALLA BOLOGNESE
+Cucina|CASARECCE AL BURRO E SALVIA
+Cucina|CASARECCE AI QUATTRO FORMAGGI
+Cucina|CASARECCE ALLA PUTTANESCA
+Cucina|CASARECCE ALLE CIME DI RAPA
+Cucina|CASARECCE ALLA SORRENTINA
+Cucina|CASARECCE AL TARTUFO NERO
+Cucina|CASARECCE ALLA PASTORA
+Cucina|CASARECCE AI CARCIOFI
+Cucina|CASARECCE ALLO SCOGLIO
+Cucina|CASARECCE AL PESTO DI RUCOLA
+Cucina|CASARECCE ALLA GRICIA
+Cucina|CASARECCE AI PEPERONI
+Cucina|CASARECCE ALLE ZUCCHINE
+Cucina|CASARECCE ALLA CONTADINA
+Cucina|STRACCIATELLE ALLA CARBONARA
+Cucina|STRACCIATELLE ALLA NORMA
+Cucina|STRACCIATELLE ALLE VONGOLE
+Cucina|STRACCIATELLE ALLA BOLOGNESE
+Cucina|STRACCIATELLE ALLA PASTORA
+Cucina|STRACCIATELLE AI CARCIOFI
+Cucina|STRACCIATELLE ALLO SCOGLIO
+Cucina|STRACCIATELLE ALLA GRICIA
+Cucina|STRACCIATELLE AI PEPERONI
+Cucina|STRACCIATELLE ALLE ZUCCHINE
+Cucina|STRACCIATELLE ALLA CONTADINA
+Cucina|PICI AL PESTO GENOVESE
+Cucina|PICI ALLA CARBONARA
+Cucina|PICI AL RAGU BOLOGNESE
+Cucina|PICI AI FUNGHI PORCINI
+Cucina|PICI ALLA NORMA
+Cucina|PICI AL POMODORO FRESCO
+Cucina|PICI ALLE VONGOLE
+Cucina|PICI AI FRUTTI DI MARE
+Cucina|PICI ALLA BOLOGNESE
+Cucina|PICI AL BURRO E SALVIA
+Cucina|PICI AI QUATTRO FORMAGGI
+Cucina|PICI ALLA PUTTANESCA
+Cucina|PICI ALLE CIME DI RAPA
+Cucina|PICI ALLA SORRENTINA
+Cucina|PICI AL TARTUFO NERO
+Cucina|PICI ALLA PASTORA
+Cucina|PICI AI CARCIOFI
+Cucina|PICI ALLO SCOGLIO
+Cucina|PICI AL PESTO DI RUCOLA
+Cucina|PICI ALLA GRICIA
+Cucina|PICI AI PEPERONI
+Cucina|PICI ALLE ZUCCHINE
+Cucina|PICI ALLA CONTADINA
+Cucina|MEZZE PENNE AL PESTO GENOVESE
+Cucina|MEZZE PENNE ALL'ARRABBIATA
+Cucina|MEZZE PENNE ALLA CARBONARA
+Cucina|MEZZE PENNE AL RAGU BOLOGNESE
+Cucina|MEZZE PENNE AI FUNGHI PORCINI
+Cucina|MEZZE PENNE ALLA NORMA
+Cucina|MEZZE PENNE AL POMODORO FRESCO
+Cucina|MEZZE PENNE ALLE VONGOLE
+Cucina|MEZZE PENNE AI FRUTTI DI MARE
+Cucina|MEZZE PENNE ALLA BOLOGNESE
+Cucina|MEZZE PENNE AL BURRO E SALVIA
+Cucina|MEZZE PENNE AI QUATTRO FORMAGGI
+Cucina|MEZZE PENNE ALLA PUTTANESCA
+Cucina|MEZZE PENNE ALLE CIME DI RAPA
+Cucina|MEZZE PENNE ALLA SORRENTINA
+Cucina|MEZZE PENNE AL TARTUFO NERO
+Cucina|MEZZE PENNE ALLA PASTORA
+Cucina|MEZZE PENNE AI CARCIOFI
+Cucina|MEZZE PENNE ALLO SCOGLIO
+Cucina|MEZZE PENNE AL PESTO DI RUCOLA
+Cucina|MEZZE PENNE ALLA GRICIA
+Cucina|MEZZE PENNE AI PEPERONI
+Cucina|MEZZE PENNE ALLE ZUCCHINE
+Cucina|MEZZE PENNE ALLA CONTADINA
+Cucina|RISOTTO AI FUNGHI PORCINI
+Cucina|RISOTTO ALLA MILANESE
+Cucina|RISOTTO AI FRUTTI DI MARE
+Cucina|RISOTTO ALLE ZUCCHE
+Cucina|RISOTTO AI CARCIOFI
+Cucina|RISOTTO AL BAROLO
+Cucina|RISOTTO ALLA PARMIGIANA
+Cucina|RISOTTO AI GAMBERI
+Cucina|RISOTTO AL PESCE SPADA
+Cucina|RISOTTO ALLE VERDURE
+Cucina|RISOTTO AL TARTUFO BIANCO
+Cucina|RISOTTO AI PISELLI
+Cucina|RISOTTO ALLA ZUCCA E SALVIA
+Cucina|RISOTTO AL PROSECCO
+Cucina|RISOTTO ALLE COZZE
+Cucina|RISOTTO AL RADICCHIO
+Cucina|RISOTTO ALLA SALSICCIA
+Cucina|RISOTTO AI FAGIOLI
+Cucina|RISOTTO AL LIMONE
+Cucina|RISOTTO ALLO ZAFFERANO
+Cucina|RISOTTO ALLE ERBETTE
+Cucina|RISOTTO AI PORCINI
+Pizze|PIZZA QUATTRO FORMAGGI
+Pizze|PIZZA QUATTRO STAGIONI
+Pizze|PIZZA PROSCIUTTO E FUNGHI
+Pizze|PIZZA ALLE VONGOLE
+Pizze|PIZZA BIANCA E ROSSA
+Pizze|PIZZA SALSICCIA E FRIARIELLI
+Pizze|PIZZA PATATE E ROSMARINO
+Pizze|PIZZA ZUCCHINE E FIORI
+Pizze|PIZZA RADICCHIO E SPECK
+Pizze|PIZZA GORGONZOLA E NOCI
+Pizze|PIZZA BUFALA E POMODORINI
+Pizze|PIZZA CIPOLLA E ACCIUGHE
+Pizze|PIZZA TONNO E CIPOLLA
+Pizze|PIZZA CARCIOFI E PROSCIUTTO
+Pizze|PIZZA PEPERONI E SALSICCIA
+Pizze|PIZZA FUNGHI E TARTUFO
+Pizze|PIZZA MELANZANE E RICOTTA
+Pizze|PIZZA SPINACI E RICOTTA
+Pizze|PIZZA AL PESTO E PATATE
+Pizze|PIZZA ALLA NORMA
+Pizze|PIZZA AL TAGLIO
+Pizze|PIZZA DEL NONNO
+Pizze|PIZZA DEL VICOLO
+Pizze|PIZZA ALLA ROMANA
+Pizze|PIZZA ALLA NAPOLETANA
+Pizze|PIZZA ALLA SICILIANA
+Pizze|PIZZA ALLA TOSCANA
+Pizze|PIZZA AI QUATTRO ANGOLI
+Pizze|PIZZA CON LA BUFALA
+Pizze|PIZZA SENZA GLUTINE
+Pizze|PIZZA ALLA PALA
+Pizze|PIZZA IN TEGLIA
+Pizze|PIZZA ALLA GRIGLIA
+Pizze|PIZZA ALL'OLIO E SALE
+Pizze|PIZZA CON LE ACCIUGHE
+Pizze|PIZZA CON IL TARTUFO
+Pizze|PIZZA CON LA SALSICCIA
+Pizze|PIZZA CON I PORCINI
+Pizze|FOCACCIA CON LA CIPOLLA
+Pizze|FOCACCIA CON IL ROSMARINO
+Pizze|FOCACCIA CON LE OLIVE
+Pizze|FOCACCIA CON IL POMODORO
+Pizze|FOCACCIA CON LA SALSICCIA
+Pizze|FOCACCIA CON IL FORMAGGIO
+Pizze|FOCACCIA CON LE ACCIUGHE
+Pizze|FOCACCIA CON I PEPERONI
+Pizze|FOCACCIA CON LE ZUCCHINE
+Pizze|FOCACCIA CON LA RICOTTA
+Pizze|FOCACCIA CON IL SALAME
+Pizze|FOCACCIA CON LE PATATE
+Pizze|CALZONE AL FORMAGGIO
+Pizze|CALZONE AL POMODORO
+Pizze|CALZONE AL SALAME
+Pizze|CALZONE AL PROSCIUTTO
+Pizze|CALZONE AL PESTO
+Panini|PANINO CON PROSCIUTTO E MOZZARELLA
+Panini|PANINO CON SALSICCIA E PEPERONI
+Panini|PANINO CON CRUDO E RUCOLA
+Panini|PANINO CON POLLO E INSALATA
+Panini|PANINO CON TACCHINO E FORMAGGIO
+Panini|PANINO CON MORTADELLA E PISTACCHIO
+Panini|PANINO CON BRESAOLA E RUCOLA
+Panini|PANINO CON CAPRESE E PESTO
+Panini|PANINO CON VELOCE CON PROSCIUTTO
+Panini|PANINO CON MILANESE CON INSALATA
+Panini|PANINO CON FARCITO CON VERDURE
+Panini|PANINO CON CON LA FETTA DI TONNO
+Panini|PANINO CON CON UOVA E FORMAGGIO
+Panini|PANINO CON CON MELANZANE GRIGLIATE
+Panini|PANINO CON CON ZUCCHINE
+Panini|PANINO CON CON POMODORO E BASILICO
+Panini|PANINO CON CON FORMAGGIO E NOCI
+Panini|PANINO CON CON LA PORCHETTA
+Panini|PANINO CON CON IL SALAME
+Panini|PANINO CON CON LA SALSICCIA
+Panini|PANINO CON ALLA GRIGLIA
+Panini|PANINO CON AL POMODORO
+Panini|PANINO CON ALLA VENEZIANA
+Panini|PANINO CON ALLA PALERMITANA
+Panini|PANINO CON ALLA PARMIGIANA
+Panini|PANINO CON CALDO E CROCCANTE
+Panini|PANINO CON CON L'OLIO NUOVO
+Panini|PANINO CON CON IL PESTO GENOVESE
+Panini|TOST CON PROSCIUTTO E FORMAGGIO
+Panini|TOST CON IL POLLO
+Panini|TOST CON IL TONNO
+Panini|TOST CON LE VERDURE
+Panini|TOST CON LA MOZZARELLA
+Panini|TOST CON LA MORTADELLA
+Panini|TOST CON IL SALAME
+Panini|TOST CON LA RICOTTA
+Panini|TOST CON LE ACCIUGHE
+Panini|TOST CON IL POMODORO
+Panini|TOST CON LA SALSICCIA
+Panini|TOST CON LE OLIVE
+Panini|TOST CON IL PESTO
+Panini|TOST CON LA BRESAOLA
+Panini|TOST CON LA BUFALA
+Gelati|GELATO AL PISTACCHIO
+Gelati|GELATO AL NOCCIOLA
+Gelati|GELATO AL CIOCCOLATO
+Gelati|GELATO AL STRACCIATELLA
+Gelati|GELATO AL FIOR DI LATTE
+Gelati|GELATO AL LIMONE
+Gelati|GELATO AL FRAGOLA
+Gelati|GELATO AL PESCA
+Gelati|GELATO AL MENTA
+Gelati|GELATO AL CAFFE
+Gelati|GELATO AL TIRAMISU
+Gelati|GELATO AL CREMA
+Gelati|GELATO AL ZABAIONE
+Gelati|GELATO AL AMARENA
+Gelati|GELATO AL CANNOLO
+Gelati|GELATO AL RICOTTA
+Gelati|GELATO AL MANDORLA
+Gelati|GELATO AL COCCO
+Gelati|GELATO AL ANANAS
+Gelati|GELATO AL MARACUJA
+Gelati|GELATO AL FRUTTI DI BOSCO
+Gelati|GELATO AL TORRONCINO
+Gelati|GELATO AL GIANDUIA
+Gelati|GELATO AL LAMPONE
+Gelati|GELATO AL CASSATA
+Gelati|GELATO AL PANNA COTTA
+Gelati|GELATO AL CARAMELLO
+Gelati|GELATO AL VANIGLIA
+Gelati|GRANITA AL LIMONE
+Gelati|GRANITA AL CAFFE
+Gelati|GRANITA AL MANDORLA
+Gelati|GRANITA AL FRAGOLA
+Gelati|GRANITA AL MENTA
+Gelati|GRANITA AL PESCA
+Gelati|GRANITA AL ANGURIA
+Gelati|GRANITA AL CIOCCOLATO
+Gelati|GRANITA AL NOCE
+Gelati|GRANITA AL COCCO
+Gelati|GRANITA AL AMARENA
+Gelati|GRANITA AL GELSOMINO
+Dolci|TORTA DI MELE
+Dolci|TORTA DI RICOTTA
+Dolci|TORTA DI CIOCCOLATO
+Dolci|TORTA DI NOCI
+Dolci|TORTA DI AMARETTI
+Dolci|TORTA DI PERE
+Dolci|TORTA DI ALBICOCCHE
+Dolci|TORTA DI FRAGOLE
+Dolci|TORTA DI LIMONE
+Dolci|TORTA DI ARANCE
+Dolci|TORTA DI CAROTE
+Dolci|TORTA DI ZUCCA
+Dolci|TORTA DI CASTAGNE
+Dolci|TORTA DI MARMELLATA
+Dolci|TORTA DI PANNA
+Dolci|TORTA CROCCANTE AL MIELE
+Dolci|TORTA TENERA AL CIOCCOLATO
+Dolci|TORTA FARCITA ALLA CREMA
+Dolci|TORTA RICOPERTO DI CIOCCOLATO
+Dolci|TORTA SPRUZZATA DI ZUCCHERO
+Dolci|CROSTATA DI VISCIOLE
+Dolci|CROSTATA DI ALBICOCCHE
+Dolci|CROSTATA DI PESCHE
+Dolci|CROSTATA DI MELE
+Dolci|CROSTATA DI FRUTTI DI BOSCO
+Dolci|CROSTATA DI CIOCCOLATO
+Dolci|CROSTATA DI RICOTTA
+Dolci|CROSTATA DI NUTELLA
+Dolci|CROSTATA ALLA MARMELLATA
+Dolci|CROSTATA ALLA CREMA
+Dolci|CROSTATA AL LIMONE
+Dolci|CROSTATA ALLE MANDORLE
+Cucina regionale|I SAPORI DEL PIEMONTE
+Cucina regionale|I SAPORI DELLA VALLE D'AOSTA
+Cucina regionale|I SAPORI DELLA LOMBARDIA
+Cucina regionale|I SAPORI DEL TRENTINO
+Cucina regionale|I SAPORI DEL VENETO
+Cucina regionale|I SAPORI DEL FRIULI
+Cucina regionale|I SAPORI DELLA LIGURIA
+Cucina regionale|I SAPORI DELL'EMILIA ROMAGNA
+Cucina regionale|I SAPORI DELLA TOSCANA
+Cucina regionale|I SAPORI DELL'UMBRIA
+Cucina regionale|I SAPORI DELLE MARCHE
+Cucina regionale|I SAPORI DEL LAZIO
+Cucina regionale|I SAPORI DELL'ABRUZZO
+Cucina regionale|I SAPORI DEL MOLISE
+Cucina regionale|I SAPORI DELLA CAMPANIA
+Cucina regionale|I SAPORI DELLA PUGLIA
+Cucina regionale|I SAPORI DELLA BASILICATA
+Cucina regionale|I SAPORI DELLA CALABRIA
+Cucina regionale|I SAPORI DELLA SICILIA
+Cucina regionale|I SAPORI DELLA SARDEGNA
+Cucina regionale|IL VINO DEL PIEMONTE
+Cucina regionale|IL VINO DELLA VALLE D'AOSTA
+Cucina regionale|IL VINO DELLA LOMBARDIA
+Cucina regionale|IL VINO DEL TRENTINO
+Cucina regionale|IL VINO DEL VENETO
+Cucina regionale|IL VINO DEL FRIULI
+Cucina regionale|IL VINO DELLA LIGURIA
+Cucina regionale|IL VINO DELL'EMILIA ROMAGNA
+Cucina regionale|IL VINO DELLA TOSCANA
+Cucina regionale|IL VINO DELL'UMBRIA
+Cucina regionale|IL VINO DELLE MARCHE
+Cucina regionale|IL VINO DEL LAZIO
+Cucina regionale|IL VINO DELL'ABRUZZO
+Cucina regionale|IL VINO DEL MOLISE
+Cucina regionale|IL VINO DELLA CAMPANIA
+Cucina regionale|IL VINO DELLA PUGLIA
+Cucina regionale|IL VINO DELLA BASILICATA
+Cucina regionale|IL VINO DELLA CALABRIA
+Cucina regionale|IL VINO DELLA SICILIA
+Cucina regionale|IL VINO DELLA SARDEGNA
+Cucina regionale|L'OLIO DEL PIEMONTE
+Cucina regionale|L'OLIO DELLA VALLE D'AOSTA
+Cucina regionale|L'OLIO DELLA LOMBARDIA
+Cucina regionale|L'OLIO DEL TRENTINO
+Cucina regionale|L'OLIO DEL VENETO
+Cucina regionale|L'OLIO DEL FRIULI
+Cucina regionale|L'OLIO DELLA LIGURIA
+Cucina regionale|L'OLIO DELL'EMILIA ROMAGNA
+Cucina regionale|L'OLIO DELLA TOSCANA
+Cucina regionale|L'OLIO DELLE MARCHE
+Cucina regionale|L'OLIO DEL LAZIO
+Cucina regionale|L'OLIO DEL MOLISE
+Cucina regionale|L'OLIO DELLA CAMPANIA
+Cucina regionale|L'OLIO DELLA PUGLIA
+Cucina regionale|L'OLIO DELLA BASILICATA
+Cucina regionale|L'OLIO DELLA CALABRIA
+Cucina regionale|L'OLIO DELLA SICILIA
+Cucina regionale|L'OLIO DELLA SARDEGNA
+Cucina regionale|IL FORMAGGIO DEL PIEMONTE
+Cucina regionale|IL FORMAGGIO DELLA VALLE D'AOSTA
+Cucina regionale|IL FORMAGGIO DELLA LOMBARDIA
+Cucina regionale|IL FORMAGGIO DEL TRENTINO
+Cucina regionale|IL FORMAGGIO DEL VENETO
+Cucina regionale|IL FORMAGGIO DEL FRIULI
+Cucina regionale|IL FORMAGGIO DELLA LIGURIA
+Cucina regionale|IL FORMAGGIO DELL'EMILIA ROMAGNA
+Cucina regionale|IL FORMAGGIO DELLA TOSCANA
+Cucina regionale|IL FORMAGGIO DELL'UMBRIA
+Cucina regionale|IL FORMAGGIO DELLE MARCHE
+Cucina regionale|IL FORMAGGIO DEL LAZIO
+Cucina regionale|IL FORMAGGIO DELL'ABRUZZO
+Cucina regionale|IL FORMAGGIO DEL MOLISE
+Cucina regionale|IL FORMAGGIO DELLA CAMPANIA
+Cucina regionale|IL FORMAGGIO DELLA PUGLIA
+Cucina regionale|IL FORMAGGIO DELLA BASILICATA
+Cucina regionale|IL FORMAGGIO DELLA CALABRIA
+Cucina regionale|IL FORMAGGIO DELLA SICILIA
+Cucina regionale|IL FORMAGGIO DELLA SARDEGNA
+Cucina regionale|LA CUCINA DEL PIEMONTE
+Cucina regionale|LA CUCINA DELLA VALLE D'AOSTA
+Cucina regionale|LA CUCINA DELLA LOMBARDIA
+Cucina regionale|LA CUCINA DEL TRENTINO
+Cucina regionale|LA CUCINA DEL VENETO
+Cucina regionale|LA CUCINA DEL FRIULI
+Cucina regionale|LA CUCINA DELLA LIGURIA
+Cucina regionale|LA CUCINA DELL'EMILIA ROMAGNA
+Cucina regionale|LA CUCINA DELLA TOSCANA
+Cucina regionale|LA CUCINA DELL'UMBRIA
+Cucina regionale|LA CUCINA DELLE MARCHE
+Cucina regionale|LA CUCINA DEL LAZIO
+Cucina regionale|LA CUCINA DELL'ABRUZZO
+Cucina regionale|LA CUCINA DEL MOLISE
+Cucina regionale|LA CUCINA DELLA CAMPANIA
+Cucina regionale|LA CUCINA DELLA PUGLIA
+Cucina regionale|LA CUCINA DELLA BASILICATA
+Cucina regionale|LA CUCINA DELLA CALABRIA
+Cucina regionale|LA CUCINA DELLA SICILIA
+Cucina regionale|LA CUCINA DELLA SARDEGNA
+Cucina regionale|LA RICETTA DELLA PARMIGIANA
+Cucina regionale|LA RICETTA DELLA CARBONARA
+Cucina regionale|LA RICETTA DELLA AMATRICIANA
+Cucina regionale|LA RICETTA DELLA PUTTANESCA
+Cucina regionale|LA RICETTA DELLA LASAGNA
+Cucina regionale|LA RICETTA DELLA PANZANELLA
+Cucina regionale|LA RICETTA DELLA RIBOLLITA
+Cucina regionale|LA RICETTA DELLA CAPONATA
+Cucina regionale|LA RICETTA DELLA ARANCINA
+Cucina regionale|LA RICETTA DELLA FOCACCIA
+Cucina regionale|LA RICETTA DELLA POLENTA
+Cucina regionale|LA RICETTA DELLA STRACCIATELLA
+Cucina regionale|LA RICETTA DELLA PASTA E FAGIOLI
+Cucina regionale|LA RICETTA DELLA PIZZA AL TAGLIO
+Cucina regionale|LA RICETTA DELLA FRITTATA DI ZUCCHINE
+Cucina regionale|LA RICETTA DELLA MINESTRA DI LEGUMI
+Cucina regionale|LA RICETTA DEL PEPOSO
+Cucina regionale|LA RICETTA DEL CACCIUCCO
+Cucina regionale|LA RICETTA DEL PESTO
+Cucina regionale|LA RICETTA DEL RISOTTO
+Cucina regionale|LA RICETTA DEL TIRAMISU
+Cucina regionale|LA RICETTA DEL PANETTONE
+Cucina regionale|LA RICETTA DEL PANDORO
+Cucina regionale|LA RICETTA DEL CARPACCIO
+Cucina regionale|LA RICETTA DEL BACCALA
+Viaggi|IL TRENO PER ROMA
+Viaggi|IL TRENO PER MILANO
+Viaggi|IL TRENO PER NAPOLI
+Viaggi|IL TRENO PER TORINO
+Viaggi|IL TRENO PER FIRENZE
+Viaggi|IL TRENO PER BOLOGNA
+Viaggi|IL TRENO PER PALERMO
+Viaggi|IL TRENO PER GENOVA
+Viaggi|IL TRENO PER BARI
+Viaggi|IL TRENO PER CATANIA
+Viaggi|IL TRENO PER VERONA
+Viaggi|IL TRENO PER VENEZIA
+Viaggi|IL TRENO PER PADOVA
+Viaggi|IL TRENO PER PARMA
+Viaggi|IL TRENO PER SIENA
+Viaggi|IL TRENO PER PERUGIA
+Viaggi|IL TRENO PER LECCE
+Viaggi|IL TRENO PER CAGLIARI
+Viaggi|IL TRENO PER TRENTO
+Viaggi|IL TRENO PER TRIESTE
+Viaggi|IL TRENO PER RAVENNA
+Viaggi|IL TRENO PER RIMINI
+Viaggi|IL TRENO PER MANTOVA
+Viaggi|IL TRENO PER MODENA
+Viaggi|IL TRENO PER URBINO
+Viaggi|IL TRENO PER ASSISI
+Viaggi|IL TRENO PER BERGAMO
+Viaggi|IL TRENO PER BRESCIA
+Viaggi|IL TRENO PER LUCCA
+Viaggi|IL TRENO PER PISA
+Viaggi|IL TRENO PER ANCONA
+Viaggi|IL TRENO PER AOSTA
+Viaggi|IL TRENO PER MATERA
+Viaggi|IL TRENO PER POTENZA
+Viaggi|IL TRENO PER COSENZA
+Viaggi|IL VOLO PER ROMA
+Viaggi|IL VOLO PER MILANO
+Viaggi|IL VOLO PER NAPOLI
+Viaggi|IL VOLO PER TORINO
+Viaggi|IL VOLO PER FIRENZE
+Viaggi|IL VOLO PER BOLOGNA
+Viaggi|IL VOLO PER PALERMO
+Viaggi|IL VOLO PER GENOVA
+Viaggi|IL VOLO PER BARI
+Viaggi|IL VOLO PER CATANIA
+Viaggi|IL VOLO PER VERONA
+Viaggi|IL VOLO PER VENEZIA
+Viaggi|IL VOLO PER PADOVA
+Viaggi|IL VOLO PER PARMA
+Viaggi|IL VOLO PER SIENA
+Viaggi|IL VOLO PER PERUGIA
+Viaggi|IL VOLO PER LECCE
+Viaggi|IL VOLO PER CAGLIARI
+Viaggi|IL VOLO PER TRENTO
+Viaggi|IL VOLO PER TRIESTE
+Viaggi|IL VOLO PER RAVENNA
+Viaggi|IL VOLO PER RIMINI
+Viaggi|IL VOLO PER MANTOVA
+Viaggi|IL VOLO PER MODENA
+Viaggi|IL VOLO PER URBINO
+Viaggi|IL VOLO PER ASSISI
+Viaggi|IL VOLO PER BERGAMO
+Viaggi|IL VOLO PER BRESCIA
+Viaggi|IL VOLO PER LUCCA
+Viaggi|IL VOLO PER PISA
+Viaggi|IL VOLO PER ANCONA
+Viaggi|IL VOLO PER AOSTA
+Viaggi|IL VOLO PER MATERA
+Viaggi|IL VOLO PER POTENZA
+Viaggi|IL VOLO PER COSENZA
+Viaggi|IL VOLO PER PARIGI
+Viaggi|IL VOLO PER LONDRA
+Viaggi|IL VOLO PER MADRID
+Viaggi|IL VOLO PER BERLINO
+Viaggi|IL VOLO PER VIENNA
+Viaggi|IL VOLO PER LISBONA
+Viaggi|IL VOLO PER PRAGA
+Viaggi|IL VOLO PER BUDAPEST
+Viaggi|IL VOLO PER DUBLINO
+Viaggi|IL VOLO PER ATENE
+Viaggi|IL VOLO PER ISTANBUL
+Viaggi|IL VOLO PER NEW YORK
+Viaggi|IL VOLO PER TOKYO
+Viaggi|IL VOLO PER SYDNEY
+Viaggi|IL VOLO PER RIO DE JANEIRO
+Viaggi|LA GITA A ROMA
+Viaggi|LA GITA A MILANO
+Viaggi|LA GITA A NAPOLI
+Viaggi|LA GITA A TORINO
+Viaggi|LA GITA A FIRENZE
+Viaggi|LA GITA A BOLOGNA
+Viaggi|LA GITA A PALERMO
+Viaggi|LA GITA A GENOVA
+Viaggi|LA GITA A BARI
+Viaggi|LA GITA A CATANIA
+Viaggi|LA GITA A VERONA
+Viaggi|LA GITA A VENEZIA
+Viaggi|LA GITA A PADOVA
+Viaggi|LA GITA A PARMA
+Viaggi|LA GITA A SIENA
+Viaggi|LA GITA A PERUGIA
+Viaggi|LA GITA A LECCE
+Viaggi|LA GITA A CAGLIARI
+Viaggi|LA GITA A TRENTO
+Viaggi|LA GITA A TRIESTE
+Viaggi|LA GITA A RAVENNA
+Viaggi|LA GITA A RIMINI
+Viaggi|LA GITA A MANTOVA
+Viaggi|LA GITA A MODENA
+Viaggi|LA GITA A URBINO
+Viaggi|LA GITA A ASSISI
+Viaggi|LA GITA A BERGAMO
+Viaggi|LA GITA A BRESCIA
+Viaggi|LA GITA A LUCCA
+Viaggi|LA GITA A PISA
+Viaggi|LA GITA A ANCONA
+Viaggi|LA GITA A AOSTA
+Viaggi|LA GITA A MATERA
+Viaggi|LA GITA A POTENZA
+Viaggi|LA GITA A COSENZA
+Viaggi|UNA SERA A ROMA
+Viaggi|UNA SERA A MILANO
+Viaggi|UNA SERA A NAPOLI
+Viaggi|UNA SERA A TORINO
+Viaggi|UNA SERA A FIRENZE
+Viaggi|UNA SERA A BOLOGNA
+Viaggi|UNA SERA A PALERMO
+Viaggi|UNA SERA A GENOVA
+Viaggi|UNA SERA A BARI
+Viaggi|UNA SERA A CATANIA
+Viaggi|UNA SERA A VERONA
+Viaggi|UNA SERA A VENEZIA
+Viaggi|UNA SERA A PADOVA
+Viaggi|UNA SERA A PARMA
+Viaggi|UNA SERA A SIENA
+Viaggi|UNA SERA A PERUGIA
+Viaggi|UNA SERA A LECCE
+Viaggi|UNA SERA A CAGLIARI
+Viaggi|UNA SERA A TRENTO
+Viaggi|UNA SERA A TRIESTE
+Viaggi|UNA SERA A RAVENNA
+Viaggi|UNA SERA A RIMINI
+Viaggi|UNA SERA A MANTOVA
+Viaggi|UNA SERA A MODENA
+Viaggi|UNA SERA A URBINO
+Viaggi|UNA SERA A ASSISI
+Viaggi|UNA SERA A BERGAMO
+Viaggi|UNA SERA A BRESCIA
+Viaggi|UNA SERA A LUCCA
+Viaggi|UNA SERA A PISA
+Viaggi|UNA SERA A ANCONA
+Viaggi|UNA SERA A AOSTA
+Viaggi|UNA SERA A MATERA
+Viaggi|UNA SERA A POTENZA
+Viaggi|UNA SERA A COSENZA
+Viaggi|UNA SERA A PARIGI
+Viaggi|UNA SERA A LONDRA
+Viaggi|UNA SERA A MADRID
+Viaggi|UNA SERA A BERLINO
+Viaggi|UNA SERA A VIENNA
+Viaggi|UNA SERA A LISBONA
+Viaggi|UNA SERA A PRAGA
+Viaggi|UNA SERA A BUDAPEST
+Viaggi|UNA SERA A DUBLINO
+Viaggi|UNA SERA A ATENE
+Viaggi|UNA SERA A ISTANBUL
+Viaggi|UNA SERA A NEW YORK
+Viaggi|UNA SERA A TOKYO
+Viaggi|UNA SERA A SYDNEY
+Viaggi|UNA SERA A RIO DE JANEIRO
+Città|LE LUCI DI ROMA
+Città|LE LUCI DI MILANO
+Città|LE LUCI DI NAPOLI
+Città|LE LUCI DI TORINO
+Città|LE LUCI DI FIRENZE
+Città|LE LUCI DI BOLOGNA
+Città|LE LUCI DI PALERMO
+Città|LE LUCI DI GENOVA
+Città|LE LUCI DI BARI
+Città|LE LUCI DI CATANIA
+Città|LE LUCI DI VERONA
+Città|LE LUCI DI VENEZIA
+Città|LE LUCI DI PADOVA
+Città|LE LUCI DI PARMA
+Città|LE LUCI DI SIENA
+Città|LE LUCI DI PERUGIA
+Città|LE LUCI DI LECCE
+Città|LE LUCI DI CAGLIARI
+Città|LE LUCI DI TRENTO
+Città|LE LUCI DI TRIESTE
+Città|LE LUCI DI RAVENNA
+Città|LE LUCI DI RIMINI
+Città|LE LUCI DI MANTOVA
+Città|LE LUCI DI MODENA
+Città|LE LUCI DI URBINO
+Città|LE LUCI DI ASSISI
+Città|LE LUCI DI BERGAMO
+Città|LE LUCI DI BRESCIA
+Città|LE LUCI DI LUCCA
+Città|LE LUCI DI PISA
+Città|LE LUCI DI ANCONA
+Città|LE LUCI DI AOSTA
+Città|LE LUCI DI MATERA
+Città|LE LUCI DI POTENZA
+Città|LE LUCI DI COSENZA
+Città|LA PIAZZA DI ROMA
+Città|LA PIAZZA DI MILANO
+Città|LA PIAZZA DI NAPOLI
+Città|LA PIAZZA DI TORINO
+Città|LA PIAZZA DI FIRENZE
+Città|LA PIAZZA DI BOLOGNA
+Città|LA PIAZZA DI PALERMO
+Città|LA PIAZZA DI GENOVA
+Città|LA PIAZZA DI BARI
+Città|LA PIAZZA DI CATANIA
+Città|LA PIAZZA DI VERONA
+Città|LA PIAZZA DI VENEZIA
+Città|LA PIAZZA DI PADOVA
+Città|LA PIAZZA DI PARMA
+Città|LA PIAZZA DI SIENA
+Città|LA PIAZZA DI PERUGIA
+Città|LA PIAZZA DI LECCE
+Città|LA PIAZZA DI CAGLIARI
+Città|LA PIAZZA DI TRENTO
+Città|LA PIAZZA DI TRIESTE
+Città|LA PIAZZA DI RAVENNA
+Città|LA PIAZZA DI RIMINI
+Città|LA PIAZZA DI MANTOVA
+Città|LA PIAZZA DI MODENA
+Città|LA PIAZZA DI URBINO
+Città|LA PIAZZA DI ASSISI
+Città|LA PIAZZA DI BERGAMO
+Città|LA PIAZZA DI BRESCIA
+Città|LA PIAZZA DI LUCCA
+Città|LA PIAZZA DI PISA
+Città|LA PIAZZA DI ANCONA
+Città|LA PIAZZA DI AOSTA
+Città|LA PIAZZA DI MATERA
+Città|LA PIAZZA DI POTENZA
+Città|LA PIAZZA DI COSENZA
+Città|IL MERCATO DI ROMA
+Città|IL MERCATO DI MILANO
+Città|IL MERCATO DI NAPOLI
+Città|IL MERCATO DI TORINO
+Città|IL MERCATO DI FIRENZE
+Città|IL MERCATO DI BOLOGNA
+Città|IL MERCATO DI PALERMO
+Città|IL MERCATO DI GENOVA
+Città|IL MERCATO DI BARI
+Città|IL MERCATO DI CATANIA
+Città|IL MERCATO DI VERONA
+Città|IL MERCATO DI VENEZIA
+Città|IL MERCATO DI PADOVA
+Città|IL MERCATO DI PARMA
+Città|IL MERCATO DI SIENA
+Città|IL MERCATO DI PERUGIA
+Città|IL MERCATO DI LECCE
+Città|IL MERCATO DI CAGLIARI
+Città|IL MERCATO DI TRENTO
+Città|IL MERCATO DI TRIESTE
+Città|IL MERCATO DI RAVENNA
+Città|IL MERCATO DI RIMINI
+Città|IL MERCATO DI MANTOVA
+Città|IL MERCATO DI MODENA
+Città|IL MERCATO DI URBINO
+Città|IL MERCATO DI ASSISI
+Città|IL MERCATO DI BERGAMO
+Città|IL MERCATO DI BRESCIA
+Città|IL MERCATO DI LUCCA
+Città|IL MERCATO DI PISA
+Città|IL MERCATO DI ANCONA
+Città|IL MERCATO DI AOSTA
+Città|IL MERCATO DI MATERA
+Città|IL MERCATO DI POTENZA
+Città|IL MERCATO DI COSENZA
+Città|LA STAZIONE DI ROMA
+Città|LA STAZIONE DI MILANO
+Città|LA STAZIONE DI NAPOLI
+Città|LA STAZIONE DI TORINO
+Città|LA STAZIONE DI FIRENZE
+Città|LA STAZIONE DI BOLOGNA
+Città|LA STAZIONE DI PALERMO
+Città|LA STAZIONE DI GENOVA
+Città|LA STAZIONE DI BARI
+Città|LA STAZIONE DI CATANIA
+Città|LA STAZIONE DI VERONA
+Città|LA STAZIONE DI VENEZIA
+Città|LA STAZIONE DI PADOVA
+Città|LA STAZIONE DI PARMA
+Città|LA STAZIONE DI SIENA
+Città|LA STAZIONE DI PERUGIA
+Città|LA STAZIONE DI LECCE
+Città|LA STAZIONE DI CAGLIARI
+Città|LA STAZIONE DI TRENTO
+Città|LA STAZIONE DI TRIESTE
+Città|LA STAZIONE DI RAVENNA
+Città|LA STAZIONE DI RIMINI
+Città|LA STAZIONE DI MANTOVA
+Città|LA STAZIONE DI MODENA
+Città|LA STAZIONE DI URBINO
+Città|LA STAZIONE DI ASSISI
+Città|LA STAZIONE DI BERGAMO
+Città|LA STAZIONE DI BRESCIA
+Città|LA STAZIONE DI LUCCA
+Città|LA STAZIONE DI PISA
+Città|LA STAZIONE DI ANCONA
+Città|LA STAZIONE DI AOSTA
+Città|LA STAZIONE DI MATERA
+Città|LA STAZIONE DI POTENZA
+Città|LA STAZIONE DI COSENZA
+Città|IL DUOMO DI ROMA
+Città|IL DUOMO DI MILANO
+Città|IL DUOMO DI NAPOLI
+Città|IL DUOMO DI TORINO
+Città|IL DUOMO DI FIRENZE
+Città|IL DUOMO DI BOLOGNA
+Città|IL DUOMO DI PALERMO
+Città|IL DUOMO DI GENOVA
+Città|IL DUOMO DI BARI
+Città|IL DUOMO DI CATANIA
+Città|IL DUOMO DI VERONA
+Città|IL DUOMO DI VENEZIA
+Città|IL DUOMO DI PADOVA
+Città|IL DUOMO DI PARMA
+Città|IL DUOMO DI SIENA
+Città|IL DUOMO DI PERUGIA
+Città|IL DUOMO DI LECCE
+Città|IL DUOMO DI CAGLIARI
+Città|IL DUOMO DI TRENTO
+Città|IL DUOMO DI TRIESTE
+Città|IL DUOMO DI RAVENNA
+Città|IL DUOMO DI RIMINI
+Borghi|IL BORGO DI SPELLO
+Borghi|IL BORGO DI SAN GIMIGNANO
+Borghi|IL BORGO DI CASTELLINA
+Borghi|IL BORGO DI MONTERIGGIONI
+Borghi|IL BORGO DI CORTONA
+Borghi|IL BORGO DI PIENZA
+Borghi|IL BORGO DI MONTALCINO
+Borghi|IL BORGO DI CIVITA
+Borghi|IL BORGO DI ORVIETO
+Borghi|IL BORGO DI TODI
+Borghi|IL BORGO DI GUBBIO
+Borghi|IL BORGO DI SPOLETO
+Borghi|IL BORGO DI NORCIA
+Borghi|IL BORGO DI ASCOLI
+Borghi|IL BORGO DI FERMO
+Borghi|IL BORGO DI MACERATA
+Borghi|IL BORGO DI RECANATI
+Borghi|IL BORGO DI LORETO
+Borghi|IL BORGO DI URBISAGLIA
+Borghi|IL BORGO DI MONTEFIORE
+Borghi|IL BORGO DI VERNAZZA
+Borghi|IL BORGO DI MANAROLA
+Borghi|IL BORGO DI RIOMAGGIORE
+Borghi|IL BORGO DI PORTOVENERE
+Borghi|IL BORGO DI TELLARO
+Borghi|IL BORGO DI BOBBIO
+Borghi|IL BORGO DI NE
+Borghi|IL BORGO DI DOLCEACQUA
+Borghi|IL BORGO DI APRICALE
+Borghi|IL BORGO DI CERVO
+Borghi|IL BORGO DI SEBORGA
+Borghi|IL BORGO DI TRANI
+Borghi|IL BORGO DI BISCEGLIE
+Borghi|IL BORGO DI POLIGNANO
+Borghi|IL BORGO DI OSTUNI
+Borghi|IL BORGO DI GALLIPOLI
+Borghi|IL BORGO DI SPECCHIA
+Borghi|IL BORGO DI ALBEROBELLO
+Borghi|IL BORGO DI LOCOROTONDO
+Borghi|IL BORGO DI MARTINA
+Borghi|IL BORGO DI CISTERNINO
+Borghi|IL BORGO DI TROIA
+Borghi|IL BORGO DI BOVINO
+Borghi|IL BORGO DI VICO
+Borghi|IL BORGO DI PESCHICI
+Borghi|IL BORGO DI RODI
+Borghi|IL BORGO DI SANT'AGATA
+Borghi|IL BORGO DI TERRACINA
+Borghi|IL BORGO DI SAN FELICE
+Borghi|IL BORGO DI SERMONETA
+Borghi|IL BORGO DI NINFA
+Borghi|IL BORGO DI BAGNOREGIO
+Borghi|IL BORGO DI CAPRAROLA
+Borghi|IL BORGO DI BRACCIANO
+Borghi|IL BORGO DI ANGUILLARA
+Borghi|IL BORGO DI TIVOLI
+Al mare|LA SPIAGGIA DI NAPOLI
+Al mare|LA SPIAGGIA DI BARI
+Al mare|LA SPIAGGIA DI PALERMO
+Al mare|LA SPIAGGIA DI CATANIA
+Al mare|LA SPIAGGIA DI CAGLIARI
+Al mare|LA SPIAGGIA DI GENOVA
+Al mare|LA SPIAGGIA DI RIMINI
+Al mare|LA SPIAGGIA DI LECCE
+Al mare|LA SPIAGGIA DI OTRANTO
+Al mare|LA SPIAGGIA DI TARANTO
+Al mare|LA SPIAGGIA DI VIESTE
+Al mare|LA SPIAGGIA DI TROPEA
+Al mare|LA SPIAGGIA DI CEFALU
+Al mare|LA SPIAGGIA DI MARATEA
+Al mare|LA SPIAGGIA DI POSITANO
+Al mare|LA SPIAGGIA DI AMALFI
+Al mare|LA SPIAGGIA DI SORRENTO
+Al mare|LA SPIAGGIA DI SANREMO
+Al mare|LA SPIAGGIA DI ALGHERO
+Al mare|LA SPIAGGIA DI OLBIA
+Al mare|IL PORTO DI NAPOLI
+Al mare|IL PORTO DI BARI
+Al mare|IL PORTO DI PALERMO
+Al mare|IL PORTO DI CATANIA
+Al mare|IL PORTO DI CAGLIARI
+Al mare|IL PORTO DI GENOVA
+Al mare|IL PORTO DI RIMINI
+Al mare|IL PORTO DI LECCE
+Al mare|IL PORTO DI OTRANTO
+Al mare|IL PORTO DI TARANTO
+Al mare|IL PORTO DI VIESTE
+Al mare|IL PORTO DI TROPEA
+Al mare|IL PORTO DI CEFALU
+Al mare|IL PORTO DI MARATEA
+Al mare|IL PORTO DI POSITANO
+Al mare|IL PORTO DI AMALFI
+Al mare|IL PORTO DI SORRENTO
+Al mare|IL PORTO DI SANREMO
+Al mare|IL PORTO DI ALGHERO
+Al mare|IL PORTO DI OLBIA
+Mondo|I TETTI DI PARIGI
+Mondo|I TETTI DI LONDRA
+Mondo|I TETTI DI MADRID
+Mondo|I TETTI DI BERLINO
+Mondo|I TETTI DI VIENNA
+Mondo|I TETTI DI LISBONA
+Mondo|I TETTI DI PRAGA
+Mondo|I TETTI DI BUDAPEST
+Mondo|I TETTI DI DUBLINO
+Mondo|I TETTI DI ATENE
+Mondo|I TETTI DI ISTANBUL
+Mondo|I TETTI DI NEW YORK
+Mondo|I TETTI DI TOKYO
+Mondo|I TETTI DI SYDNEY
+Mondo|I TETTI DI RIO DE JANEIRO
+Mondo|LE STRADE DI PARIGI
+Mondo|LE STRADE DI LONDRA
+Mondo|LE STRADE DI MADRID
+Mondo|LE STRADE DI BERLINO
+Mondo|LE STRADE DI VIENNA
+Mondo|LE STRADE DI LISBONA
+Mondo|LE STRADE DI PRAGA
+Mondo|LE STRADE DI BUDAPEST
+Mondo|LE STRADE DI DUBLINO
+Mondo|LE STRADE DI ATENE
+Mondo|LE STRADE DI ISTANBUL
+Mondo|LE STRADE DI NEW YORK
+Mondo|LE STRADE DI TOKYO
+Mondo|LE STRADE DI SYDNEY
+Mondo|LE STRADE DI RIO DE JANEIRO
+Mondo|LA CATTEDRALE DI PARIGI
+Mondo|LA CATTEDRALE DI LONDRA
+Mondo|LA CATTEDRALE DI MADRID
+Mondo|LA CATTEDRALE DI BERLINO
+Mondo|LA CATTEDRALE DI VIENNA
+Mondo|LA CATTEDRALE DI LISBONA
+Mondo|LA CATTEDRALE DI PRAGA
+Mondo|LA CATTEDRALE DI BUDAPEST
+Mondo|LA CATTEDRALE DI DUBLINO
+Mondo|LA CATTEDRALE DI ATENE
+Paesi|LA CAPITALE DEL PORTOGALLO
+Paesi|LA CAPITALE DELLA SPAGNA
+Paesi|LA CAPITALE DELLA FRANCIA
+Paesi|LA CAPITALE DELLA GERMANIA
+Paesi|LA CAPITALE DELL'ITALIA
+Paesi|LA CAPITALE DELLA GRECIA
+Paesi|LA CAPITALE DEL GIAPPONE
+Paesi|LA CAPITALE DELLA CINA
+Paesi|LA CAPITALE DELL'INDIA
+Paesi|LA CAPITALE DEL BRASILE
+Paesi|LA CAPITALE DELL'ARGENTINA
+Paesi|LA CAPITALE DEL MESSICO
+Paesi|LA CAPITALE DELL'EGITTO
+Paesi|LA CAPITALE DEL MAROCCO
+Paesi|LA CAPITALE DELLA TUNISIA
+Paesi|LA CAPITALE DEL KENYA
+Paesi|LA CAPITALE DEL CANADA
+Paesi|LA CAPITALE DELL'AUSTRALIA
+Paesi|LA CAPITALE DELLA NORVEGIA
+Paesi|LA CAPITALE DELLA SVEZIA
+Paesi|LA CAPITALE DELLA FINLANDIA
+Paesi|LA CAPITALE DELL'ISLANDA
+Paesi|LA CAPITALE DELL'IRLANDA
+Paesi|LA CAPITALE DELL'OLANDA
+Paesi|LA CAPITALE DEL BELGIO
+Paesi|LA CAPITALE DELLA SVIZZERA
+Paesi|LA CAPITALE DELL'AUSTRIA
+Paesi|LA CAPITALE DELLA POLONIA
+Paesi|LA CAPITALE DELLA RUSSIA
+Paesi|LA CAPITALE DELLA TURCHIA
+Paesi|LA CAPITALE DEL PERU
+Paesi|LA CAPITALE DEL CILE
+Paesi|LA CAPITALE DELLA COLOMBIA
+Paesi|LA CAPITALE DEL VIETNAM
+Paesi|LA CAPITALE DELLA THAILANDIA
+Paesi|LA CAPITALE DELL'INDONESIA
+Paesi|LA CAPITALE DELLA NUOVA ZELANDA
+Paesi|LA CAPITALE DEL SUDAFRICA
+Paesi|LA CAPITALE DELL'UNGHERIA
+Paesi|LA CAPITALE DELLA ROMANIA
+Paesi|LA CAPITALE DELLA CROAZIA
+Paesi|LA CAPITALE DELLA SLOVENIA
+Paesi|LA CAPITALE DEL REGNO UNITO
+Paesi|LA CAPITALE DEGLI STATI UNITI
+Paesi|LA CAPITALE DEI PAESI BASSI
+Paesi|LA BANDIERA DEL PORTOGALLO
+Paesi|LA BANDIERA DELLA SPAGNA
+Paesi|LA BANDIERA DELLA FRANCIA
+Paesi|LA BANDIERA DELLA GERMANIA
+Paesi|LA BANDIERA DELL'ITALIA
+Paesi|LA BANDIERA DELLA GRECIA
+Paesi|LA BANDIERA DEL GIAPPONE
+Paesi|LA BANDIERA DELLA CINA
+Paesi|LA BANDIERA DELL'INDIA
+Paesi|LA BANDIERA DEL BRASILE
+Paesi|LA BANDIERA DELL'ARGENTINA
+Paesi|LA BANDIERA DEL MESSICO
+Paesi|LA BANDIERA DELL'EGITTO
+Paesi|LA BANDIERA DEL MAROCCO
+Paesi|LA BANDIERA DELLA TUNISIA
+Paesi|LA BANDIERA DEL KENYA
+Paesi|LA BANDIERA DEL CANADA
+Paesi|LA BANDIERA DELL'AUSTRALIA
+Paesi|LA BANDIERA DELLA NORVEGIA
+Paesi|LA BANDIERA DELLA SVEZIA
+Paesi|LA BANDIERA DELLA FINLANDIA
+Paesi|LA BANDIERA DELL'ISLANDA
+Paesi|LA BANDIERA DELL'IRLANDA
+Paesi|LA BANDIERA DELL'OLANDA
+Paesi|LA BANDIERA DEL BELGIO
+Paesi|LA BANDIERA DELLA SVIZZERA
+Paesi|LA BANDIERA DELL'AUSTRIA
+Paesi|LA BANDIERA DELLA POLONIA
+Paesi|LA BANDIERA DELLA RUSSIA
+Paesi|LA BANDIERA DELLA TURCHIA
+Paesi|LA BANDIERA DEL PERU
+Paesi|LA BANDIERA DEL CILE
+Paesi|LA BANDIERA DELLA COLOMBIA
+Paesi|LA BANDIERA DEL VIETNAM
+Paesi|LA BANDIERA DELLA THAILANDIA
+Paesi|LA BANDIERA DELL'INDONESIA
+Paesi|LA BANDIERA DELLA NUOVA ZELANDA
+Paesi|LA BANDIERA DEL SUDAFRICA
+Paesi|LA BANDIERA DELL'UNGHERIA
+Paesi|LA BANDIERA DELLA ROMANIA
+Paesi|LA BANDIERA DELLA CROAZIA
+Paesi|LA BANDIERA DELLA SLOVENIA
+Paesi|LA BANDIERA DEL REGNO UNITO
+Paesi|LA BANDIERA DEGLI STATI UNITI
+Paesi|LA BANDIERA DEI PAESI BASSI
+Paesi|LA CUCINA DEL PORTOGALLO
+Paesi|LA CUCINA DELLA SPAGNA
+Paesi|LA CUCINA DELLA FRANCIA
+Paesi|LA CUCINA DELLA GERMANIA
+Paesi|LA CUCINA DELL'ITALIA
+Paesi|LA CUCINA DELLA GRECIA
+Paesi|LA CUCINA DEL GIAPPONE
+Paesi|LA CUCINA DELLA CINA
+Paesi|LA CUCINA DELL'INDIA
+Paesi|LA CUCINA DEL BRASILE
+Paesi|LA CUCINA DELL'ARGENTINA
+Paesi|LA CUCINA DEL MESSICO
+Paesi|LA CUCINA DELL'EGITTO
+Paesi|LA CUCINA DEL MAROCCO
+Paesi|LA CUCINA DELLA TUNISIA
+Paesi|LA CUCINA DEL KENYA
+Paesi|LA CUCINA DEL CANADA
+Paesi|LA CUCINA DELL'AUSTRALIA
+Paesi|LA CUCINA DELLA NORVEGIA
+Paesi|LA CUCINA DELLA SVEZIA
+Paesi|LA CUCINA DELLA FINLANDIA
+Paesi|LA CUCINA DELL'ISLANDA
+Paesi|LA CUCINA DELL'IRLANDA
+Paesi|LA CUCINA DELL'OLANDA
+Paesi|LA CUCINA DEL BELGIO
+Paesi|LA CUCINA DELLA SVIZZERA
+Paesi|LA CUCINA DELL'AUSTRIA
+Paesi|LA CUCINA DELLA POLONIA
+Paesi|LA CUCINA DELLA RUSSIA
+Paesi|LA CUCINA DELLA TURCHIA
+Paesi|LA CUCINA DEL PERU
+Paesi|LA CUCINA DEL CILE
+Paesi|LA CUCINA DELLA COLOMBIA
+Paesi|LA CUCINA DEL VIETNAM
+Paesi|LA CUCINA DELLA THAILANDIA
+Paesi|LA CUCINA DELL'INDONESIA
+Paesi|LA CUCINA DELLA NUOVA ZELANDA
+Paesi|LA CUCINA DEL SUDAFRICA
+Paesi|LA CUCINA DELL'UNGHERIA
+Paesi|LA CUCINA DELLA ROMANIA
+Paesi|LA CUCINA DELLA CROAZIA
+Paesi|LA CUCINA DELLA SLOVENIA
+Paesi|LA CUCINA DEL REGNO UNITO
+Paesi|LA CUCINA DEGLI STATI UNITI
+Paesi|LA CUCINA DEI PAESI BASSI
+Paesi|IL CLIMA DEL PORTOGALLO
+Paesi|IL CLIMA DELLA SPAGNA
+Paesi|IL CLIMA DELLA FRANCIA
+Paesi|IL CLIMA DELLA GERMANIA
+Paesi|IL CLIMA DELL'ITALIA
+Paesi|IL CLIMA DELLA GRECIA
+Paesi|IL CLIMA DEL GIAPPONE
+Paesi|IL CLIMA DELLA CINA
+Paesi|IL CLIMA DELL'INDIA
+Paesi|IL CLIMA DEL BRASILE
+Paesi|IL CLIMA DELL'ARGENTINA
+Paesi|IL CLIMA DEL MESSICO
+Paesi|IL CLIMA DELL'EGITTO
+Paesi|IL CLIMA DEL MAROCCO
+Paesi|IL CLIMA DELLA TUNISIA
+Paesi|IL CLIMA DEL KENYA
+Paesi|IL CLIMA DEL CANADA
+Paesi|IL CLIMA DELL'AUSTRALIA
+Paesi|IL CLIMA DELLA NORVEGIA
+Paesi|IL CLIMA DELLA SVEZIA
+Paesi|IL CLIMA DELLA FINLANDIA
+Paesi|IL CLIMA DELL'ISLANDA
+Paesi|IL CLIMA DELL'IRLANDA
+Paesi|IL CLIMA DELL'OLANDA
+Paesi|IL CLIMA DEL BELGIO
+Paesi|IL CLIMA DELLA SVIZZERA
+Paesi|IL CLIMA DELL'AUSTRIA
+Paesi|IL CLIMA DELLA POLONIA
+Paesi|IL CLIMA DELLA RUSSIA
+Paesi|IL CLIMA DELLA TURCHIA
+Paesi|IL CLIMA DEL PERU
+Paesi|IL CLIMA DEL CILE
+Paesi|IL CLIMA DELLA COLOMBIA
+Paesi|IL CLIMA DEL VIETNAM
+Paesi|IL CLIMA DELLA THAILANDIA
+Paesi|IL CLIMA DELL'INDONESIA
+Paesi|IL CLIMA DELLA NUOVA ZELANDA
+Paesi|IL CLIMA DEL SUDAFRICA
+Paesi|IL CLIMA DELL'UNGHERIA
+Paesi|IL CLIMA DELLA ROMANIA
+Paesi|IL CLIMA DELLA CROAZIA
+Paesi|IL CLIMA DELLA SLOVENIA
+Paesi|IL CLIMA DEL REGNO UNITO
+Paesi|IL CLIMA DEGLI STATI UNITI
+Paesi|IL CLIMA DEI PAESI BASSI
+Paesi|UN VIAGGIO DEL PORTOGALLO
+Paesi|UN VIAGGIO DELLA SPAGNA
+Paesi|UN VIAGGIO DELLA FRANCIA
+Paesi|UN VIAGGIO DELLA GERMANIA
+Paesi|UN VIAGGIO DELL'ITALIA
+Paesi|UN VIAGGIO DELLA GRECIA
+Paesi|UN VIAGGIO DEL GIAPPONE
+Paesi|UN VIAGGIO DELLA CINA
+Paesi|UN VIAGGIO DELL'INDIA
+Paesi|UN VIAGGIO DEL BRASILE
+Paesi|UN VIAGGIO DELL'ARGENTINA
+Paesi|UN VIAGGIO DEL MESSICO
+Paesi|UN VIAGGIO DELL'EGITTO
+Paesi|UN VIAGGIO DEL MAROCCO
+Paesi|UN VIAGGIO DELLA TUNISIA
+Paesi|UN VIAGGIO DEL KENYA
+Paesi|UN VIAGGIO DEL CANADA
+Paesi|UN VIAGGIO DELL'AUSTRALIA
+Paesi|UN VIAGGIO DELLA NORVEGIA
+Paesi|UN VIAGGIO DELLA SVEZIA
+Paesi|UN VIAGGIO DELLA FINLANDIA
+Paesi|UN VIAGGIO DELL'ISLANDA
+Paesi|UN VIAGGIO DELL'IRLANDA
+Paesi|UN VIAGGIO DELL'OLANDA
+Paesi|UN VIAGGIO DEL BELGIO
+Paesi|UN VIAGGIO DELLA SVIZZERA
+Paesi|UN VIAGGIO DELL'AUSTRIA
+Paesi|UN VIAGGIO DELLA POLONIA
+Paesi|UN VIAGGIO DELLA RUSSIA
+Paesi|UN VIAGGIO DELLA TURCHIA
+Paesi|UN VIAGGIO DEL PERU
+Paesi|UN VIAGGIO DEL CILE
+Paesi|UN VIAGGIO DELLA COLOMBIA
+Paesi|UN VIAGGIO DEL VIETNAM
+Paesi|UN VIAGGIO DELLA THAILANDIA
+Paesi|UN VIAGGIO DELL'INDONESIA
+Paesi|UN VIAGGIO DELLA NUOVA ZELANDA
+Paesi|UN VIAGGIO DEL SUDAFRICA
+Paesi|UN VIAGGIO DELL'UNGHERIA
+Paesi|UN VIAGGIO DELLA ROMANIA
+Paesi|UN VIAGGIO DELLA CROAZIA
+Paesi|UN VIAGGIO DELLA SLOVENIA
+Paesi|UN VIAGGIO DEL REGNO UNITO
+Paesi|UN VIAGGIO DEGLI STATI UNITI
+Paesi|UN VIAGGIO DEI PAESI BASSI
+Animali|IL CUCCIOLO DI LUPO
+Animali|IL CUCCIOLO DI VOLPE
+Animali|IL CUCCIOLO DI ORSO
+Animali|IL CUCCIOLO DI CERVO
+Animali|IL CUCCIOLO DI CINGHIALE
+Animali|IL CUCCIOLO DI LEPRE
+Animali|IL CUCCIOLO DI TASSO
+Animali|IL CUCCIOLO DI FOCA
+Animali|IL CUCCIOLO DI LEONE
+Animali|IL CUCCIOLO DI TIGRE
+Animali|IL CUCCIOLO DI ELEFANTE
+Animali|IL CUCCIOLO DI GIRAFFA
+Animali|IL CUCCIOLO DI ZEBRA
+Animali|IL CUCCIOLO DI PANDA
+Animali|IL CUCCIOLO DI KOALA
+Animali|IL CUCCIOLO DI CANGURO
+Animali|IL CUCCIOLO DI IPPOPOTAMO
+Animali|IL CUCCIOLO DI RINOCERONTE
+Animali|IL VERSO DELLA VOLPE
+Animali|IL VERSO DELLA CICALA
+Animali|IL VERSO DELLA RONDINE
+Animali|IL VERSO DELLA TARTARUGA
+Animali|IL VERSO DELLA VIPERA
+Animali|IL VERSO DELLA FARFALLA
+Animali|IL VERSO DELLA APE
+Animali|IL VERSO DELLA RANA
+Pescheria|FILETTO DI ORATA
+Pescheria|FILETTO DI BRANZINO
+Pescheria|FILETTO DI SARAGO
+Pescheria|FILETTO DI ALICI
+Pescheria|FILETTO DI SARDINE
+Pescheria|FILETTO DI TRIGLIA
+Pescheria|FILETTO DI MERLUZZO
+Pescheria|FILETTO DI TROTA
+Pescheria|FILETTO DI SALMONE
+Pescheria|FILETTO DI TONNO
+Pescheria|FILETTO DI SPADA
+Pescheria|FILETTO DI POLPO
+Pescheria|FILETTO DI SEPPIA
+Pescheria|FILETTO DI CALAMARO
+Pescheria|FILETTO DI GAMBERO
+Pescheria|FILETTO DI SCAMPO
+Pescheria|FILETTO DI GAMBERETTO
+Pescheria|FILETTO DI COZZA
+Pescheria|FILETTO DI VONGOLE
+Pescheria|FILETTO DI CAPESANTE
+Pescheria|INSALATA DI ORATA
+Pescheria|INSALATA DI BRANZINO
+Pescheria|INSALATA DI SARAGO
+Pescheria|INSALATA DI ALICI
+Pescheria|INSALATA DI SARDINE
+Pescheria|INSALATA DI TRIGLIA
+Pescheria|INSALATA DI MERLUZZO
+Pescheria|INSALATA DI TROTA
+Pescheria|INSALATA DI SALMONE
+Pescheria|INSALATA DI TONNO
+Pescheria|INSALATA DI SPADA
+Pescheria|INSALATA DI POLPO
+Pescheria|INSALATA DI SEPPIA
+Pescheria|INSALATA DI CALAMARO
+Pescheria|INSALATA DI GAMBERO
+Pescheria|INSALATA DI SCAMPO
+Pescheria|INSALATA DI GAMBERETTO
+Pescheria|INSALATA DI COZZA
+Pescheria|INSALATA DI VONGOLE
+Pescheria|INSALATA DI CAPESANTE
+Pescheria|UNA PORZIONE DI ORATA
+Pescheria|UNA PORZIONE DI BRANZINO
+Pescheria|UNA PORZIONE DI SARAGO
+Pescheria|UNA PORZIONE DI ALICI
+Pescheria|UNA PORZIONE DI SARDINE
+Pescheria|UNA PORZIONE DI TRIGLIA
+Pescheria|UNA PORZIONE DI MERLUZZO
+Pescheria|UNA PORZIONE DI TROTA
+Pescheria|UNA PORZIONE DI SALMONE
+Pescheria|UNA PORZIONE DI TONNO
+Pescheria|UNA PORZIONE DI SPADA
+Pescheria|UNA PORZIONE DI POLPO
+In giardino|IL PROFUMO DELLA ROSA
+In giardino|IL PROFUMO DEL GIRASOLE
+In giardino|IL PROFUMO DELLA MARGHERITA
+In giardino|IL PROFUMO DEL TULIPANO
+In giardino|IL PROFUMO DELLA VIOLA
+In giardino|IL PROFUMO DEL GELSOMINO
+In giardino|IL PROFUMO DELLA LAVANDA
+In giardino|IL PROFUMO DEL PAPAVERO
+In giardino|IL PROFUMO DELLA PEONIA
+In giardino|IL PROFUMO DEL GAROFANO
+In giardino|IL PROFUMO DELLA DALIA
+In giardino|IL PROFUMO DEL CICLAMINO
+In giardino|IL PROFUMO DELL'ORCHIDEA
+In giardino|IL PROFUMO DEL NARCISO
+In giardino|IL PROFUMO DELLA CAMELIA
+In giardino|IL PROFUMO DEL FIORDALISO
+In giardino|UN PRATO DI ROSE
+In giardino|UN PRATO DI GIRASOLI
+In giardino|UN PRATO DI MARGHERITE
+In giardino|UN PRATO DI TULIPANI
+In giardino|UN PRATO DI VIOLE
+In giardino|UN PRATO DI GELSOMINI
+In giardino|UN PRATO DI LAVANDE
+In giardino|UN PRATO DI PAPAVERI
+In giardino|UN PRATO DI PEONIE
+In giardino|UN PRATO DI GAROFANI
+In giardino|UN PRATO DI DALIE
+In giardino|UN PRATO DI CICLAMINI
+In giardino|UN PRATO DI ORCHIDEE
+In giardino|UN PRATO DI NARCISI
+In giardino|UN PRATO DI CAMELIE
+In giardino|UN PRATO DI FIORDALISI
+Musica|IL SUONO DEL VIOLINO
+Musica|IL SUONO DEL PIANOFORTE
+Musica|IL SUONO DELLA CHITARRA
+Musica|IL SUONO DEL FLAUTO
+Musica|IL SUONO DELLA TROMBA
+Musica|IL SUONO DEL SASSOFONO
+Musica|IL SUONO DELLA BATTERIA
+Musica|IL SUONO DEL VIOLONCELLO
+Musica|IL SUONO DEL CONTRABBASSO
+Musica|IL SUONO DELL'ARMONICA
+Musica|IL SUONO DELLA FISARMONICA
+Musica|IL SUONO DEL CLARINETTO
+Musica|IL SUONO DEL TAMBURELLO
+Musica|IL SUONO DELL'ARPA
+Musica|IL SUONO DEL BANJO
+Musica|IL SUONO DEL CORNO
+Musica|IL SUONO DEL TIMPANO
+Musica|IL SUONO DELLA TASTIERA
+Musica|IL CONCERTO PER VIOLINO
+Musica|IL CONCERTO PER PIANOFORTE
+Musica|IL CONCERTO PER CHITARRA
+Musica|IL CONCERTO PER FLAUTO
+Musica|IL CONCERTO PER TROMBA
+Musica|IL CONCERTO PER SASSOFONO
+Musica|IL CONCERTO PER BATTERIA
+Musica|IL CONCERTO PER VIOLONCELLO
+Musica|IL CONCERTO PER CONTRABBASSO
+Musica|IL CONCERTO PER ARMONICA
+Musica|IL CONCERTO PER FISARMONICA
+Musica|IL CONCERTO PER CLARINETTO
+Musica|IL CONCERTO PER TAMBURELLO
+Musica|IL CONCERTO PER ARPA
+Musica|IL CONCERTO PER BANJO
+Musica|IL CONCERTO PER CORNO
+Musica|IL CONCERTO PER TIMPANO
+Musica|IL CONCERTO PER TASTIERA
+Sport|LA GARA DI CALCIO
+Sport|LA GARA DI TENNIS
+Sport|LA GARA DI PALLAVOLO
+Sport|LA GARA DI BASKET
+Sport|LA GARA DI NUOTO
+Sport|LA GARA DI CICLISMO
+Sport|LA GARA DI ATLETICA
+Sport|LA GARA DI SCHERMA
+Sport|LA GARA DI PUGILATO
+Sport|LA GARA DI JUDO
+Sport|LA GARA DI KARATE
+Sport|LA GARA DI SCI
+Sport|LA GARA DI SNOWBOARD
+Sport|LA GARA DI PATTINAGGIO
+Sport|LA GARA DI HOCKEY
+Sport|LA GARA DI RUGBY
+Sport|LA GARA DI GOLF
+Sport|LA GARA DI SURF
+Sport|LA GARA DI VELA
+Sport|LA GARA DI CANOTTAGGIO
+Sport|LA GARA DI ARRAMPICATA
+Sport|LA GARA DI EQUITAZIONE
+Sport|LA GARA DI TAEKWONDO
+Sport|LA GARA DI BADMINTON
+Sport|LA GARA DI BOWLING
+Sport|LA FINALE DI CALCIO
+Sport|LA FINALE DI TENNIS
+Sport|LA FINALE DI PALLAVOLO
+Sport|LA FINALE DI BASKET
+Sport|LA FINALE DI NUOTO
+Sport|LA FINALE DI CICLISMO
+Sport|LA FINALE DI ATLETICA
+Sport|LA FINALE DI SCHERMA
+Sport|LA FINALE DI PUGILATO
+Sport|LA FINALE DI JUDO
+Sport|LA FINALE DI KARATE
+Sport|LA FINALE DI SCI
+Sport|LA FINALE DI SNOWBOARD
+Sport|LA FINALE DI PATTINAGGIO
+Sport|LA FINALE DI HOCKEY
+Sport|LA FINALE DI RUGBY
+Sport|LA FINALE DI GOLF
+Sport|LA FINALE DI SURF
+Sport|LA FINALE DI VELA
+Sport|LA FINALE DI CANOTTAGGIO
+Sport|LA FINALE DI ARRAMPICATA
+Sport|LA FINALE DI EQUITAZIONE
+Sport|LA FINALE DI TAEKWONDO
+Sport|LA FINALE DI BADMINTON
+Sport|LA FINALE DI BOWLING
+Sport|IL CAMPIONE DI CALCIO
+Sport|IL CAMPIONE DI TENNIS
+Sport|IL CAMPIONE DI PALLAVOLO
+Sport|IL CAMPIONE DI BASKET
+Sport|IL CAMPIONE DI NUOTO
+Sport|IL CAMPIONE DI CICLISMO
+Sport|IL CAMPIONE DI ATLETICA
+Sport|IL CAMPIONE DI SCHERMA
+Sport|IL CAMPIONE DI PUGILATO
+Sport|IL CAMPIONE DI JUDO
+Sport|IL CAMPIONE DI KARATE
+Sport|IL CAMPIONE DI SCI
+Sport|IL CAMPIONE DI SNOWBOARD
+Sport|IL CAMPIONE DI PATTINAGGIO
+Sport|IL CAMPIONE DI HOCKEY
+Sport|IL CAMPIONE DI RUGBY
+Sport|IL CAMPIONE DI GOLF
+Sport|IL CAMPIONE DI SURF
+Sport|IL CAMPIONE DI VELA
+Sport|IL CAMPIONE DI CANOTTAGGIO
+Sport|IL CAMPIONE DI ARRAMPICATA
+Sport|IL CAMPIONE DI EQUITAZIONE
+Sport|IL CAMPIONE DI TAEKWONDO
+Sport|IL CAMPIONE DI BADMINTON
+Sport|IL CAMPIONE DI BOWLING
+Sport|LA SQUADRA DI CALCIO
+Sport|LA SQUADRA DI TENNIS
+Sport|LA SQUADRA DI PALLAVOLO
+Sport|LA SQUADRA DI BASKET
+Sport|LA SQUADRA DI NUOTO
+Sport|LA SQUADRA DI CICLISMO
+Sport|LA SQUADRA DI ATLETICA
+Sport|LA SQUADRA DI SCHERMA
+Sport|LA SQUADRA DI PUGILATO
+Sport|LA SQUADRA DI JUDO
+Sport|LA SQUADRA DI KARATE
+Sport|LA SQUADRA DI SCI
+Sport|LA SQUADRA DI SNOWBOARD
+Sport|LA SQUADRA DI PATTINAGGIO
+Sport|LA SQUADRA DI HOCKEY
+Sport|LA SQUADRA DI RUGBY
+Sport|LA SQUADRA DI GOLF
+Sport|LA SQUADRA DI SURF
+Sport|LA SQUADRA DI VELA
+Sport|LA SQUADRA DI CANOTTAGGIO
+Sport|LA SQUADRA DI ARRAMPICATA
+Sport|LA SQUADRA DI EQUITAZIONE
+Sport|LA SQUADRA DI TAEKWONDO
+Sport|LA SQUADRA DI BADMINTON
+Sport|LA SQUADRA DI BOWLING
+Scuola|IL MAESTRO DI SCI
+Scuola|IL MAESTRO DI TENNIS
+Scuola|IL MAESTRO DI NUOTO
+Scuola|IL MAESTRO DI DANZA
+Scuola|IL MAESTRO DI MUSICA
+Scuola|IL MAESTRO DI PITTURA
+Scuola|IL MAESTRO DI CUCINA
+Scuola|IL MAESTRO DI VELA
+Scuola|IL MAESTRO DI GOLF
+Scuola|IL MAESTRO DI EQUITAZIONE
+Scuola|IL MAESTRO DI SCHERMA
+Scuola|IL MAESTRO DI ARTE
+Scuola|IL MAESTRO DI TEATRO
+Scuola|IL MAESTRO DI FOTOGRAFIA
+Scuola|IL MAESTRO DI CERAMICA
+Scuola|IL MAESTRO DI YOGA
+Scuola|IL MAESTRO DI PILATES
+Scuola|IL MAESTRO DI CANTO
+Scuola|IL MAESTRO DI RECITAZIONE
+Scuola|IL MAESTRO DI GIARDINAGGIO
+Scuola|LA SCUOLA DI SCI
+Scuola|LA SCUOLA DI TENNIS
+Scuola|LA SCUOLA DI NUOTO
+Scuola|LA SCUOLA DI DANZA
+Scuola|LA SCUOLA DI MUSICA
+Scuola|LA SCUOLA DI PITTURA
+Scuola|LA SCUOLA DI CUCINA
+Scuola|LA SCUOLA DI VELA
+Scuola|LA SCUOLA DI GOLF
+Scuola|LA SCUOLA DI EQUITAZIONE
+Scuola|LA SCUOLA DI SCHERMA
+Scuola|LA SCUOLA DI ARTE
+Scuola|LA SCUOLA DI TEATRO
+Scuola|LA SCUOLA DI FOTOGRAFIA
+Scuola|LA SCUOLA DI CERAMICA
+Scuola|LA SCUOLA DI YOGA
+Scuola|LA SCUOLA DI PILATES
+Scuola|LA SCUOLA DI CANTO
+Scuola|LA SCUOLA DI RECITAZIONE
+Scuola|LA SCUOLA DI GIARDINAGGIO
+Proverbi|L'ACQUA CHETA ROVINA I PONTI
+Proverbi|TANTO VA LA GATTA AL LARDO
+Proverbi|IL SANGUE NON E ACQUA
+Proverbi|NON E TUTTO ORO QUEL CHE LUCCICA
+Proverbi|CHI FA DA SE FA PER TRE
+Proverbi|L'UNIONE FA LA FORZA
+Proverbi|UNA RONDINE NON FA PRIMAVERA
+Proverbi|TUTTO E BENE QUEL CHE FINISCE BENE
+Proverbi|IL FINE GIUSTIFICA I MEZZI
+Proverbi|LA NOTTE PORTA CONSIGLIO
+Proverbi|LA FRETTA E CATTIVA CONSIGLIERA
+Proverbi|ROSSO DI SERA BELTEMPO SI SPERA
+Proverbi|DOPO LA PIOGGIA VIENE IL BEL TEMPO
+Proverbi|OGNI PROMESSA E UN DEBITO
+Proverbi|LE PAROLE VOLANO I FATTI RESTANO
+Proverbi|MEGLIO SOLI CHE MAL ACCOMPAGNATI
+Proverbi|CHI NON LAVORA NON MANGIA
+Proverbi|L'OCCHIO DEL PADRONE INGRASSA IL CAVALLO
+Proverbi|TALE PADRE TALE FIGLIO
+Proverbi|NON C'E DUE SENZA TRE
+Proverbi|CHI TACE ACCONSENTE
+Proverbi|BEATO CHI SI ACCONTENTA
+Proverbi|POCHI MA BUONI
+Proverbi|MEGLIO UN UOVO OGGI CHE UNA GALLINA DOMANI
+Proverbi|LA FAME CONDISCE OGNI PIATTO
+Proverbi|ACQUA PASSATA NON MACINA PIU
+Proverbi|AL MALE ESTREMO ESTREMO RIMEDIO
+Proverbi|LA SPERANZA E L'ULTIMA A MORIRE
+Proverbi|NE UCCIDE PIU LA GOLA CHE LA SPADA
+Proverbi|IL BUON VINO FA BUON SANGUE
+Proverbi|CHI TROVA UN AMICO TROVA UN TESORO
+Proverbi|POCO A POCO SI FA LA CASA
+Proverbi|UNA MANO LAVA L'ALTRA
+Proverbi|LE BUGIE HANNO LE GAMBE CORTE
+Proverbi|QUANDO IL GATTO NON C'E I TOPI BALLANO
+Proverbi|CHI VIVE SPERANDO MUORE CANTANDO
+Proverbi|OGNUNO E PADRONE A CASA SUA
+Proverbi|IL MONDO E UN FAZZOLETTO
+Proverbi|CHI NON HA TESTA HA GAMBE
+Proverbi|AL BUIO TUTTI I GATTI SONO BIGI
+Proverbi|CHI AMA IL RISCHIO CI CADE
+Proverbi|LA GOLA E LA PIU GRANDE DELLE PASSIONI
+Proverbi|IL TEMPO E DENARO
+Proverbi|UNA BUONA PAROLA COSTA POCO
+Proverbi|CHI BEN COMINCIA E A META DELL'OPERA
+Proverbi|LA PAZIENZA E LA MIGLIOR CONSIGLIERA
+Proverbi|NON SI FINISCE MAI DI IMPARARE
+Proverbi|DOVE C'E FUMO C'E FUOCO
+Proverbi|LE COSE BUONE ARRIVANO A CHI ASPETTA
+Proverbi|CHI SI ACCONTENTA GODE
+Proverbi|IL DENARO NON FA LA FELICITA
+Proverbi|A BUON MERCATO NON SI VENDE
+Proverbi|GUAI A CHI NASCE IN CATTIVA LUNA
+Proverbi|LA VIRTUE STA NEL MEZZO
+Proverbi|TRENTA ANNI E NON LI SENTI
+Proverbi|OGNI SCARPA DIVENTA UNO ZOCCOLO
+Proverbi|IL PESCE PUZZA DALLA TESTA
+Proverbi|CHI DORME AL SOLE SI SVEGLIA ALLA PIOGGIA
+Proverbi|LA NEVE DI MARZO DURA POCO
+Proverbi|SE PIOVE A SAN VINCENZO PIOVE PER UN MESE
+Proverbi|APRILE FA I FIORI E MAGGIO NE HA GLI ONORI
+Modo di dire|AVERE LE FARFALLE NELLO STOMACO
+Modo di dire|ESSERE UNA VOLPE VECCHIA
+Modo di dire|FARE IL PORTOGHESE
+Modo di dire|AVERE IL DENTE AVVELENATO
+Modo di dire|METTERE IL CARRO DAVANTI AI BUOI
+Modo di dire|NON SAPERE CHE PESCE PIGLIARE
+Modo di dire|ESSERE ACQUA E SAPONE
+Modo di dire|ESSERE GRASSO COME UNA BALENA
+Modo di dire|ESSERE MAGRO COME UN CHIODO
+Modo di dire|FARE LA GATTA MORTA
+Modo di dire|FARE LE CORNA
+Modo di dire|PRENDERSELA A MALE
+Modo di dire|DARE IL PEGGIO DI SE
+Modo di dire|ESSERE SULLA CRESTA DELL'ONDA
+Modo di dire|RIMANERE A BOCCA APERTA
+Modo di dire|AVERE CARTA BIANCA
+Modo di dire|ESSERE DI POCHE PAROLE
+Modo di dire|FARE IL DOPPIO GIOCO
+Modo di dire|AVERE GLI OCCHI BENDATI
+Modo di dire|RIUSCIRE PER IL ROTTO DELLA CUFFIA
+Modo di dire|TIRARE L'ACQUA AL PROPRIO MULINO
+Modo di dire|AVERE L'ACQUA ALLA GOLA
+Modo di dire|ESSERE UN FUOCO DI PAGLIA
+Modo di dire|ESSERE COME IL PREZZEMOLO
+Modo di dire|SENTIRSI UN PESCE FUOR D'ACQUA
+Modo di dire|AVERE LA COSCIENZA SPORCA
+Modo di dire|ESSERE ALLA FRUTTA
+Modo di dire|SPACCARE IL CAPELLO IN QUATTRO
+Modo di dire|ESSERE SULLE SPINE
+Modo di dire|ESSERE UN TIPO ALLA MANO
+Modo di dire|NON ESSERE FARINA DEL PROPRIO SACCO
+Modo di dire|ESSERE IN PALLA
+Modo di dire|AVERE LA LUNA STORTA
+Modo di dire|ESSERE DI SANGUE FREDDO
+Modo di dire|FARE LA PARTE DEL LEONE
+Modo di dire|TROVARE IL PELO NELL'UOVO
+Modo di dire|AVERE I GIORNI CONTATI
+Modo di dire|ESSERE UN LIBRO APERTO
+Modo di dire|STARE CON I PIEDI PER TERRA
+Modo di dire|ESSERE MUTO COME UN PESCE
+Modo di dire|FARE VEDERE I SORCI VERDI
+Modo di dire|CASCARE DALLE NUVOLE
+Modo di dire|ESSERE UNA PASTA D'UOMO
+Modo di dire|AVERE UNA MEMORIA DI FERRO
+Modo di dire|DORMIRE CON UN OCCHIO APERTO
+Modo di dire|ESSERE LA PUNTA DELL'ICEBERG
+Modo di dire|NON VEDERE L'ORA DI ARRIVARE
+Modo di dire|METTERE LE MANI AVANTI
+Modo di dire|ESSERE UN PO FUORI STRADA
+Modo di dire|PERDERE IL FILO DEL DISCORSO
+Modo di dire|ANDARE A GONFIE VELE
+Modo di dire|TENERE IL PUNTO
+Modo di dire|FARE ORE PICCOLE
+Modo di dire|ESSERE UN ALLIEVO MODELLO
+Modo di dire|AVERE LE MANI IN PASTA
+Modo di dire|ESSERE UNA CIMA DI RAPA
+Modo di dire|NON CAPIRE UNA MAZZA
+Modo di dire|RENDERE PAN PER FOCACCIA
+Modo di dire|ESSERE UNA LINGUA LUNGA
+Modo di dire|CHIUDERE IL BECCO
+Modo di dire|FARE IL MUSO LUNGO
+Modo di dire|ESSERE UN DIAVOLO A QUATTRO
+Modo di dire|AVERE SETTE VITE COME I GATTI
+Modo di dire|PRENDERE IL TORO PER LE CORNA
+Modo di dire|ESSERE UNA MOSCA BIANCA
+Modo di dire|METTERE UNA PIETRA SOPRA
+Modo di dire|ANDARE A MEMORIA
+Modo di dire|ESSERE UN COLOSSO DAI PIEDI DI ARGILLA
+Modo di dire|FARE LA GRANDE VITA
+Modo di dire|TIRARE IL FIATO
+Modo di dire|ESSERE PRESO CON LE MANI NEL SACCO
+Modo di dire|VEDERE TUTTO ROSSO
+Modo di dire|AVERE IL FISCHIO DEBOLE
+Modo di dire|FARE IL GIRO LARGO
+Modo di dire|ESSERE NEL MEZZO DEL GUADO
+Espressioni|MA CHE STAI DICENDO
+Espressioni|NON E POSSIBILE
+Espressioni|PREGO SI ACCOMODI
+Espressioni|CHE BELLA GIORNATA
+Espressioni|NON CI POSSO CREDERE
+Espressioni|DA MORIRE DAL RIDERE
+Espressioni|SENZA NESSUNA FRETTA
+Espressioni|IN QUATTRO E QUATTRO OTTO
+Espressioni|NE PIU NE MENO
+Espressioni|OGGI COME OGGI
+Espressioni|DOPO TUTTO QUESTO
+Espressioni|DA UN MOMENTO ALL'ALTRO
+Espressioni|PER LA PRIMA VOLTA
+Espressioni|PER L'ULTIMA VOLTA
+Espressioni|UNA VOLTA TANTO
+Espressioni|CHE COSA MI TOCCA
+Espressioni|NON HO PAROLE
+Espressioni|NON SO CHE FARE
+Espressioni|NON SI SA MAI
+Espressioni|CHI VIVRA VEDRA
+Espressioni|COME DICEVO PRIMA
+Espressioni|FUORI COME UN BALCONE
+Espressioni|PIU O MENO COSI
+Espressioni|E CHI SE LO ASPETTAVA
+Espressioni|NON E DETTO
+Espressioni|VEDRAI CHE BELLO
+Espressioni|DI GRAN LUNGA
+Espressioni|A PIU NON POSSO
+Espressioni|SENZA SE E SENZA MA
+Espressioni|CI VUOLE PAZIENZA
+Espressioni|E MENO MALE
+Espressioni|MA GUARDA UN PO
+Espressioni|NON HO DUBBI
+Espressioni|UN ATTIMO DI PAZIENZA
+Espressioni|CHE SIA LA VOLTA BUONA
+Espressioni|E ADESSO CHE SI FA
+Espressioni|PROPRIO COSI NON VA
+Film|IL PADRINO PARTE SECONDA
+Film|COLPO GROSSO ALLA ITALIANA
+Film|LA VITA E BELLA
+Film|PER UN PUGNO DI DOLLARI
+Film|IL POSTINO SUONA SEMPRE DUE VOLTE
+Film|L'UOMO CHE SAPEVA TROPPO
+Film|LA MISSIONE IMPOSSIBILE
+Film|LA BELLA E LA BESTIA
+Film|BIANCANEVE E I SETTE NANI
+Film|IL RE LEONE
+Film|IL REGNO DI GHIACCIO
+Film|ALLA RICERCA DI NEMO
+Film|IL LIBRO DELLA GIUNGLA
+Film|LE NOTTI BIANCHE
+Film|OTTO E MEZZO
+Film|IL CASO MATTEI
+Film|C'ERA UNA VOLTA IL WEST
+Film|C'ERA UNA VOLTA IN AMERICA
+Film|IL MUCCHIO SELVAGGIO
+Film|MEZZOGIORNO DI FUOCO
+Film|LA GRANDE FUGA
+Film|CANTANDO SOTTO LA PIOGGIA
+Film|COLAZIONE DA TIFFANY
+Film|IL CURIOSO CASO DI BENJAMIN
+Film|I SOLITI SOSPETTI
+Film|IL SILENZIO DEGLI INNOCENTI
+Film|IL CAVALIERE OSCURO
+Film|L'IMPERO COLPISCE ANCORA
+Film|IL RITORNO DELLO JEDI
+Film|UNA NUOVA SPERANZA
+Film|IL RISVEGLIO DELLA FORZA
+Film|GLI ULTIMI JEDI
+Film|LE DUE TORRI
+Film|IL RITORNO DEL RE
+Film|LA COMPAGNIA DELL'ANELLO
+Film|IL CODICE DA VINCI
+Film|ANGELI E DEMONI
+Film|LA RICERCA DELLA FELICITA
+Film|IL DIAVOLO VESTE PRADA
+Film|MEZZANOTTE A PARIGI
+Film|LA MEGLIO GIOVENTU
+Film|BENVENUTI AL SUD
+Film|LA CORAZZATA POTEMKIN
+Film|LADRI DI BICICLETTE
+Film|ROMA CITTA APERTA
+Film|LA TERRA TREMA
+Film|IL GENERALE DELLA ROVERE
+Film|UN BORGHESE PICCOLO PICCOLO
+Film|BRUTTI SPORCHI E CATTIVI
+Film|LE MANI SULLA CITTA
+Film|INDAGINE SU UN CITTADINO
+Film|LA STANZA DEL FIGLIO
+Film|LA BESTIA NEL CUORE
+Film|LE CONSEGUENZE DELL'AMORE
+Film|LA RAGAZZA DEL LAGO
+Film|IL NOME DELLA ROSA
+Film|IL PAZIENTE INGLESE
+Film|LA VITA E MERAVIGLIOSA
+Film|LA PRIMA COSA BELLA
+Film|IO NON HO PAURA
+Film|LA FINESTRA DI FRONTE
+Film|IL CAPITALE UMANO
+Film|SE DIO VUOLE
+Film|IL SEGRETO DEI SUOI OCCHI
+Film|LA MIGLIORE OFFERTA
+Film|LA GRANDE BELLEZZA
+Film|LA CITTA INCANTATA
+Film|IL CASTELLO ERRANTE
+Film|LA PRINCIPESSA MONONOKE
+Film|IL MIO VICINO TOTORO
+Film|NAUSICAA DELLA VALLE
+Film|LA TOMBA DELLE LUCCIOLE
+Film|IL VIAGGIO DI CHIHIRO
+Film|LE AVVENTURE DI INDIANA JONES
+Film|I PREDATORI DELL'ARCA PERDUTA
+Film|RITORNO AL FUTURO
+Film|LA GUERRA DEI MONDI
+Film|IL PIANETA DELLE SCIMMIE
+Film|IL RITORNO DI BATMAN
+Film|IL CAVALIERE OSCURO RISORGE
+Film|IL SIGNORE DELLE MOSCHE
+Film|NOTTE PRIMA DEGLI ESAMI
+Film|TRE METRI SOPRA IL CIELO
+Film|SCUSA MA TI CHIAMO AMORE
+Film|IL RAGAZZO DELLA PORTA ACCANTO
+Film|LA VITA DI PI
+Film|IL PRANZO DI BABETTE
+Film|IL FIUME DELLA VITA
+Film|LA SOCIETA DEI POETI MORTI
+Film|QUALCOSA DI SPECIALE
+Film|UNA NOTTE DA LEONI
+Film|IL GRANDE LEBOWSKI
+Film|BASTA CHE FUNZIONI
+Film|LA SOTTILE LINEA ROSSA
+Film|UN UOMO CHIAMATO CAVALLO
+Film|IL DESTINO DI UNA NOTTE
+Film|LE ALI DELLA LIBERTA
+Film|LA CASA DEI SOGNI
+Film|IL CAMMINO DELLA PAURA
+Film|L'OROLOGIO DELL'ULTIMA NOTTE
+Film|LA NOTTE DEI MORTI VIVENTI
+Canzoni|IO CHE NON VIVO SENZA TE
+Canzoni|UNA LACRIMA SUL VISO
+Canzoni|SE STASERA SONO QUI
+Canzoni|CHI NON LAVORA NON FA L'AMORE
+Canzoni|UNA CANZONE PER TE
+Canzoni|IL CIELO IN UNA STANZA
+Canzoni|SAPORE DI SALE
+Canzoni|LA DONNA MIA
+Canzoni|L'ANNO CHE VERRA
+Canzoni|PICCOLO GRANDE AMORE
+Canzoni|ATTENTI AL LUPO
+Canzoni|IL MIO CANTO LIBERO
+Canzoni|LE COSE IN COMUNE
+Canzoni|QUESTO PICCOLO GRANDE AMORE
+Canzoni|L'EMOZIONE NON HA VOCE
+Canzoni|SARA PERCHE TI AMO
+Canzoni|MI RITORNI IN MENTE
+Canzoni|IO CANTERO PER TE
+Canzoni|MILLE LIRE AL MESE
+Canzoni|REGINA DI CUORI
+Canzoni|LA CANZONE DEI MESTIERI
+Canzoni|VOGLIO UNA VITA SEMPLICE
+Canzoni|UNA GIORNATA BELLISSIMA
+Canzoni|IL SUONO DEL SILENZIO
+Canzoni|UN BIMBO SULLE NUVOLE
+Canzoni|CHE COSA SONO LE NUVOLE
+Canzoni|OLTRE IL GIARDINO
+Canzoni|LE QUATTRO STAGIONI
+Canzoni|L'ISOLA CHE NON C'E
+Canzoni|SIGNORA DELLE STELLE
+Canzoni|COME UN PENSIERO
+Canzoni|LA CURA DELLA MIA VITA
+Canzoni|IL CIELO DI ROMA
+Canzoni|UNA NOTTE IN PIU
+Canzoni|ALBA CHIARA SUL MARE
+Canzoni|SUONA LA CHITARRA
+Canzoni|CANTO DELLA BUONANOTTE
+Canzoni|IL GIORNO PIU BELLO
+Canzoni|VIENI A VEDERE IL MARE
+Canzoni|NELLA NOTTE DEI TEMPI
+Canzoni|LA MIA BANDA SUONA ANCORA
+Serie TV|IL TRONO DI SPADE
+Serie TV|LA CASA DI CARTA
+Serie TV|LA SIGNORA IN GIALLO
+Serie TV|IL COMMISSARIO MONTALBANO
+Serie TV|LE INDAGINI DEL COMMISSARIO
+Serie TV|UNA POLTRONA PER DUE
+Serie TV|IL DOTTOR HOUSE
+Serie TV|IL TELETTONE DELLA DOMENICA
+Serie TV|CARTONI ANIMATI DEL SABATO
+Serie TV|TOM E JERRY
+Serie TV|I CAVALIERI DELLO ZODIACO
+Serie TV|LA PANTERA ROSA
+Serie TV|TOPOLINO E PIPPOMARIO
+Serie TV|PAPERINO E QUI QUO QUA
+Serie TV|LA BANDA DEI PAPERI
+Serie TV|IL CLUB DEI CINQUE
+Serie TV|LA FAMIGLIA ADDAMS
+Serie TV|GLI ANNI FELICI
+Serie TV|IL MAGO ZURLI
+Serie TV|GIOCHI SENZA FRONTIERE
+Serie TV|LA RUOTA DELLA FORTUNA
+Serie TV|PASSAPAROLA DELLA SETTIMANA
+Serie TV|IL GRANDE FRATELLO
+Serie TV|CHI VUOL ESSERE MILIONARIO
+Serie TV|IL PROCESSO DI BALLARO
+Serie TV|PORTE APERTE IN TIVVU
+Serie TV|LE MALE FESTE
+Serie TV|UNA CASA PER AMICO
+Serie TV|IL BAGNO DELLE DONNE
+Serie TV|DOC NELLE MANI
+Serie TV|BLANCA E IL COMMISSARIO
+Serie TV|I MEDICI DI FAMIGLIA
+Serie TV|UN POSTO AL SOLE
+Serie TV|PARADISO DELLE SIGNORE
+Serie TV|IL PARADISO DELLE SIGNORE
+Serie TV|CHE TEMPO CHE FA
+Serie TV|REPORT IN PRIMA SERATA
+Serie TV|LA PROVA DEL CUOCO
+Serie TV|BAKE OFF ITALIA
+Serie TV|MASTERCHEF IN TV
+Serie TV|LA CORRIDA DELLA DOMENICA
+Serie TV|CAROSELLO DEI RICORDI
+Serie TV|IL TELECOMANDO DI LUNA PARK
+Storia|LA CADUTA DELL'IMPERO ROMANO
+Storia|LE GUERRE PUNICHE
+Storia|IL MITO DELLA FONDAZIONE DI ROMA
+Storia|GIULIO CESARE ATTRAVERSA IL RUBICONE
+Storia|IL COLPO DI STATO DI NAPOLEONE
+Storia|LA RIVOLUZIONE FRANCESE
+Storia|LA PRESA DELLA BASTIGLIA
+Storia|IL CONGRESSO DI VIENNA
+Storia|LA SPEDIZIONE DEI MILLE
+Storia|IL TRENO DELLA STORIA
+Storia|LA PRIMA GUERRA MONDIALE
+Storia|LA SECONDA GUERRA MONDIALE
+Storia|LO SBARCO IN NORMANDIA
+Storia|IL MURO DI BERLINO
+Storia|LA CORSA ALLO SPAZIO
+Storia|LO SBARCO SULLA LUNA
+Storia|LA CIVILTA EGIZIA
+Storia|I FARAONI DEL NILO
+Storia|LE PIRAMIDI DI GIZA
+Storia|LA CIVILTA GRECA
+Storia|L'ETA DEL BRONZO
+Storia|IL MEDIOEVO EUROPEO
+Storia|I CAVALIERI DELLA TAVOLA ROTONDA
+Storia|LE CROCIATE IN TERRA SANTA
+Storia|LA PESTE NERA
+Storia|IL RINASCIMENTO ITALIANO
+Storia|LA SCOPERTA DELL'AMERICA
+Storia|IL VIAGGIO DI MAGELLANO
+Storia|LA RIFORMA PROTESTANTE
+Storia|IL REGNO DELLE DUE SICILIE
+Storia|I COMUNI MEDIEVALI
+Storia|LA SIGNORIA DI FIRENZE
+Storia|I MEDICI DI FIRENZE
+Storia|LA REPUBBLICA DI VENEZIA
+Storia|IL DUCATO DI MILANO
+Storia|LA BATTAGLIA DI LEPANTO
+Storia|LA BATTAGLIA DI WATERLOO
+Storia|LA DISFATTA DI CAPORETTO
+Storia|IL TRATTATO DI PACE
+Storia|LA RICOSTRUZIONE DEL DOPOGUERRA
+Storia|IL BOOM ECONOMICO
+Storia|LA NASCITA DELLA REPUBBLICA
+Storia|IL REFERENDUM DEL DOPOGUERRA
+Storia|LE COLONIE GRECHE IN ITALIA
+Storia|I GLADIATORI NEL COLOSSEO
+Storia|LE TERME DI CARACALLA
+Storia|IL VESUVIO E POMPEI
+Storia|GLI ETRUSCHI E LE NECROPOLI
+Mestieri|IL PANETTIERE DI PAESE
+Mestieri|IL VETRAIO DI MURANO
+Mestieri|IL MAESTRO CARTIERE
+Mestieri|IL RESTAURATORE DI QUADRI
+Mestieri|IL LIUTAIO DI CREMONA
+Mestieri|IL CIABATTINO DEL BORGO
+Mestieri|IL FABBRO CON L'INCUDINE
+Mestieri|IL MURATORE SUL PONTE
+Mestieri|L'ELETTRICISTA DI FIDUCIA
+Mestieri|L'IDRAULICO IN RITARDO
+Mestieri|IL GIARDINIERE DEL PARCO
+Mestieri|IL PORTIERE DEL CONDOMINIO
+Mestieri|LA BADANTE DI FAMIGLIA
+Mestieri|IL POSTINO DEL QUARTIERE
+Mestieri|IL TASSISTA NOTTURNO
+Mestieri|IL MACCHINISTA DEL TRENO
+Mestieri|IL CAPOTRENO IN SERVIZIO
+Mestieri|LA HOSTESS DI VOLO
+Mestieri|IL PILOTA COLLAUDATORE
+Mestieri|IL CONTROLLORE DI VOLO
+Mestieri|IL CAPITANO DELLA NAVE
+Mestieri|IL PESCATORE ALL'ALBA
+Mestieri|IL CONTADINO NEL CAMPO
+Mestieri|IL PASTORE CON LE PECORE
+Mestieri|IL CASARO DEL CASEIFICIO
+Mestieri|IL SALUMIERE DEL MERCATO
+Mestieri|IL FRUTTIVENDOLO SOTTO CASA
+Mestieri|IL FIORAIO DEL CORSO
+Mestieri|IL GIORNALAIO ALL'ANGOLO
+Mestieri|IL LIBRAIO DI FIDUCIA
+Mestieri|LA SARTA DEL VICOLO
+Mestieri|IL PARRUCCHIERE DEL CENTRO
+Mestieri|L'ESTETISTA DEL SALONE
+Mestieri|IL CUOCO DELLA TRATTORIA
+Mestieri|IL CAMERIERE DI SALA
+Mestieri|IL SOMMELIER DEL RISTORANTE
+Mestieri|IL PASTICCERE DEL MATTINO
+Mestieri|IL GELATAIO ARTIGIANO
+Mestieri|IL PIZZAIOLO DEL FORNO
+Mestieri|L'INFERMIERE DI NOTTE
+Mestieri|IL MEDICO DI BASE
+Mestieri|IL DENTISTA DEL PAESE
+Mestieri|IL FARMACISTA DI TURNO
+Mestieri|IL VETERINARIO DEGLI ANIMALI
+Mestieri|L'AVVOCATO DEL FORO
+Mestieri|IL NOTAIO DEL CENTRO
+Mestieri|IL COMMERCIALISTA DI STUDIO
+Mestieri|L'ARCHITETTO DEL PROGETTO
+Mestieri|IL GEOMETRA DEL CANTIERE
+Mestieri|IL PROGRAMMATORE IN SMARTPHONE
+Mestieri|IL GRAFICO PUBBLICITARIO
+Mestieri|IL FOTOGRAFO DI MATRIMONI
+Mestieri|IL REGISTA DEL CORTOMETRAGGIO
+Mestieri|LA MAESTRA DI MUSICA
+Mestieri|IL PROFESSORE DI STORIA
+Mestieri|IL BIBLIOTECARIO DEL COMUNE
+Mestieri|IL VIGILE URBANO
+Mestieri|IL POMPIERE DI GUARDIA
+Mestieri|IL SOCCORRITORE IN MARE
+Mestieri|IL MILITARE IN MISSIONE
+Mestieri|L'ASTRONAUTA IN ORBITA
+Natura|IL SILENZIO DEL BOSCO
+Natura|IL PROFUMO DELLA PIOGGIA
+Natura|LA RUGIADA DEL MATTINO
+Natura|IL CANTO DEGLI UCCELLI
+Natura|IL VOLO DELLE RONDINI
+Natura|LA FUGA DELLE NUVOLE
+Natura|IL RIFLESSO SUL LAGO
+Natura|LA PRIMA NEVE IN QUOTA
+Natura|IL DISGELO DI PRIMAVERA
+Natura|LE FOGLIE D'ORO
+Natura|IL VENTO FRA I RAMI
+Natura|LA LUCE DELL'ALBA
+Natura|IL TRAMONTO SUL MARE
+Natura|LE ONDE SULLA SPIAGGIA
+Natura|LA SABBIA CALDA
+Natura|IL CIELO STELLATO
+Natura|LA VIA LATTEA
+Natura|IL VERSO DEL VENTO
+Natura|LA PIOGGIA SUI TETTI
+Natura|IL GHIACCIO SUL LAGO
+Natura|LE NUVOLE A PECORE
+Natura|LA TERRA BAGNATA
+Natura|IL BOSCO DI BETULLE
+Natura|LA RIVA DEL FIUME
+Natura|IL FONDO DELLA VALLE
+Natura|LA CIMA INNEVATA
+Natura|IL PRATO DI ALPEGGIO
+Natura|LO STAGNO CON LE NINFEE
+Natura|LA PRIMAVERA FIORITA
+Natura|L'ESTATE PIU CALDA
+Natura|L'INVERNO PIU FREDDO
+Natura|LA NEBBIA ALL'ALBA
+Natura|IL VENTO DEL NORD
+Natura|LA TEMPESTA IN ARRIVO
+Natura|IL RUSCELLO DI MONTAGNA
+Natura|LA SORGENTE NEL BOSCO
+Natura|LE STELLE CADENTI
+Natura|LA LUNA PIENA
+Casa|IL SALOTTO CON IL DIVANO
+Casa|LA CUCINA CON LA ISOLA
+Casa|IL TAVOLO DELLA CUCINA
+Casa|LE SEDIE IMPAGLIATE
+Casa|LA CREDENZA DI NONNA
+Casa|IL LAMPADARIO DEL SALOTTO
+Casa|LE TENDE AL VENTO
+Casa|IL TAPPETO PERSIANO
+Casa|LA LIBRERIA PIENA
+Casa|IL CAMINO ACCESO
+Casa|LA POLTRONA DEL NONNO
+Casa|LO SPECCHIO DELL'INGRESSO
+Casa|L'ATTACCAPANNI DI LEGNO
+Casa|LA SCALA A CHIOCCIOLA
+Casa|IL BALCONE FIORITO
+Casa|LA FINESTRA SUL CORTILE
+Casa|IL CORTILE INTERNO
+Casa|IL SOTTOSCALA BUIO
+Casa|LA CANTINA SOTTERRANEA
+Casa|IL SOLAIO DI LEGNO
+Casa|LA STANZA DEGLI OSPITI
+Casa|IL LETTO MATRIMONIALE
+Casa|LA CASSETTIERA DI MOGANO
+Casa|L'ARMATOIO A SPECCHIO
+Casa|IL COMODINO CON LA LAMPADA
+Casa|LA PORTA BLINDATA
+Casa|IL CAMPANELLO ROTTO
+Casa|LA BOLLETTA DELLA LUCE
+Casa|IL CONTATORE DEL GAS
+Casa|LA LAVATRICE NUOVA
+Casa|IL FRIGORIFERO PIENO
+Casa|LA PENTOLA SUL FUOCO
+Casa|IL TEGAME ANTIADERENTE
+Casa|LE POSATE NEL CASSETTO
+Casa|LA TAZZA DEL CAFFE
+Casa|IL VASO DI BASILICO
+Casa|LA TENDA DELLA DOCCIA
+Casa|LA CIABATTE IN CORRIDOIO
+Scuola|IL COMPITO DI MATEMATICA
+Scuola|LA LEZIONE DI STORIA
+Scuola|L'ORA DI EDUCAZIONE FISICA
+Scuola|LA VISITA AL MUSEO
+Scuola|LA RECITA DI NATALE
+Scuola|IL DIARIO DELLE ASSENZE
+Scuola|IL REGISTRO ELETTRONICO
+Scuola|IL COMPAGNO DI BANCO
+Scuola|LA PROFESSORESSA SEVERA
+Scuola|IL VOTO IN DECIMI
+Scuola|IL DIPLOMA DI MATURITA
+Scuola|LA TESI DI LAUREA
+Scuola|IL COLLOQUIO DI LAVORO
+Scuola|IL CURRICULUM VITAE
+Scuola|LA RIUNIONE DEL LUNEDI
+Scuola|IL CAFFE DELLE UNDICI
+Scuola|LA PAUSA PRANZO
+Scuola|IL CALENDARIO DELLE SCADENZE
+Scuola|LA POSTA DA SMALTARE
+Scuola|IL TELEFONO CHE SQUILLA
+Scuola|LA VIDEOCHIAMATA DI SQUADRA
+Scuola|IL FOGLIO DI CALCOLO
+Scuola|LA CARTELLA DEI DOCUMENTI
+Scuola|LA TIMBRATURA DEL CARTELLINO
+Scuola|LO STAGE IN AZIENDA
+Scuola|IL TIROCINIO ESTIVO
+Scuola|LA BORSA DI STUDIO
+Corpo umano|IL BATTITO DEL CUORE
+Corpo umano|LA POLMONITE DA FREDDO
+Corpo umano|IL SISTEMA NERVOSO
+Corpo umano|LA CIRCOLAZIONE DEL SANGUE
+Corpo umano|LO SCHELETRO UMANO
+Corpo umano|LA COLONNA VERTEBRALE
+Corpo umano|IL MUSCOLO DELLA GAMBA
+Corpo umano|LA PUNTA DEL NASO
+Corpo umano|IL LOBO DELL'ORECCHIO
+Corpo umano|LE DITA DEI PIEDI
+Corpo umano|IL PALMO DELLA MANO
+Corpo umano|LA PUPILLA DELL'OCCHIO
+Corpo umano|IL SORRISO SMAGLIANTE
+Corpo umano|LA VOCE RAUCA
+Corpo umano|I CAPELLI RICCI
+Corpo umano|LE GUANCE ROSSE
+Corpo umano|LA PELLE D'OCA
+Corpo umano|IL RESPIRO PROFONDO
+Corpo umano|IL MAL DI TESTA
+Corpo umano|LA FEBBRE ALTA
+Corpo umano|IL RAFFREDDORE DI STAGIONE
+Corpo umano|LA VISITA DI CONTROLLO
+Corpo umano|L'ANALISI DEL SANGUE
+Corpo umano|LA RICETTA DEL MEDICO
+Corpo umano|LE PILLOLE DEL MATTINO
+Corpo umano|LO SCIROPPO PER LA TOSSE
+Corpo umano|IL CEROTTO SUL DITO
+Corpo umano|LA GAMBA INGESSATA
+Moda|IL VESTITO DA SERA
+Moda|LA GIACCA DI LINO
+Moda|IL CAPPOTTO DI LANA
+Moda|LA CAMICIA A QUADRI
+Moda|I JEANS SLIM
+Moda|LE SCARPE CON I TACCHI
+Moda|LE SNEAKERS BIANCHE
+Moda|IL CAPPELO DI PAGLIA
+Moda|LA SCIARPA DI SETA
+Moda|I GUANTI DI PELLE
+Moda|LA CINTURA DI CUOIO
+Moda|LA BORSA A TRACOLLA
+Moda|GLI OCCHIALI DA SOLE
+Moda|L'OROLOGIO DA POLSO
+Moda|IL PROFUMO ALLA VANIGLIA
+Moda|LO SMALTO ROSSO
+Moda|IL TRUCCO DA SERA
+Moda|LA SFILATA DI MILANO
+Moda|LA SETTIMANA DELLA MODA
+Moda|IL VESTITO DELLA SPOSA
+Moda|L'ABITO DA CERIMONIA
+Moda|LA CAMICIA BIANCA
+Moda|IL MAGLIONE DI LANA
+Moda|I CALZINI SPAIATI
+Moda|LE CIABATTE DA CASA
+Moda|IL COSTUME DA BAGNO
+Moda|LA CUFFIA DI LANA
+Moda|IL PIGIAMA DI FLANELLA
+Moda|LA VESTAGLIA DI SPUGNA
+Moda|IL GREMBIULE DA CUCINA
+Trasporti|IL TRENO AD ALTA VELOCITA
+Trasporti|IL BINARIO IN RITARDO
+Trasporti|LA COINCIDENZA PERDUTA
+Trasporti|IL BIGLIETTO ELETTRONICO
+Trasporti|LA SALA D'ATTESA
+Trasporti|IL CONTROLLO DEI BAGAGLI
+Trasporti|IL VOLO IN RITARDO
+Trasporti|LA CARTA D'IMBARCO
+Trasporti|IL NASTRO DEI BAGAGLI
+Trasporti|LA PORTA D'IMBARCO
+Trasporti|IL PONTILE DELL'AEREO
+Trasporti|LA CINTURA DI SICUREZZA
+Trasporti|IL CAPITANO A BORDO
+Trasporti|LA TURBOLENZA IN VOLO
+Trasporti|IL TRAGHETTO PER LE ISOLE
+Trasporti|IL PORTO DI NOTTE
+Trasporti|LA LINEA DEL TRAM
+Trasporti|LA FERMATA DELL'AUTOBUS
+Trasporti|IL CAPOLINEA DEL METRO
+Trasporti|LA METROPOLITANA AFFOLLATA
+Trasporti|IL PARCHEGGIO SOTTERRANEO
+Trasporti|IL CASCO SULLO SCOOTER
+Trasporti|LA PATENTE DI GUIDA
+Trasporti|IL DISTRIBUTORE DI BENZINA
+Trasporti|LA TANGENZIALE AL TRAMONTO
+Trasporti|IL TRAFFICO DEL LUNEDI
+Trasporti|LA BICICLETTA ELETTRICA
+Trasporti|IL MONOPATTINO IN CENTRO
+Trasporti|LA ZONA A TRAFFICO LIMITATO
+Trasporti|IL PASSEGGINO SUL BUS
+Emozioni|LA GIOIA DI RITROVARSI
+Emozioni|UNA PAURA IMPROVVISA
+Emozioni|LA NOIA DI UNA DOMENICA
+Emozioni|LA TRISTEZZA DEL DISTACCO
+Emozioni|LA SORPRESA PIU BELLA
+Emozioni|LA RABBIA REPRESSA
+Emozioni|LA TENEREZZA DI UN ABBRACCIO
+Emozioni|LA NOSTALGIA DEI RICORDI
+Emozioni|LA PAZIENZA DI UN SANTO
+Emozioni|L'ENTUSIASMO DEI PRIMI GIORNI
+Emozioni|LA DELUSIONE AMARA
+Emozioni|L'ANSIA DA PRESTAZIONE
+Emozioni|LA VERGOGNA DI ARROSSIRE
+Emozioni|LA CURIOSITA DI SCOPRIRE
+Emozioni|LA GRATITUDINE SINCERA
+Emozioni|LA FIDUCIA TRADITA
+Emozioni|L'AMORE A PRIMA VISTA
+Emozioni|LA GELOSIA INFONDATA
+Emozioni|LA CALMA DOPO LA TEMPESTA
+Emozioni|LA FRETTA DI ARRIVARE
+Emozioni|LA SPERANZA NEL FUTURO
+Emozioni|LA MALINCONIA D'AUTUNNO
+Emozioni|LO STUPORE DI UN BAMBINO
+Emozioni|LA SICUREZZA IN SE
+Emozioni|IL CORAGGIO DI DIRE NO
+Emozioni|LA PACE INTERIORE
+Emozioni|IL RIMPIANTO PER UN ERRORE
+Fiabe|LA FATA DIMENTICATA
+Fiabe|IL CASTELLO SULLA NUVOLA
+Fiabe|IL PONTE DI CRISTALLO
+Fiabe|LA POZIONE MAGICA
+Fiabe|LO SPECCHIO INCANTATO
+Fiabe|LA TELA DI PENELOPE
+Fiabe|IL FILO DI ARIANNA
+Fiabe|IL VOLO DI ICARO
+Fiabe|IL TALENTO DI ORFEO
+Fiabe|LA SCATOLA DI PANDORA
+Fiabe|IL CAVALLO DI TROIA
+Fiabe|IL DRAGO A TRE TESTE
+Fiabe|LA PRINCIPESSA SUL PISELLO
+Fiabe|I VESTITI NUOVI DEL RE
+Fiabe|IL PIFFERAIO MAGICO
+Fiabe|LA GALLINA DALLE UOVA D'ORO
+Fiabe|IL TOPOLINO DI CAMPAGNA
+Fiabe|LA LEPRE E LA TARTARUGA
+Fiabe|IL CORVO E LA VOLPE
+Fiabe|LA CICALA E LA FORMICA
+Fiabe|IL LUPO E L'AGNELLO
+Fiabe|LA VOLPE E L'UVA
+Fiabe|IL CANE E L'OMBRA
+Fiabe|LA RANA E IL BUE
+Fiabe|IL LEONE E IL TOPOLINO
+Fiabe|LA BELLA ADDORMENTATA NEL BOSCO
+Fiabe|IL PIFFERAIO DI HAMELIN
+Fiabe|LA CASA DI MARZAPANE
+Fiabe|LA SCARPA DI CRISTALLO
+Fiabe|IL BACIO DEL PRINCIPE
+Fiabe|LA SIRENA INNAMORATA
+Fiabe|IL GIGANTE BUONO
+Fiabe|L'ORCO NELLA FORESTA
+Fiabe|LA BEFANA SULLA SCOPA
+Fiabe|IL TRENO VERSO IL POLO NORD
+Fiabe|LA LANTERNA DI ALADINO
+Fiabe|IL TAPPETO VOLANTE
+Fiabe|LA SFIDA DEL LABIRINTO
+Fiabe|IL SEGRETO DEL BOSCO ANTICO
+Fumetti|L'UOMO RAGNO AL QUARTIERE
+Fumetti|IL PIPISTRELLO DI GOTHAM
+Fumetti|IL RIFUGIO DEI SUPEREROI
+Fumetti|LA CAPITANA DELLE MERAVIGLIE
+Fumetti|IL MARTELLO DI THOR
+Fumetti|LO SCUDO DEL CAPITANO
+Fumetti|LA VISTA DI SUPERMAN
+Fumetti|IL RAGNO APPESO AL MURO
+Fumetti|LA TRAMA DEL FUMETTO
+Fumetti|LE NUVOLE DI PAPERINO
+Fumetti|LA PRIMA PAGINA DI TEX
+Fumetti|IL RIFUGIO DI BATMAN
+Fumetti|LA BANDA DEI CATTIVI
+Fumetti|IL PIANO DEL CATTIVO
+Fumetti|L'EROE SENZA PAURA
+Fumetti|LA MASCHERA SUL VISO
+Fumetti|IL SEGRETO DEL CAPITANO
+Fumetti|LA PATTUGLIA DEI GUARDIANI
+Fumetti|IL COLPO DEL FULMINE
+Fumetti|LA FORZA DELLO SCUDO
+Fumetti|IL VOLO DEL MANTELLO
+Fumetti|IL RAGGIO DI ENERGIA
+Fumetti|L'ISOLA DEGLI EROI
+Fumetti|LA LEGGENDA DEL DRAGO
+Fumetti|IL FANTASMA DEL CASTELLO
+Fumetti|LA VENDETTA DEL RIVALE
+Fumetti|IL DIARIO DEL PUGILE
+Fumetti|LA RADIO DEL COMMISSARIO
+Fumetti|IL DETECTIVE DEL QUARTIERE
+Fumetti|LA TRAPPOLA DEL NEMICO
+Videogiochi|IL LIVELLO FINALE
+Videogiochi|IL JOYSTICK DELLO ZIO
+Videogiochi|LA CONSOLE DI NUOVA GENERAZIONE
+Videogiochi|IL PUNTEGGIO PIU ALTO
+Videogiochi|LA PARTITA ONLINE
+Videogiochi|IL PERSONAGGIO SEGRETO
+Videogiochi|LA MAPPA DEL MONDO
+Videogiochi|IL SALVATAGGIO AUTOMATICO
+Videogiochi|LA MOSSA SPECIALE
+Videogiochi|IL TORNEO DI QUARTIERE
+Videogiochi|LA MONETA D'ORO
+Videogiochi|IL BOSS FINALE
+Videogiochi|LA VITA EXTRA
+Videogiochi|IL CONTROLLER SENZA FILI
+Videogiochi|LA REALTA VIRTUALE
+Videogiochi|IL LABIRINTO NEL BUIO
+Videogiochi|LA CORSA VERSO IL TRAGUARDO
+Videogiochi|IL TASTO DI PAUSA
+Videogiochi|LA SQUADRA DEL WEB
+Videogiochi|IL CAMPIONATO DEL MONDO
+Videogiochi|LA CARTA DA COLLEZIONE
+Videogiochi|IL MONDO VIRTUALE
+Videogiochi|LA VOCE DEL NARRATORE
+Videogiochi|IL RITMO DELLA MUSICA
+Videogiochi|LA STORIA DEL CAVALIERE
+Videogiochi|IL CASTELLO STREGATO
+Videogiochi|LA CORSA A OSTACOLI
+Letteratura|IL RITRATTO DI DORIAN GRAY
+Letteratura|LE AVVENTURE DI SHERLOCK
+Letteratura|IL ROMANZO D'APPENDICE
+Letteratura|LA COMMEDIA DELL'ARTE
+Letteratura|IL CINQUE MAGGIO
+Letteratura|L'INFINITO DI LEOPARDI
+Letteratura|IL SABATO DEL VILLAGGIO
+Letteratura|LA QUIETE DOPO LA TEMPESTA
+Letteratura|IL PASSERO SOLITARIO
+Letteratura|SAN MARTINO DEL CARDUCCI
+Letteratura|LA PIOGGIA NEL PINETO
+Letteratura|MERIGGIARE PALLIDO E ASSORTO
+Letteratura|SPESSO IL MALE DI VIVERE HO INCONTRATO
+Letteratura|ED E SUBITO SERA
+Letteratura|I FIUMI DI UNGARETTI
+Letteratura|IL CANTO NOTTURNO
+Letteratura|LA CAVALLA STORNA
+Letteratura|IL CANTO DELL'INFERNO
+Letteratura|LE ANIME DEL PURGATORIO
+Letteratura|IL PARADISO DI DANTE
+Letteratura|LA SELVA OSCURA
+Letteratura|IL COLLE DI ULYSSE
+Letteratura|LA BUFERA E ALTRO
+Letteratura|IL GIORNO DI PARINI
+Letteratura|I SEPOLCRI DEL FOSCOLO
+Letteratura|LE ULTIME LETTERE DI JACOPO
+Letteratura|I PROMESSI SPOSI DI MANZONI
+Letteratura|IL CINQUE MAGGIO DI MANZONI
+Letteratura|LA SIGNORA DELLE CAMELIE
+Letteratura|IL FU MATTIA PASCAL
+Letteratura|UNO NESSUNO E CENTOMILA
+Letteratura|LE CITTA INVISIBILI
+Letteratura|SE UNA NOTTE D'INVERNO
+Letteratura|IL BARONE RAMPANTE
+Letteratura|IL VISCONTE DIMEZZATO
+Letteratura|LA COSCIENZA DI ZENO
+Letteratura|IL GATTOPARDO DI TOMASI
+Letteratura|LA RAGAZZA DI BUBE
+Letteratura|IL SENTIERO DEI NIDI DI RAGNO
+Letteratura|GLI INDIFFERENTI DI MORAVIA
+Letteratura|IL NOME DELLA ROSA DI ECO
+Letteratura|IL PENDOLO DI FOUCAULT
+Letteratura|LA BUSTINA DI MINERVA
+Arte|LA GIOCONDA DI LEONARDO
+Arte|L'ULTIMA CENA DI MILANO
+Arte|LA CREAZIONE DI ADAMO
+Arte|LA PIETA DI MICHELANGELO
+Arte|IL DAVID DI FIRENZE
+Arte|LA NASCITA DI VENERE
+Arte|LA PRIMAVERA DEL BOTTICELLI
+Arte|LA SCUOLA DI ATENE
+Arte|LA NOTTE STELLATA
+Arte|I GIRASOLI DI VAN GOGH
+Arte|LA CAMERA DI VAN GOGH
+Arte|LA PERSISTENZA DELLA MEMORIA
+Arte|IL GRIDO DI MUNCH
+Arte|LA DANZA DI MATISSE
+Arte|IL BACIO DI KLIMT
+Arte|LA RAGAZZA CON L'ORECCHINO
+Arte|LA VENERE DI BOTTICELLI
+Arte|IL CENACOLO VINCIANO
+Arte|LA CATTEDRALE DI CHARTRES
+Arte|LA CAPPELLA SISTINA
+Arte|GLI AFFRESCHI DI POMPEI
+Arte|IL MOSAICO BIZANTINO
+Arte|LA PROSPETTIVA RINASCIMENTALE
+Arte|IL CHIAROSCURO DI CARAVAGGIO
+Arte|LA NATURA MORTA FIAMMINGA
+Arte|IL RITRATTO RINASCIMENTALE
+Arte|LA SCULTURA IN MARMO
+Arte|LA FUSIONE IN BRONZO
+Arte|LA TELA DEL PITTORE
+Arte|LA TAVOLOZZA DI COLORI
+Arte|IL CAVALLETTO DEL PITTORE
+Arte|LA GALLERIA DEGLI UFFIZI
+Arte|IL MUSEO EGIZIO
+Arte|LA GALLERIA BORGHESE
+Arte|IL MUSEO ARCHEOLOGICO
+Arte|LA MOSTRA DEL CENTENARIO
+Feste|IL CENONE DELLA VIGILIA
+Feste|LA CALZA DELLA BEFANA
+Feste|IL PRESEPE SOTTO L'ALBERO
+Feste|LA LETTERINA DI NATALE
+Feste|IL PANETTONE DEL NONNO
+Feste|IL BRINDISI DI MEZZANOTTE
+Feste|I FUOCHI DI CAPODANNO
+Feste|LA LENTICCHIA DI SAN SILVESTRO
+Feste|IL CARRO DI CARNEVALE
+Feste|LE MASCHERE DI VENEZIA
+Feste|I CORIANDOLI PER ARIA
+Feste|LA QUARESIMA DI DOLCI
+Feste|LE UOVA DI PASQUA
+Feste|LA COLOMBA DEL MATTINO
+Feste|IL PRANZO DI PASQUETTA
+Feste|LA GITA DI PASQUETTA
+Feste|IL PRIMO MAGGIO IN FAMIGLIA
+Feste|LA FESTA DELLA REPUBBLICA
+Feste|IL CONCERTO DEL PRIMO MAGGIO
+Feste|LA NOTTE DI SAN LORENZO
+Feste|IL FERRAGOSTO AL MARE
+Feste|LA SAGRA DEL PAESE
+Feste|LA FESTA PATRONALE
+Feste|LA PROCESSIONE RELIGIOSA
+Feste|IL PALIO DELLE CONTRADE
+Feste|LA REGATA SUL CANALE
+Feste|IL MERCATINO DI NATALE
+Feste|LA VIN BRULEE DI MONTAGNA
+Feste|LA TORTA DI COMPLEANNO
+Feste|LE CANDELINE SULLA TORTA
+Feste|GLI AUGURI DI BUON ANNO
+Feste|LA BOMBONIERA DEGLI SPOSI
+Feste|IL LANCIO DEL RISO
+Feste|LA FESTA DI FINE ANNO
+Feste|IL CALENDARIO DELL'AVVENTO
+Geografia|IL CORSO DEL FIUME PO
+Geografia|LA FOCE DEL TEVERE
+Geografia|IL LAGO DI GARDA
+Geografia|IL LAGO MAGGIORE
+Geografia|IL MARE ADRIATICO
+Geografia|IL MAR TIRRENO
+Geografia|IL GOLFO DI NAPOLI
+Geografia|LO STRETTO DI MESSINA
+Geografia|LA PIANURA PADANA
+Geografia|LE COLLINE TOSCANE
+Geografia|LA VETTA DEL MONTE BIANCO
+Geografia|IL GRAN SASSO D'ITALIA
+Geografia|LE ALPI OCCIDENTALI
+Geografia|GLI APPENNINI CENTRALI
+Geografia|IL DESERTO DEL SAHARA
+Geografia|LA FORESTA AMAZZONICA
+Geografia|IL FIUME NILO
+Geografia|IL MONTE EVEREST
+Geografia|LA FOSSA DELLE MARIANNE
+Geografia|IL POLO NORD
+Geografia|IL CONTINENTE ANTARTICO
+Geografia|IL MAR MEDITERRANEO
+Geografia|IL CANALE DI SUEZ
+Geografia|IL CANALE DI PANAMA
+Geografia|LA CINTURA EQUATORIALE
+Geografia|IL TROPICO DEL CANCRO
+Geografia|LA COSTA OCCIDENTALE
+Geografia|L'ALTIPIANO DEL TIBET
+Geografia|LE CASCATE DEL NIAGARA
+Geografia|IL VULCANO ETNA
+Geografia|IL CRATERE DEL VESUVIO
+Geografia|LE ISOLE EOLIE
+Geografia|LA LAGUNA DI VENEZIA
+Geografia|IL DELTA DEL PO
+Geografia|LE SORGENTI DEL CLITUNNO
+Geografia|IL VALICO DI MONTAGNA
+Luoghi|LA REGGIA DI CASERTA
+Luoghi|IL PALAZZO DUCALE
+Luoghi|LA CERTOSA DI PAVIA
+Luoghi|L'ABBAZIA DI MONTECASSINO
+Luoghi|IL CASTELLO DI FENESTRELLE
+Luoghi|IL CASTELLO SFORZESCO
+Luoghi|LA ROCCA MEDIEVALE
+Luoghi|LE GROTTE DI CASTELLANA
+Luoghi|LA GROTTA AZZURRA
+Luoghi|LE GROTTE DEL FURLO
+Luoghi|LA VALLE DEI TEMPLI
+Luoghi|I SASSI DI MATERA
+Luoghi|I TRULLI DI ALBEROBELLO
+Luoghi|LE CINQUE TERRE
+Luoghi|LA COSTIERA AMALFITANA
+Luoghi|IL LAGO DI BRAIES
+Luoghi|LE TRE CIME DI LAVAREDO
+Luoghi|IL SENTIERO DEGLI DEI
+Luoghi|LA STRADA DELLE DOLOMITI
+Luoghi|IL PASSAGGIO DEL BRENNERO
+Luoghi|LA PIAZZA DEL CAMPO
+Luoghi|IL PONTE VECCHIO
+Luoghi|IL PONTE DI RIALTO
+Luoghi|LA GALLERIA VITTORIO EMANUELE
+Luoghi|IL TEATRO ALLA SCALA
+Luoghi|IL TEATRO GRECO DI TAORMINA
+Luoghi|L'ANFITEATRO DI VERONA
+Luoghi|L'ARENA DI VERONA
+Luoghi|IL COLOSSEO ILLUMINATO
+Luoghi|IL FORO ROMANO
+Luoghi|IL PALATINO AL TRAMONTO
+Luoghi|LA FONTANA DI TREVI
+Luoghi|PIAZZA SAN PIETRO
+Luoghi|I MUSEI VATICANI
+Luoghi|LA CUPOLA DI BRUNELLESCHI
+Luoghi|IL CAMPANILE DI GIOTTO
+Luoghi|LA TORRE DI PISA
+Luoghi|IL DUOMO DI ORVIETO
+Luoghi|LA BASILICA DI ASSISI
+Luoghi|IL SANTUARIO SULLA ROCCIA
+Dolci|IL TIRAMISU DELLA NONNA
+Dolci|LA ZUPPA INGLESE
+Dolci|LA PANNA COTTA
+Dolci|IL BUDINO AL CIOCCOLATO
+Dolci|LA CREMA CATALANA
+Dolci|IL CANNOLO SICILIANO
+Dolci|LA SFOGLIATELLA CALDA
+Dolci|IL BABA AL RUM
+Dolci|LA PASTIERA NAPOLETANA
+Dolci|IL PANETTONE ARTIGIANALE
+Dolci|LA COLOMBA PASQUALE
+Dolci|LE ZEPPOLE DI SAN GIUSEPPE
+Dolci|I FRITTELLE DI CARNEVALE
+Dolci|LE CHIACCHIERE ALLA VANIGLIA
+Dolci|IL TORRONE DI CREMONA
+Dolci|I BRUTTI MA BUONI
+Dolci|I BACI DI DAMA
+Dolci|LE PASTE DI MANDORLA
+Dolci|LA TORTA CAPRESE
+Dolci|LA TORTA DELLA NONNA
+Dolci|IL PROFITEROLE AL CAFFE
+Dolci|LA MILLEFOGLIE ALLA CREMA
+Dolci|IL SEMIFREDDO AL PISTACCHIO
+Dolci|LA GRANITA DI CAFFE
+Dolci|IL GELATO ARTIGIANALE
+Dolci|LA MARMELLATA DI ALBICOCCHE
+Dolci|IL MIELE DI CASTAGNO
+Dolci|LO ZUCCHERO A VELO
+Frutta e verdura|LE ARANCE DI SICILIA
+Frutta e verdura|I LIMONI DI SORRENTO
+Frutta e verdura|LE MELE DEL TRENTINO
+Frutta e verdura|LE PERE ABBATE
+Frutta e verdura|LE PESCHE GIALLE
+Frutta e verdura|LE FRAGOLE DI MAGGIO
+Frutta e verdura|LE CILIEGIE DEL VIGNETO
+Frutta e verdura|I FICHI D'INDIA
+Frutta e verdura|LE NOCI DEL PIEMONTE
+Frutta e verdura|LE CASTAGNE ARROSTITE
+Frutta e verdura|IL MELOGRANO MATURO
+Frutta e verdura|IL MELONE AL PROSCIUTTO
+Frutta e verdura|I POMODORI PACHINO
+Frutta e verdura|LE ZUCCHINE ROMANESCHE
+Frutta e verdura|I CARCIOFI VIOLETTI
+Frutta e verdura|LE MELANZANE NERE
+Frutta e verdura|I PEPERONI ARROSTITI
+Frutta e verdura|LE CIPOLLE ROSSE
+Frutta e verdura|I FAGIOLINI FRESCHI
+Frutta e verdura|LE PATATE NOVELLE
+Frutta e verdura|I FUNGHI PORCINI
+Frutta e verdura|LE LENTICCHIE DI CASTELLUCCIO
+Frutta e verdura|I CECI AMMOLLATI
+Frutta e verdura|LA RUCOLA SELVATICA
+Frutta e verdura|IL RADICCHIO ROSSO
+Bevande|IL CAFFE DEL MATTINO
+Bevande|IL CAPPUCCINO AL BAR
+Bevande|IL TE CON I BISCOTTI
+Bevande|LA CIOCCOLATA CALDA
+Bevande|IL SUCCO D'ARANCIA
+Bevande|LA SPREMUTA DI POMPELMO
+Bevande|LA BOTTIGLIA DI VINO
+Bevande|IL BICCHIERE DI ROSSO
+Bevande|UN CALICE DI BIANCO
+Bevande|LO SPUMANTE BRUT
+Bevande|IL PROSECCO FRIZZANTE
+Bevande|LA BIRRA ARTIGIANALE
+Bevande|IL BICCHIERE DI BIRRA
+Bevande|L'APERITIVO AL TRAMONTO
+Bevande|LO SPRITZ CON PATATINE
+Bevande|IL NEGRONI AL BAR
+Bevande|IL VINO DELLA CASA
+Bevande|L'AMARO DOPO CENA
+Bevande|IL GRAFFE ALLA GRAPPA
+Bevande|IL LIMONCELLO FREDDO
+Bevande|LA GRAPPA DI VINACCIA
+Bevande|IL FRULLATO DI FRAGOLA
+Bevande|IL FRULLATO DI BANANA
+Bevande|LA CENTRIFUGA DI CAROTE
+Bevande|IL LATTE MACCHIATO
+Bevande|LA TISANA ALLA CAMOMILLA
+Bevande|IL THE AL LIMONE
+Bevande|L'ACQUA DEL RUBINETTO
+Bevande|IL GHIACCIO NEL BICCHIERE
+Scioglilingua|SOPRA LA PANCA LA CAPRA CAMPA
+Scioglilingua|TRE TIGRI CONTRO TRE TIGRI
+Scioglilingua|APPELLO AL PAPA
+Scioglilingua|TETTE E TETTARELLE
+Scioglilingua|SOTTO LE FRASCHE DELLE FRAGOLE
+Scioglilingua|IL RAGNO ROGNA ROSSO
+Scioglilingua|Trentatre TRENTINI TRENTATRE
+Scioglilingua|SAI CHE IL POZZO E SECCO
+Scioglilingua|IL PECORINO DI PECORA PICCOLA
+Scioglilingua|LA NAVE CHE VA IN VACCA
+Scioglilingua|UN TOSSI COME UN CANE
+Scioglilingua|FILO DI FERRO FINO E FINE
+Scioglilingua|CHI COMPRA COCCO COMPRA COCCO
+Scioglilingua|MI BAGNO IN UN BAGNO CALDO
+Scioglilingua|UN PRETE PREDICA POCO
+Scioglilingua|PORTE APERTE PER TRE PASSI
+Scioglilingua|LA ZANZARA ZAZZERA
+Scioglilingua|SEDICI SCIMMIE SUL SELCIATO
+Scioglilingua|QUATTRO CANTINIERI CON QUATTRO QUINTALI
+Slogan|DOVE C'E BARILLA C'E CASA
+Slogan|IL GUSTO DELLA SEMPLICITA
+Slogan|LA PUBBLICITA PROGRESSO
+Slogan|PROVARE PER CREDERE
+Slogan|PIU BELLO DA VIVERE
+Slogan|IL FUTURO E GIA QUI
+Slogan|PENSI MALE DI NOI
+Slogan|LA FORZA DI UN SORRISO
+Slogan|IL SAPORE DELL'ITALIA
+Slogan|FATTO CON IL CUORE
+Slogan|PICCOLO PREZZO GRANDE RESA
+Slogan|SCEGLI IL MEGLIO
+Slogan|CHI MENO SPENDE MENO SPENDE
+Slogan|LA QUALITA SI VEDE
+Slogan|SOLO IL MEGLIO PER TE
+Slogan|IL BUCATO PROFUMA DI PULITO
+Slogan|RIDERE FA BENE ALLA SALUTE
+Slogan|OGNI GIORNO UN NUOVO GIORNO
+Slogan|LA MENTE CHE PENSA AL CUORE
+Slogan|IL MONDO IN UNA STANZA
+Slogan|SEMPRE AL TUO FIANCO
+Slogan|NON LASCIARTI SFUGGIRE L'OCCASIONE
+Slogan|UN PICCOLO PASSO AVANTI
+Slogan|LA SEMPLICITA E LA COSA PIU DIFFICILE
+Slogan|QUI C'E TUTTO IL SAPORE
+Poesia|NEL MEZZO DEL CAMMIN DI NOSTRA VITA
+Poesia|SEMPRE CARO MI FU QUEST'ERMO COLLE
+Poesia|SILVIA RIMEMBRII ANCOR
+Poesia|DOLCE E CHIARA E LA SERA
+Poesia|LUSCIGNOLO CHE CANTA IN SUL FAR DELLA NOTTE
+Poesia|OGNUNO STA SOLO SULLA VETTA
+Poesia|LA PIOGGIA CHE PIOVE SULLE TAMARICI
+Poesia|NON CHIEDERE LA PAROLA
+Poesia|PARLA DEI TUOI LIMONI
+Poesia|MI ILLUMINO D'IMMENSO
+Poesia|LA MORTE HA TRE PAROLE
+Poesia|NON MI RICONOSCI PIU
+Poesia|ALLA SERA LA SALITA E FINITA
+Poesia|NEL CAMPO DI GRANO MATURO
+Poesia|LA NEBBIOSA PIOGGIA DI NOVEMBRE
+Poesia|E IL SOLE RISORGE SULLE ROVINE
+Poesia|SPEZZATA IN DUE LA LUNA
+Poesia|ASCOLTAMI LA NOTTE E LUNGA
+Poesia|IL VENTO CHE SUSSURRA PAROLE ANTICHE
+Poesia|FIORI DI CARTA SUL TAVOLO
+Poesia|ALBA DI UN GIORNO NUOVO
+Poesia|LE MIE MANI TI CERCAVANO
+Poesia|UNA CASA IN RIVA AL MARE
+Poesia|IL RUMORE DEL SILENZIO
+Poesia|NEVE CHE CADE LENTA
+Cucina|LA PASTA ALLA CARBONARA
+Cucina|LA PARMIGIANA DI MELANZANE
+Cucina|LA BISTECCA ALLA FIORENTINA
+Cucina|IL BOLLITO MISTO
+Cucina|LA CODA ALLA VACCINARA
+Cucina|IL CARPACCIO DI MANZO
+Cucina|LA COTOLETTA ALLA MILANESE
+Cucina|IL VITELLO TONNATO
+Cucina|LA BRESAOLA CON RUCOLA
+Cucina|IL PESCE SPADA GRIGLIATO
+Cucina|LA ZUPPA DI PESCE
+Cucina|I GAMBERI ALLA GRIGLIA
+Cucina|IL RISOTTO ALLA MILANESE
+Cucina|LA POLENTA CON FUNGHI
+Cucina|LA POLENTA TARAGNA
+Cucina|IL TAGLIERE DI SALUMI
+Cucina|LA GIARDINIERA SOTT'ACETO
+Cucina|I SOTTACETI DELLA NONNA
+Cucina|IL PANE FATTO IN CASA
+Cucina|LA PAGNOTTA CALDA
+Cucina|LA FOCACCIA DELL'APERITIVO
+Cucina|LE OLIVE ASCOLANE
+Cucina|I CROSTINI MISTI
+Cucina|L'ANTIPASTO DELLA CASA
+Cucina|IL SECONDO DI MARE
+Scienza e spazio|LA TEORIA DELLA RELATIVITA
+Scienza e spazio|LA LEGGE DI GRAVITA
+Scienza e spazio|IL SISTEMA SOLARE
+Scienza e spazio|LA NEBULOSA DI ORIONE
+Scienza e spazio|IL BUCO NERO
+Scienza e spazio|LA STELLA POLARE
+Scienza e spazio|L'ECLISSI DI SOLE
+Scienza e spazio|LE FASI LUNARI
+Scienza e spazio|LA MISSIONE SULLA LUNA
+Scienza e spazio|LA STAZIONE SPAZIALE
+Scienza e spazio|IL TELESCOPIO SPAZIALE
+Scienza e spazio|LA SONDA MARZIANA
+Scienza e spazio|IL SUOLO DI MARTE
+Scienza e spazio|L'ANELLO DI SATURNO
+Scienza e spazio|LA COMETA DI NEVE
+Scienza e spazio|LA POLVERE DI STELLE
+Scienza e spazio|LA FUSIONE NUCLEARE
+Scienza e spazio|IL FOTONE DI LUCE
+Scienza e spazio|LA TAVOLA PERIODICA
+Scienza e spazio|L'ATOMO DI IDROGENO
+Scienza e spazio|LA MOLECOLA D'ACQUA
+Scienza e spazio|LA REAZIONE CHIMICA
+Scienza e spazio|IL LABORATORIO DI RICERCA
+Scienza e spazio|IL MICROSCOPIO OTTICO
+Scienza e spazio|LA CELLULA VEGETALE
+Scienza e spazio|IL CODICE GENETICO
+Scienza e spazio|L'EVOLUZIONE DELLA SPECIE
+Scienza e spazio|IL FOSSILE DI DINOSAURO
+Scienza e spazio|GLI STRATI DEL SUOLO
+Scienza e spazio|IL TERREMOTO SOTTO TERRA
+Scienza e spazio|LA PLACCA TETTONICA
+Scienza e spazio|IL VULCANO SOTTOMARINO
+Scienza e spazio|LA CORRENTE DEL GOLFO
+Scienza e spazio|IL CICLO DELL'ACQUA
+Scienza e spazio|LA FOTOSINTESI CLOROFILLIANA
+Scienza e spazio|IL CAMBIAMENTO CLIMATICO
+Scienza e spazio|LA BIODIVERSITA DEL PIANETA
+Tecnologia e web|IL TELEFONO INTELLIGENTE
+Tecnologia e web|LO SCHERMO TATTILE
+Tecnologia e web|LA CONNESSIONE VELOCE
+Tecnologia e web|IL CAVO DI RICARICA
+Tecnologia e web|LA BATTERIA SCARICA
+Tecnologia e web|IL CODICE SORGENTE
+Tecnologia e web|LA PASSWORD SEGRETA
+Tecnologia e web|IL BACKUP DEI DATI
+Tecnologia e web|IL CLOUD DELLE FOTO
+Tecnologia e web|LA FIBRA OTTICA
+Tecnologia e web|IL SEGNALE DEL WIFI
+Tecnologia e web|IL CODICE A BARRE
+Tecnologia e web|LA STAMPANTE LASER
+Tecnologia e web|LO SCANNER DEL BANCO
+Tecnologia e web|IL MOUSE SENZA FILI
+Tecnologia e web|LA TASTIERA DEL COMPUTER
+Tecnologia e web|IL DISCO RIGIDO
+Tecnologia e web|LA MEMORIA DEL SERVER
+Tecnologia e web|IL ROBOT DA CUCINA
+Tecnologia e web|IL DRONE CON LA CAMERA
+Tecnologia e web|LA VISIERA VIRTUALE
+Tecnologia e web|IL PAGAMENTO DIGITALE
+Tecnologia e web|LA CARTA CONTACTLESS
+Tecnologia e web|LO SPID PER LE BANCHE
+Tecnologia e web|LA PEC UFFICIALE
+Tecnologia e web|IL NODO DELLA RETE
+Tecnologia e web|LA RETE DI CASA
+Tecnologia e web|IL FIREWALL DEL SISTEMA
+Tecnologia e web|LA COPIA DI SICUREZZA
+Tecnologia e web|IL SISTEMA OPERATIVO
+Tecnologia e web|IL CAVO ETHERNET
+Tecnologia e web|LA RICERCA SUL MOTORE
+Tecnologia e web|IL SITO DEL COMUNE
+Tecnologia e web|LA CASELLA DI POSTA
+Tecnologia e web|IL LINK DELLA DIRETTA
+Tecnologia e web|LO STREAMING DELLA PARTITA
+Tecnologia e web|IL VIDEO IN ALTA DEFINIZIONE
+Tecnologia e web|IL FILTRO DELLA FOTO
+Meteo|LA PIOGGIA DI MAGGIO
+Meteo|IL TEMPORALE DI FINE ESTATE
+Meteo|LA NEBBIA IN PIANURA
+Meteo|IL VENTO DI TRAMONTANA
+Meteo|LO SCIROCCO CALDO
+Meteo|LA BRINA DEL MATTINO
+Meteo|LA NEVICATA DI DICEMBRE
+Meteo|IL GELO NOTTURNO
+Meteo|IL SOLE DI MEZZOGIORNO
+Meteo|LE NUVOLE NERE
+Meteo|IL GRANDINE SUI CAMPI
+Meteo|LA TEMPESTA DI VENTO
+Meteo|L'ARCOBALENO DOPO LA PIOGGIA
+Meteo|LA MAREGGIATA DA SCIROCCO
+Meteo|IL CLIMA TEMPERATO
+Meteo|LE PREVISIONI DEL WEEKEND
+Meteo|IL CIELO COPERTO
+Meteo|LA PIOGGIA A ROVESCI
+Meteo|IL FREDDO POLARE
+Meteo|L'AFOSA SERATA D'ESTATE
+Meteo|LA BREZZA SUL LAGO
+Meteo|IL DISGELO IMPROVVISO
+Meteo|LA GALAVERNA SUI RAMI
+Personaggi|MICHELANGELO IL GENIO
+Personaggi|RAFFAELLO E LE SUE MADONNE
+Personaggi|GALILEO E IL PENDOLO
+Personaggi|ISAAC NEWTON E LA MELA
+Personaggi|RITA LEVI MONTALCINI
+Personaggi|FEDERICO GARCIA LORCA
+Personaggi|VINCENT VAN GOGH
+Personaggi|LEONARDO E LA BOTTEGA
+Personaggi|CRISTOFORO E LE CARAVELLE
+Personaggi|MARCO POLO IN CINA
+Personaggi|NAPOLEONE IN EGITTO
+Personaggi|GIULIETTA SUL BALCONE
+Personaggi|AMLETO E IL TESCHIO
+Personaggi|ULISSE E LE SIRENE
+Personaggi|ACHILLE E IL TALLONE
+Personaggi|IL PICCOLO PRINCIPE
+Personaggi|PETER PAN E LA POLVERE
+Personaggi|ROBIN HOOD NELLA FORESTA
+Personaggi|ZORRO E LA MASCHERA
+Personaggi|IL CONTE DI MONTECRISTO
+Personaggi|DON CHISCIOTTE E I MULINI
+Personaggi|IL DOTTORE DELLA PESTE
+Personaggi|LA REGINA DI CUORI
+Eventi|LA PRIMA COMUNIONE
+Eventi|IL PRANZO DI NATALE
+Eventi|LA CENA DI CAPODANNO
+Eventi|LA FESTA DI LAUREA
+Eventi|L'ADDIO AL CELIBATO
+Eventi|IL MATRIMONIO IN CAMPAGNA
+Eventi|LA FESTA DI COMPLEANNO
+Eventi|LA GITA SCOLASTICA
+Eventi|LA RIUNIONE DI FAMIGLIA
+Eventi|IL CONCERTO IN PIAZZA
+Eventi|LA PRIMA DELLO SPETTACOLO
+Eventi|IL FESTIVAL DEL CINEMA
+Eventi|LA MOSTRA D'ARTE
+Eventi|LA SAGRA DELLA CASTAGNA
+Eventi|LA FESTA DEL VINO
+Eventi|IL PALIO DI AGOSTO
+Eventi|LA REGATA STORICA
+Eventi|IL CARNEVALE IN MASCHERA
+Eventi|LA NOTTE BIANCA
+Eventi|IL CONCORSO DI PASTICCERIA
+Eventi|IL TORNEO DI BOCCE
+Eventi|LA PARTITA DI BENEFICENZA
+Eventi|LA CENA DI CLASSE
+Oggetti|IL PORTAFOGLIO DI PELLE
+Oggetti|IL PORTA CHIAVI
+Oggetti|IL CAVATAPPI DA CUCINA
+Oggetti|LA TORCIA ELETTRICA
+Oggetti|LA BILANCIA DA BAGNO
+Oggetti|LA SCOPA E PALETTA
+Oggetti|IL SECCHIO DELL'ACQUA
+Oggetti|LA SPUGNA DELLA CUCINA
+Oggetti|IL CAFFE DELLA MOKA
+Oggetti|LA PADELLA DELLA NONNA
+Oggetti|IL COLAPASTA DI RAME
+Oggetti|IL CALENDARIO DA PARETE
+Oggetti|IL TERMOMETRO DA PARETE
+Oggetti|LA SVEGLIA DEL COMODINO
+Oggetti|IL CUSCINO DEL DIVANO
+Oggetti|LA TRAPUNTA DI LANA
+Oggetti|IL TAPPETO DEL BAGNO
+Oggetti|IL CESTINO DELLA CARTA
+Oggetti|LA CESTA DELLA BIANCHERIA
+Oggetti|LA MANIGLIA DELLA PORTA
+Oggetti|LA CHIAVE DEL GARAGE
+Oggetti|IL NASTRO ADESIVO
+Oggetti|LE FORBICI DA CUCINA
+Al mare|LA VELA ALL'ORIZZONTE
+Al mare|IL BAGNO DI MEZZOGIORNO
+Al mare|LO SDRAIO SOTTO L'OMBRELLONE
+Al mare|IL GHIACCIOLO AL LIMONE
+Al mare|LA RETE DEL PESCATORE
+Al mare|IL FARO SULLA SCOGLIERA
+Al mare|LA BARCA A REMI
+Al mare|LA VELA COLORATA
+In montagna|LA BAITA TRA I PINI
+In montagna|LA FUNIVIA VERSO LA VETTA
+In montagna|IL RIFUGIO A 2000 METRI
+In montagna|LA DISCESA CON GLI SCI
+In montagna|LE CIASPOLE SULLA NEVE
+In montagna|IL BOSCO DI ABETI
+In montagna|LA MARMOTTA SUL SASSO
+In montagna|L'ARIA FRESCA DEL MATTINO
+In montagna|IL SENTIERO DELLE STELLE
+Animali|IL LUPO DELL'APPENNINO
+Animali|L'ORSO BRUNO DELLE ALPI
+Animali|L'AQUILA REALE IN VOLO
+Animali|IL FALCO PELLEGRINO
+Animali|IL GUFO DALLE ORECCHIE
+Animali|LA VOLPE NEL POLLAIO
+Animali|IL CERVO NELLA RADURA
+Animali|IL CINGHIALE NEL BOSCO
+Animali|LO SCOIATTOLO SUL PINO
+Animali|IL RICCIO NEL GIARDINO
+Animali|LA LEPRE IN FUGA
+Animali|IL TASSO NELLA TANA
+Animali|LA RANA NELLO STAGNO
+Animali|LA LUCCIOLA DI NOTTE
+Animali|LA FORMICA LABORIOSA
+Animali|L'APE SUL FIORE
+Animali|LA FARFALLA COLORATA
+Animali|LA COCCINELLA ROSSA
+Animali|LA RAGNATELA NELL'ANGOLO
+Animali|IL GRILLO CANTERINO
+Animali|LA CICALA SUL RAMO
+Animali|IL PICCHIO SUL TRONCO
+Animali|LA RONDINE IN PRIMAVERA
+Animali|IL GABBIANO SUL PORTO
+Animali|IL PELLICANO AFFAMATO
+Animali|IL DELFINO SALTATORE
+Animali|LA BALENA AZZURRA
+Animali|IL POLPO NEL BUCO
+Animali|LA MEDUSA TRASPARENTE
+Animali|LA STELLA MARINA
+Proverbi|CHI DORME NON PIGLIA PESCI
+Proverbi|CHI VA PIANO VA SANO E VA LONTANO
+Proverbi|L'ABITO NON FA IL MONACO
+Proverbi|RIDE BENE CHI RIDE ULTIMO
+Proverbi|MEGLIO TARDI CHE MAI
+Proverbi|CHI TROPPO VUOLE NULLA STRINGE
+Proverbi|TUTTE LE STRADE PORTANO A ROMA
+Proverbi|CAN CHE ABBAIA NON MORDE
+Proverbi|L'APPETITO VIEN MANGIANDO
+Proverbi|OCCHIO NON VEDE CUORE NON DUOLE
+Proverbi|CHI CERCA TROVA
+Proverbi|IL MATTINO HA L'ORO IN BOCCA
+Proverbi|MOGLIE E BUOI DEI PAESI TUOI
+Proverbi|PATTI CHIARI AMICIZIA LUNGA
+Proverbi|CHI SEMINA VENTO RACCOGLIE TEMPESTA
+Proverbi|A CAVAL DONATO NON SI GUARDA IN BOCCA
+Proverbi|IL BUONGIORNO SI VEDE DAL MATTINO
+Proverbi|UNA MELA AL GIORNO TOGLIE IL MEDICO DI TORNO
+Proverbi|CHI LA DURA LA VINCE
+Proverbi|CHI NON RISICA NON ROSICA
+Proverbi|TRA IL DIRE E IL FARE
+Proverbi|IL LUPO PERDE IL PELO
+Proverbi|A BUON INTENDITOR POCHE PAROLE
+Proverbi|NON TUTTO IL MALE VIEN PER NUOGERE
+Proverbi|DIMMI CON CHI VAI E TI DIRO CHI SEI
+Proverbi|LA GATTA FRETTOLOSA FECE I GATTINI CIECHI
 Modo di dire|ACQUA IN BOCCA
 Modo di dire|IN BOCCA AL LUPO
 Modo di dire|ESSERE AL SETTIMO CIELO
@@ -311,535 +3522,190 @@ Modo di dire|PIOVE SUL BAGNATO
 Modo di dire|NON VEDERE LA LUCE IN FONDO AL TUNNEL
 Modo di dire|AVERE LA TESTA TRA LE NUVOLE
 Modo di dire|ESSERE IN GAMBA
-Modo di dire|AVERE FEGATO
 Modo di dire|DORMIRE SUGLI ALLORI
 Modo di dire|PRENDERE LA PALLA AL BALZO
 Modo di dire|ESSERE AL VERDE
 Modo di dire|AVERE VOCE IN CAPITOLO
 Modo di dire|TAGLIARE LA TESTA AL TORO
 Modo di dire|VIVERE ALLA GIORNATA
-Modo di dire|PIANGERE MISERIE
 Modo di dire|FELICE COME UNA PASQUA
 Modo di dire|RIMANERE DI SASSO
 Modo di dire|FARE IL DIAVOLO A QUATTRO
 Modo di dire|ESSERE UN CANE IN CHIESA
-Espressioni|CHE SFORTUNA
-Espressioni|PER BACCO
-Espressioni|ACCIDENTI
-Espressioni|MAMMA MIA
 Espressioni|NON MI DIRE
-Espressioni|QUASI QUASI
 Espressioni|NEMMENO PER IDEA
-Espressioni|CI MANCHEREBBE
 Espressioni|VAI A SAPERE
-Espressioni|PUO DARSI
-Espressioni|DI SICURO
 Espressioni|A OCCHIO E CROCE
-Espressioni|SENZA DUBBIO
-Espressioni|DI CORSA
-Espressioni|MAGARI
-Luogo|LA TORRE PENDENTE DI PISA
-Luogo|IL COLOSSEO DI ROMA
-Luogo|PIAZZA SAN MARCO A VENEZIA
-Luogo|LE CINQUE TERRE
-Luogo|LA COSTIERA AMALFITANA
-Luogo|IL LAGO DI COMO
-Luogo|LE DOLOMITI
-Luogo|LA GALLERIA DEGLI UFFIZI
-Luogo|LA TORRE EIFFEL
-Luogo|IL GRAND CANYON
-Luogo|IL DUOMO DI MILANO
-Luogo|FONTANA DI TREVI
-Luogo|TRULLI DI ALBEROBELLO
-Luogo|SASSI DI MATERA
-Luogo|COSTA SMERALDA
-Luogo|VESUVIO
-Luogo|MOLE ANTONELLIANA
-Luogo|TEATRO ALLA SCALA
-Luogo|CAMPANILE DI GIOTTO
-Luogo|PONTE VECCHIO
-Luogo|VALLE DEI TEMPLI
-Luogo|MUSEI VATICANI
-Luogo|CATTEDRALE DI NOTRE DAME
-Luogo|BIG BEN
-Luogo|MACHU PICCHU
-Luogo|CAPO NORD
-Luogo|FIORDI NORVEGESI
-Luogo|SAFARI IN KENYA
-Luogo|GRANDE BARRIERA CORALLINA
-Città|ROMA
-Città|MILANO
-Città|NAPOLI
-Città|TORINO
-Città|FIRENZE
-Città|BOLOGNA
-Città|PALERMO
-Città|GENOVA
-Città|BARI
-Città|CATANIA
-Città|VERONA
-Città|VENEZIA
-Città|PADOVA
-Città|PARMA
-Città|SIENA
-Città|PERUGIA
-Città|LECCE
-Città|CAGLIARI
-Città|TRENTO
-Città|TRIESTE
-Città|RAVENNA
-Città|RIMINI
-Città|MANTOVA
-Città|MODENA
-Città|URBINO
-Città|ASSISI
-Cosa|IL TELECOMANDO DELLA TELEVISIONE
-Cosa|UNO SPAZZOLINO DA DENTI
-Cosa|LA CAFFETTIERA NAPOLETANA
-Cosa|UN OMBRELLO A RIGHE
-Cosa|IL MONOPATTINO ELETTRICO
-Cosa|UN MAZZO DI CARTE NAPOLETANE
-Cosa|LA MACCHINA FOTOGRAFICA
-Cosa|LA BILANCIA
-Cosa|UN PAIO DI OCCHIALI
-Cosa|LA CHIAVE INGLESE
-Cosa|IL CARRELLO DELLA SPESA
-Cosa|UNA VALIGIA PIENA
-Cosa|IL FISCHIETTO
-Cosa|LA CALAMITA
-Cosa|UN AQUILONE
-Cosa|LO STENDIBIANCHI
-Cosa|L'APRIBOTTIGLIE
-Cosa|IL MAPPAMONDO
-Cosa|LA CLESSIDRA
-Cosa|UN BINOCOLO
-Cosa|LA MACCHINA DA SCRIVERE
-Cosa|IL SALVADANAIO
+Luoghi|LA TORRE PENDENTE DI PISA
+Luoghi|IL COLOSSEO DI ROMA
+Luoghi|PIAZZA SAN MARCO A VENEZIA
+Luoghi|IL LAGO DI COMO
+Luoghi|LA TORRE EIFFEL
+Luoghi|IL GRAND CANYON
+Luoghi|FONTANA DI TREVI
+Luoghi|TRULLI DI ALBEROBELLO
+Luoghi|SASSI DI MATERA
+Luoghi|TEATRO ALLA SCALA
+Luoghi|CAMPANILE DI GIOTTO
+Luoghi|VALLE DEI TEMPLI
+Luoghi|CATTEDRALE DI NOTRE DAME
+Luoghi|SAFARI IN KENYA
+Luoghi|GRANDE BARRIERA CORALLINA
+Oggetti|IL TELECOMANDO DELLA TELEVISIONE
+Oggetti|UNO SPAZZOLINO DA DENTI
+Oggetti|LA CAFFETTIERA NAPOLETANA
+Oggetti|UN OMBRELLO A RIGHE
+Oggetti|IL MONOPATTINO ELETTRICO
+Oggetti|UN MAZZO DI CARTE NAPOLETANE
+Oggetti|LA MACCHINA FOTOGRAFICA
+Oggetti|UN PAIO DI OCCHIALI
+Oggetti|LA CHIAVE INGLESE
+Oggetti|IL CARRELLO DELLA SPESA
+Oggetti|UNA VALIGIA PIENA
+Oggetti|LA MACCHINA DA SCRIVERE
 Oggetti|PORTAFOGLIO DI PELLE
-Oggetti|PORTACHIAVI
 Oggetti|CALAMITA DA FRIGO
-Oggetti|APRISCATOLE
-Oggetti|CAVATAPPI
-Oggetti|TORCIA ELETTRICA
 Oggetti|BILANCIA DA BAGNO
-Oggetti|ASPIRAPOLVERE
 Oggetti|FERRO DA STIRO
-Oggetti|STENDIPANNI
 Oggetti|SCOPA E PALETTA
 Oggetti|SECCHIO E STRACCIO
-Oggetti|DETERSIVO PIATTI
-Oggetti|SPUGNA NUOVA
 Oggetti|OROLOGIO DA POLSO
-Oggetti|SVEGLIA ANALOGICA
-Oggetti|SPECCHIO RETROVISORE
-In cucina|SPAGHETTI ALLA CARBONARA
-In cucina|PIZZA MARGHERITA
-In cucina|LASAGNE AL FORNO
-In cucina|RISOTTO ALLA MILANESE
-In cucina|CANNOLI SICILIANI
-In cucina|PESTO ALLA GENOVESE
-In cucina|PARMIGIANO REGGIANO
-In cucina|BRUSCHETTA AL POMODORO
-In cucina|GELATO AL PISTACCHIO
-In cucina|ARANCINI DI RISO
-In cucina|TIRAMISU
-In cucina|FETTINE PANATE
-In cucina|MINESTRONE
-In cucina|MOZZARELLA DI BUFALA
-In cucina|PROSCIUTTO CRUDO
-In cucina|OLIO EXTRAVERGINE
-In cucina|ACETO BALSAMICO
-In cucina|CAFFE ESPRESSO
-In cucina|FICHI SECCHI
-In cucina|PANE CARASAU
-In cucina|FOCACCIA BARESE
-In cucina|ORECCHIETTE ALLE CIME DI RAPA
-In cucina|VITELLO TONNATO
-In cucina|COTOLETTA ALLA MILANESE
-In cucina|PASTA E FAGIOLI
-In cucina|RIBOLLITA TOSCANA
-In cucina|CARCIOFI ALLA GIUDIA
-In cucina|MELANZANE ALLA PARMIGIANA
-In cucina|SUPPLI AL TELEFONO
-In cucina|CROSTATA DI MARMELLATA
-In cucina|PANETTONE ARTIGIANALE
-In cucina|COLOMBA PASQUALE
-In cucina|ZEPPOLE DI SAN GIUSEPPE
-In cucina|BABA AL RUM
-In cucina|SFOGLIATELLA NAPOLETANA
-In cucina|GELATO ALLA CREMA
-In cucina|GRANITA AL LIMONE
-In cucina|SPUMANTE ITALIANO
-Bevande|ESPRESSO MACCHIATO
-Bevande|CAPPUCCINO
-Bevande|LATTE MACCHIATO
+Cucina|LASAGNE AL FORNO
+Cucina|PESTO ALLA GENOVESE
+Cucina|BRUSCHETTA AL POMODORO
+Cucina|ARANCINI DI RISO
+Cucina|MOZZARELLA DI BUFALA
+Cucina|COTOLETTA ALLA MILANESE
+Cucina|PASTA E FAGIOLI
+Cucina|CARCIOFI ALLA GIUDIA
+Cucina|MELANZANE ALLA PARMIGIANA
+Cucina|SUPPLI AL TELEFONO
+Cucina|CROSTATA DI MARMELLATA
+Cucina|ZEPPOLE DI SAN GIUSEPPE
+Cucina|BABA AL RUM
+Cucina|GELATO ALLA CREMA
 Bevande|TE AL LIMONE
-Bevande|TISANA CALDA
 Bevande|SUCCO DI FRUTTA
-Bevande|ARANCIATA FRESCA
-Bevande|ACQUA FRIZZANTE
-Bevande|VINO ROSSO
-Bevande|BIRRA CHIARA
-Bevande|SPUMANTE BRUT
-Bevande|AMARO DIGESTIVO
 Bevande|FRULLATO DI BANANA
 Bevande|CENTRIFUGA DI CAROTE
-Bevande|CICCOLATA CALDA
-Bevande|GAZZOSA
-Personaggio|LEONARDO DA VINCI
-Personaggio|CRISTOFORO COLOMBO
-Personaggio|GIUSEPPE GARIBALDI
-Personaggio|DANTE ALIGHIERI
-Personaggio|MARCO POLO
-Personaggio|GALILEO GALILEI
-Personaggio|GIULIO CESARE
-Personaggio|BABBO NATALE
-Personaggio|MICHELANGELO BUONARROTI
-Personaggio|LA BEFANA
-Personaggio|GIULIETTA E ROMEO
-Personaggio|SHERLOCK HOLMES
-Personaggio|ZORRO
-Personaggio|SUPERMAN
-Personaggio|BATMAN
-Personaggio|PETER PAN
-Personaggio|HARRY POTTER
-Personaggio|IL CAPITANO UNCINO
-Personaggio|MARY POPPINS
-Personaggio|IL GENIO DELLA LAMPADA
-Personaggio|ROBIN HOOD
-Personaggio|D'ARTAGNAN
-Personaggio|IL CONTE DRACULA
-Personaggio|FRANKENSTEIN
-Titolo|NUOVO CINEMA PARADISO
-Titolo|LA DOLCE VITA
-Titolo|IL BUONO IL BRUTTO IL CATTIVO
-Titolo|LE AVVENTURE DI PINOCCHIO
-Titolo|I PROMESSI SPOSI
-Titolo|IL PICCOLO PRINCIPE
-Titolo|LA DIVINA COMMEDIA
-Titolo|VIA COL VENTO
-Titolo|IL SIGNORE DEGLI ANELLI
-Titolo|LA BELLA ADDORMENTATA NEL BOSCO
-Titolo|GUERRA E PACE
-Titolo|ORGOGLIO E PREGIUDIZIO
-Titolo|IL CONTE DI MONTECRISTO
-Titolo|VENTIMILA LEGHE SOTTO I MARI
-Titolo|L'ISOLA DEL TESORO
-Titolo|I TRE MOSCHETTIERI
-Titolo|IL MAGO DI OZ
-Titolo|ALICE NEL PAESE DELLE MERAVIGLIE
-Titolo|CIME TEMPESTOSE
-Titolo|JANE EYRE
-Titolo|DRACULA
-Titolo|IL GIRO DEL MONDO IN 80 GIORNI
-Titolo|PINOCCHIO NEL PAESE DEI BALOCCHI
+Personaggi|LEONARDO DA VINCI
+Personaggi|GIULIETTA E ROMEO
+Personaggi|IL CAPITANO UNCINO
+Personaggi|IL GENIO DELLA LAMPADA
+Personaggi|IL CONTE DRACULA
+Letteratura|NUOVO CINEMA PARADISO
+Letteratura|LA DOLCE VITA
+Letteratura|IL BUONO IL BRUTTO IL CATTIVO
+Letteratura|LE AVVENTURE DI PINOCCHIO
+Letteratura|I PROMESSI SPOSI
+Letteratura|LA DIVINA COMMEDIA
+Letteratura|VIA COL VENTO
+Letteratura|IL SIGNORE DEGLI ANELLI
+Letteratura|GUERRA E PACE
+Letteratura|ORGOGLIO E PREGIUDIZIO
+Letteratura|VENTIMILA LEGHE SOTTO I MARI
+Letteratura|L'ISOLA DEL TESORO
+Letteratura|I TRE MOSCHETTIERI
+Letteratura|IL MAGO DI OZ
+Letteratura|ALICE NEL PAESE DELLE MERAVIGLIE
+Letteratura|IL GIRO DEL MONDO IN 80 GIORNI
+Letteratura|PINOCCHIO NEL PAESE DEI BALOCCHI
 Sport|CALCIO DI RIGORE
 Sport|IL GIRO D'ITALIA
 Sport|LE OLIMPIADI INVERNALI
 Sport|LA FINALE DEI MONDIALI
 Sport|UNA PARTITA DI TENNIS
 Sport|TIRO ALLA FUNE
-Sport|SCHERMA
-Sport|PALLANUOTO
-Sport|ARRAMPICATA
 Sport|CORRERE LA MARATONA
 Sport|SALTO IN LUNGO
-Sport|PATTINAGGIO
-Sport|CANOTTAGGIO
 Sport|TIRO A SEGNO
-Sport|EQUITAZIONE
-Sport|NUOTO SINCRONIZZATO
 Sport|BOB A QUATTRO
-Sport|SLALOM GIGANTE
 Sport|TIRO CON L'ARCO
 Sport|CANOA SUL FIUME
-Sport|SURF SULL'ONDA
-Sport|SKATEBOARD
-Sport|ARTI MARZIALI
-Sport|SOLLEVAMENTO PESI
-Sport|CORSA CAMPESTRE
 Animali|UN GATTO NERO
 Animali|IL LEONE RE DELLA FORESTA
 Animali|UNA FAMIGLIA DI PINGUINI
 Animali|IL CANGURO AUSTRALIANO
-Animali|VOLPE ASTUTA
-Animali|GUFO SAGGIO
-Animali|DELFINO
-Animali|BALENA AZZURRA
-Animali|SCOIATTOLO
-Animali|RICCIO
-Animali|TARTARUGA LENTA
-Animali|AQUILA REALE
-Animali|CANARINO
-Animali|POLPO
-Animali|PANDA GIGANTE
-Animali|KOALA
-Animali|ORSO POLARE
-Animali|LUPO GRIGIO
-Animali|PAVONE VARIOPINTO
-Animali|CAMMELLO
-Animali|STRUZZO VELOCE
-Animali|IPPOPOTAMO
 Animali|GIRAFFA DAL COLLO LUNGO
-Animali|PINGUINO IMPERATORE
-Evento|UNA FESTA A SORPRESA
-Evento|IL CENONE DI CAPODANNO
-Evento|LA NOTTE DI SAN LORENZO
-Evento|UN MATRIMONIO IN SPIAGGIA
-Evento|CONCERTO ROCK
-Evento|SAGRA PAESANA
-Evento|MERCATINO
-Evento|FUOCHI ARTIFICIALI
-Evento|LOTTERIA
-Evento|SPETTACOLO CIRCENSE
-Evento|MOSTRA DI PITTURA
-Evento|PARATA
-Evento|INAUGURAZIONE
-Evento|FIERA
-Evento|TOMBOLA DI NATALE
-Evento|PALIO DI SIENA
-Evento|REGATA STORICA
-Evento|CARNEVALE DI VENEZIA
-Evento|FESTIVAL MUSICALE
-Evento|NOTTE BIANCA
+Eventi|UNA FESTA A SORPRESA
+Eventi|IL CENONE DI CAPODANNO
+Eventi|UN MATRIMONIO IN SPIAGGIA
+Eventi|MOSTRA DI PITTURA
+Eventi|TOMBOLA DI NATALE
+Eventi|PALIO DI SIENA
+Eventi|CARNEVALE DI VENEZIA
 Musica|NEL BLU DIPINTO DI BLU
 Musica|LA CANZONE DEL SOLE
 Musica|SINFONIA NUMERO NOVE
 Musica|NOTE SUL PENTAGRAMMA
-Musica|CHITARRA ACUSTICA
 Musica|BATTI IL TEMPO
 Musica|VOCE E PIANO
-Musica|RITMO VIVACE
 Musica|CORO A CAPPELLA
-Musica|MUSICA LEGGERA
-Musica|SANREMO
-Musica|TAMBURELLO
-Musica|QUARTETTO D'ARCHI
 Musica|ASSOLO DI VIOLINO
-Musica|BANDA MUSICALE
-Musica|CORO GOSPEL
-Musica|VINILE D'ANNATA
-Musica|MUSICASSETTA
-Musica|METRONOMO
-Scienza|FORZA DI GRAVITA
-Scienza|IL SISTEMA SOLARE
-Scienza|TEORIA DELLA RELATIVITA
-Scienza|ESPERIMENTO CHIMICO
-Scienza|CELLULA STAMINALE
-Scienza|VULCANO ATTIVO
-Scienza|OSSERVA LE STELLE
-Scienza|ROBOT INTELLIGENTE
-Scienza|ENERGIA RINNOVABILE
-Scienza|MICROSCOPIO
-Scienza|EVOLUZIONE DELLA SPECIE
-Scienza|FOTOSINTESI
-Scienza|ECOSISTEMA
-Scienza|BIODIVERSITA
-Scienza|SUPERCOMPUTER
-Scienza|SATELLITE ARTIFICIALE
-Scienza|ORBITA LUNARE
-Scienza|ECLISSI SOLARE
-Tecnologia|SCHERMO TOUCH
-Tecnologia|INTELLIGENZA ARTIFICIALE
-Tecnologia|PASSWORD SEGRETA
-Tecnologia|AGGIORNAMENTO SOFTWARE
-Tecnologia|SMARTPHONE NUOVO
-Tecnologia|APP DI MESSAGGI
-Tecnologia|RICARICA LA BATTERIA
-Tecnologia|VISORE VIRTUALE
-Tecnologia|FIBRA OTTICA
-Tecnologia|DRONE DA RIPRESE
-Tecnologia|STAMPANTE LASER
-Tecnologia|MOUSE SENZA FILI
-Tecnologia|TASTIERA MECCANICA
-Mestieri|IL FALEGNAME
+Scienza e spazio|FORZA DI GRAVITA
+Scienza e spazio|TEORIA DELLA RELATIVITA
+Scienza e spazio|OSSERVA LE STELLE
+Scienza e spazio|EVOLUZIONE DELLA SPECIE
+Tecnologia e web|APP DI MESSAGGI
+Tecnologia e web|RICARICA LA BATTERIA
+Tecnologia e web|DRONE DA RIPRESE
+Tecnologia e web|MOUSE SENZA FILI
 Mestieri|DOTTORE IN CORSIA
-Mestieri|MAESTRA ELEMENTARE
 Mestieri|VIGILE DEL FUOCO
 Mestieri|AUTISTA DI BUS
-Mestieri|PARRUCCHIERA
-Mestieri|CHEF RISTORANTE
-Mestieri|IDRAULICO
-Mestieri|GIORNALISTA
-Mestieri|ASTRONAUTA
-Mestieri|FIORAIO
-Mestieri|OROLOGIAIO
-Mestieri|TIPOGRAFO
-Mestieri|VETERINARIO
-Mestieri|FARMACISTA
-Mestieri|ARCHITETTO
-Mestieri|INGEGNERE
-Mestieri|PIZZAIOLO
-Mestieri|CAMERIERE
-Mestieri|MAGAZZINIERE
 Natura|TRAMONTO SUL MARE
-Natura|ARCOBALENO
 Natura|CASCATA IN MONTAGNA
-Natura|PRATO FIORITO
 Natura|BOSCO DI QUERCE
-Natura|LAGO ALPINO
-Natura|DESERTO CALDO
-Natura|GHIACCIAIO
-Natura|STELLE CADENTI
-Natura|AURORA BOREALE
 Natura|ALBA IN MONTAGNA
-Natura|CIELO STELLATO
-Natura|MAREGGIATA
-Natura|BRINA MATTUTINA
-Natura|FOLIAGE AUTUNNALE
-Natura|MACCHIA MEDITERRANEA
 Natura|DUNA DI SABBIA
 In giardino|VANGA E RASTRELLO
 In giardino|VASO DI GERANI
 In giardino|SIEPE DI ALLORO
 In giardino|ALBERO DI LIMONI
 In giardino|PRATO DA TAGLIARE
-In giardino|TOSAERBA
-In giardino|ANNAFFIATOIO
-In giardino|ROSA RAMPICANTE
-In giardino|TULIPANO
-In giardino|MARGHERITA BIANCA
 In giardino|SEMINA DI PRIMAVERA
-In giardino|AMACA
-In giardino|ORTICELLO
-In giardino|GAZEBO
-Casa|SALOTTO ACCOGLIENTE
-Casa|CUCINA MODERNA
 Casa|TERRAZZA CON VISTA
-Casa|SOTTOTETTO
-Casa|GIARDINO FIORITO
-Casa|CANTINA BUIA
 Casa|SCALA A CHIOCCIOLA
-Casa|PORTA D'INGRESSO
-Casa|FINESTRA APERTA
 Casa|TETTO DI TEGOLE
-Casa|CAMINO ACCESO
 Casa|SOFFITTO A TRAVI
-Casa|RIPOSTIGLIO
-Casa|LA SERRA
-Scuola|ZAINO PESANTE
-Scuola|LAVAGNA NERA
 Scuola|COMPITI IN CLASSE
-Scuola|INTERROGAZIONE
 Scuola|QUADERNO A RIGHE
-Scuola|PENNARELLO COLORATO
-Scuola|RICREAZIONE
-Scuola|GITA SCOLASTICA
-Scuola|DIZIONARIO
-Scuola|PAGELLA
-Scuola|ASTUCCIO PIENO
-Scuola|GESSO BIANCO
-Scuola|BANCO DOPPIO
-Scuola|CAMPANELLA
 Scuola|ESAME DI MATURITA
-Storia|ANTICA ROMA
-Storia|IMPERO ROMANO
-Storia|CASTELLO MEDIEVALE
-Storia|FARAONE EGIZIO
-Storia|PIRAMIDI
-Storia|CAVALIERE ERRANTE
-Storia|RINASCIMENTO
-Storia|SCOPERTA AMERICA
-Storia|GLADIATORI
-Storia|LEGIONE ROMANA
-Storia|TORNEO MEDIEVALE
-Storia|ANTICA GRECIA
-Fiabe|CAPPUCCETTO ROSSO
-Fiabe|BIANCANEVE
 Fiabe|IL BRUTTO ANATROCCOLO
-Fiabe|PINOCCHIO
-Fiabe|CENERENTOLA
 Fiabe|IL GATTO CON GLI STIVALI
-Fiabe|LA SIRENETTA
 Fiabe|HANSEL E GRETEL
-Fiabe|TOPOLINO
 Fiabe|LA FATA TURCHINA
 Fiabe|IL GRILLO PARLANTE
-Fiabe|GEPPETTO
 Fiabe|LA VOLPE E IL GATTO
-Fiabe|LO SCHIACCIANOCI
-Mondo|PARIGI
-Mondo|LONDRA
-Mondo|NEW YORK
-Mondo|TOKYO
-Mondo|SYDNEY
 Mondo|RIO DE JANEIRO
-Mondo|IL NILO
-Mondo|LE ALPI
-Mondo|OCEANO PACIFICO
-Mondo|ISOLA DESERTA
-Mondo|BERLINO
-Mondo|MADRID
-Mondo|LISBONA
-Mondo|VIENNA
-Corpo umano|MANO DESTRA
-Corpo umano|OCCHI AZZURRI
-Corpo umano|SORRISO
-Corpo umano|CAPELLI RICCI
-Corpo umano|GOMITO
-Corpo umano|GINOCCHIO
-Corpo umano|SPALLE LARGHE
-Corpo umano|CUORE
 Corpo umano|DITA DELLA MANO
-Corpo umano|NASO ALL'INSU
-Corpo umano|CIGLIA LUNGHE
-Corpo umano|GUANCE ROSSE
-Meteo|PIOGGIA ESTIVA
-Meteo|NEVE FRESCA
-Meteo|VENTO FORTE
-Meteo|NUVOLE GRIGIE
-Meteo|SOLE CALDO
-Meteo|GRANDINE
-Meteo|TEMPORALE
 Meteo|NEBBIA IN VALLE
 Meteo|ARCOBALENO DOPO LA PIOGGIA
-Meteo|BREZZA MARINA
-Meteo|AFA ESTIVA
-Meteo|GELATA NOTTURNA
 Al mare|OMBRELLONE E SDRAIO
 Al mare|COSTUME DA BAGNO
 Al mare|PINNE E MASCHERA
 Al mare|CASTELLO DI SABBIA
-Al mare|ONDA ALTA
 Al mare|MAREA CHE SALE
-Al mare|GABBIANO AFFAMATO
 Al mare|GRANITA SOTTO IL SOLE
 Al mare|SALE SULLA PELLE
 Al mare|TRAMONTO IN SPIAGGIA
 Al mare|BARCA A VELA
 Al mare|FARO NELLA NOTTE
-Al mare|CONCHIGLIA RARA
-Al mare|SCOGLIO
-Al mare|ALGA MARINA
 In montagna|SENTIERO DI MONTAGNA
-In montagna|RIFUGIO ALPINO
-In montagna|FUNIVIA PANORAMICA
 In montagna|SCI DA DISCESA
-In montagna|SLITTINO
 In montagna|RACCHETTE DA NEVE
-In montagna|VETTA INNEVATA
 In montagna|TORRENTE DI MONTAGNA
-In montagna|MARMOTTA CURIOSA
-In montagna|STELLE ALPINE
 In montagna|BOSCO DI ABETI
 In montagna|BAITA DI LEGNO
-In montagna|RAMPONI
 Feste|NATALE IN FAMIGLIA
-Feste|PASQUA
 Feste|CARNEVALE DI VIAREGGIO
-Feste|FERRAGOSTO
-Feste|HALLOWEEN
-Feste|CAPODANNO
 Feste|TORTA DI COMPLEANNO
 Feste|SCARTARE I REGALI
 Feste|STELLE DI NATALE
-Feste|BRINDISI
-Feste|EPIFANIA
-Feste|SAN VALENTINO
 Feste|FESTA DELLA MAMMA
-Feste|PRIMO MAGGIO
 `;
-const PUZZLES = RAW.trim().split('\n').map(l => { const i = l.indexOf('|'); return [l.slice(0, i).trim(), l.slice(i + 1).trim()]; });
+const PUZZLES = RAW.trim().split('\n').map(l => { const i = l.indexOf('|'); return [l.slice(0, i).trim(), l.slice(i + 1).trim()]; })
+.filter(p => p[0] && p[1] && p[1].split(' ').filter(Boolean).length >= 3);
 function layout(text) {
 const words = text.split(' ');
 const greedy = caps => {
@@ -868,7 +3734,7 @@ return cells;
 }
 const LAYOUTS = PUZZLES.map(p => layout(p[1]));
 const clone = o => JSON.parse(JSON.stringify(o));
-const norm = s => String(s).toUpperCase().replace(/[^A-Z]/g, '');
+const norm = s => String(s).toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Z]/g, '');
 const curP = s => s.players[s.cur];
 const addFx = (s, kind, text = '') => { s.fxId++; s.fx.push({ id: s.fxId, kind, text }); if (s.fx.length > 8) s.fx.shift(); };
 const setPhase = (s, p) => { s.phase = p; s.step++; };
@@ -901,17 +3767,17 @@ return { id: s.gameId + '-' + s.used.length, cat: PUZZLES[i][0], text: PUZZLES[i
 function newGame(players) {
 return {
 gameId: Math.random().toString(36).slice(2, 9),
-players: players.map(p => ({ name: p.name, type: p.type, peer: p.peer || null, color: p.color, total: 0, round: 0, jolly: 0 })),
+players: players.map(p => ({ name: p.name, type: p.type, peer: p.peer || null, color: p.color, total: 0, round: 0, jolly: 0, streak: 0, maxStreak: 0, hint: HINT_FREE })),
 roundNum: 0, final: false, cur: 0, phase: 'idle', step: 0, puzzle: null, called: [], fx: [], fxId: 0, msg: '',
 spin: null, angle: 0, wedge: -1, wedgeVal: null, value: 0, used: [], revealAll: false, revealMs: 0, stagger: 600, revealDelay: 0,
-pending: 0, after: null, finalPicks: [], prize: 0, finalWon: null, roundWinner: -1,
+pending: 0, after: null, finalPicks: [], prize: 0, finalWon: null, roundWinner: -1, hit: null, bestRound: null,
 };
 }
 function startRound(s) {
 s.roundNum++;
 s.puzzle = pickPuzzle(s);
-s.called = []; s.revealAll = false; s.wedge = -1; s.wedgeVal = null; s.pending = 0; s.after = null; s.stagger = 600; s.revealDelay = 0;
-s.players.forEach(p => { p.round = 0; });
+s.called = []; s.revealAll = false; s.wedge = -1; s.wedgeVal = null; s.pending = 0; s.after = null; s.stagger = 600; s.revealDelay = 0; s.hit = null;
+s.players.forEach(p => { p.round = 0; p.streak = 0; p.hint = HINT_FREE; });
 s.cur = (s.roundNum - 1) % s.players.length;
 addFx(s, 'round', 'ROUND ' + s.roundNum);
 s.msg = `Round ${s.roundNum}: tocca a ${curP(s).name}. Gira la ruota!`;
@@ -919,6 +3785,7 @@ setPhase(s, 'turn');
 }
 function loseTurn(s, why) {
 const p = curP(s);
+p.streak = 0;
 if (p.jolly > 0) {
 p.jolly--;
 addFx(s, 'jollyUsed', 'JOLLY USATO');
@@ -929,13 +3796,22 @@ s.msg = `${why} Tocca a ${curP(s).name}.`;
 }
 setPhase(s, 'turn');
 }
-function callLetter(s, l, vowel) {
+function callLetter(s, l, vowel, free) {
+const p = curP(s);
 if (s.called.includes(l)) { addFx(s, 'wrong'); loseTurn(s, `La ${l} è già stata chiamata!`); return; }
 s.called.push(l);
 const n = countCells(s, [l]);
 if (!n) { addFx(s, 'wrong'); loseTurn(s, `Non c'è nessuna ${l}.`); return; }
 const what = n === 1 ? `C'è una ${l}!` : `Ci sono ${n} ${l}!`;
-if (!vowel) { s.pending = n * s.value; s.msg = `${what} +${eur(s.pending)}`; } else s.msg = what;
+if (free) { s.pending = 0; s.msg = `Indizio gratis: ${what}`; }
+else if (!vowel) {
+p.streak = (p.streak || 0) + 1;
+if (p.streak > (p.maxStreak || 0)) p.maxStreak = p.streak;
+const combo = p.streak >= 2 ? Math.min(1000, (p.streak - 1) * 250) : 0;
+s.pending = n * s.value + combo;
+if (combo) addFx(s, 'combo', 'COMBO x' + p.streak);
+s.msg = `${what} +${eur(s.pending)}` + (combo ? ` (combo +${eur(combo)})` : '');
+} else s.msg = what;
 s.stagger = 600; s.revealDelay = 0; s.revealMs = n * 600 + 700; s.after = null;
 setPhase(s, 'revealing');
 }
@@ -943,7 +3819,9 @@ function roundWin(s) {
 const p = curP(s);
 p.round = Math.max(p.round, MIN_WIN);
 p.total += p.round;
+if (!s.bestRound || p.round > s.bestRound.amount) s.bestRound = { name: p.name, amount: p.round, cat: s.puzzle.cat };
 s.revealAll = true; s.roundWinner = s.cur;
+saveRoundRecords(s);
 addFx(s, 'solve', 'ESATTO!');
 s.msg = `Esatto! ${p.name} vince ${eur(p.round)}!`;
 setPhase(s, 'roundEnd');
@@ -953,9 +3831,9 @@ let best = 0;
 s.players.forEach((p, i) => { if (p.total > s.players[best].total) best = i; });
 s.final = true; s.cur = best;
 s.puzzle = pickPuzzle(s);
-s.called = [...FINAL_LETTERS]; s.revealAll = false; s.finalPicks = []; s.finalWon = null;
+s.called = [...FINAL_LETTERS]; s.revealAll = false; s.finalPicks = []; s.finalWon = null; s.finalTries = 0;
 s.prize = PRIZES[rnd(PRIZES.length)];
-s.players.forEach(p => { p.round = 0; });
+s.players.forEach(p => { p.round = 0; p.streak = 0; p.hint = HINT_FREE; });
 addFx(s, 'final', 'ROUND FINALE');
 s.msg = `Round finale per ${curP(s).name}! Ecco le lettere R S T L N E.`;
 const n = countCells(s, FINAL_LETTERS);
@@ -977,6 +3855,8 @@ s.spin = { id: (s.spin ? s.spin.id : 0) + 1, from, to, dur: Math.round(4300 + pw
 s.angle = to;
 s.wedge = wedgeAt(to);
 s.wedgeVal = wedgeValueAt(to);
+const hitA = ((360 - (to % 360)) % 360 + 360) % 360;
+s.hit = { id: s.spin.id, idx: s.wedge, sub: WEDGES[idx] === 'MEGA' ? Math.min(2, Math.floor((hitA % SEG) / (SEG / 3))) : -1 };
 s.msg = `${p.name} gira la ruota...`;
 setPhase(s, 'spinning');
 return s;
@@ -1000,6 +3880,17 @@ s.msg = `${p.name} compra una vocale.`; setPhase(s, 'vowel'); return s;
 case 'vowel':
 if (s.phase !== 'vowel' || !isVowel(a.l)) return s;
 p.round -= VOWEL_COST; callLetter(s, a.l, true); return s;
+case 'hint': {
+if (s.phase !== 'turn' || !p.hint) return s;
+const hidden = hiddenCons(s);
+if (!hidden.length) return s;
+p.hint = 0;
+const best = hidden.map(l => ({ l, n: countCells(s, [l]) }))
+.sort((a, b) => b.n - a.n || CONS_ORDER.indexOf(a.l) - CONS_ORDER.indexOf(b.l))[0].l;
+addFx(s, 'hint', 'INDIZIO');
+callLetter(s, best, false, true);
+return s;
+}
 case 'solveStart':
 if (s.phase !== 'turn') return s;
 s.msg = `${p.name} prova a risolvere...`; setPhase(s, 'solve'); return s;
@@ -1051,7 +3942,11 @@ s.finalWon = true; p.total += s.prize; s.revealAll = true;
 addFx(s, 'win', 'HAI VINTO!');
 s.msg = `Straordinario! ${p.name} vince ${eur(s.prize)}!`;
 setPhase(s, 'gameOver');
-} else addFx(s, 'wrong');
+} else {
+addFx(s, 'wrong'); s.msg = 'Risposta sbagliata! Cancella e riprova.';
+s.finalTries = (s.finalTries || 0) + 1;
+if (p.type === 'cpu' && s.finalTries < FINAL_TRIES) { clearTimeout(tRetry); tRetry = setTimeout(cpuAct, 2200); }
+}
 return s;
 case 'finalTimeout':
 if (s.phase !== 'finalSolve') return s;
@@ -1078,6 +3973,7 @@ const shown = letters.filter(c => s.called.includes(c.ch)).length / Math.max(1, 
 switch (s.phase) {
 case 'turn':
 if (!canSpin(s) && !canBuy(s)) return dispatch({ t: 'solveStart' });
+if (shown < 0.3 && p.hint && Math.random() < 0.45) return dispatch({ t: 'hint' });
 if (shown > 0.55 && Math.random() < shown * 0.85) return dispatch({ t: 'solveStart' });
 if (canBuy(s) && (!canSpin(s) || Math.random() < 0.3)) return dispatch({ t: 'buyVowel' });
 if (canSpin(s)) return dispatch({ t: 'spin', power: 0.4 + Math.random() * 0.6 });
@@ -1093,7 +3989,7 @@ case 'finalSolve': {
 /* BUG FIX: la CPU ora RISPONDE SEMPRE entro il tempo, con probabilita'
    di successo legata alle lettere gia' scoperte (prima tirava a meta'
    e se decideva di non rispondere perdeva allo scadere dei 30s). */
-const win = Math.random() < Math.min(0.9, 0.5 + shown * 0.4);
+const win = Math.random() < Math.min(0.6, 0.2 + shown * 0.3);
 return dispatch({ t: 'finalSolve', guess: win ? s.puzzle.text : 'RISPOSTA SBAGLIATA' });
 }
 }
@@ -1274,6 +4170,7 @@ if (ml) ml.href = URL.createObjectURL(new Blob([JSON.stringify(man)], { type: 'a
 }
 /* ================= NETWORK ================= */
 const NET = { mode: 'local', peer: null, conns: new Map(), host: null, myId: null, code: null, seats: null, started: false };
+let joinToken = 0;
 let S = null;
 const isMine = p => NET.mode === 'host' ? p.peer === 'host' : NET.mode === 'guest' ? p.peer === NET.myId : p.type === 'human';
 function canAct() {
@@ -1302,8 +4199,8 @@ if (NET.mode !== 'host') return;
 for (const c of NET.conns.values()) if (c.open) c.send({ t: 'lobby', seats: NET.seats, code: NET.code });
 renderLobby();
 }
-let tPhase = null, tCpu = null, schedKey = '';
-function clearSched() { clearTimeout(tPhase); clearTimeout(tCpu); schedKey = ''; }
+let tPhase = null, tCpu = null, tRetry = null, schedKey = '';
+function clearSched() { clearTimeout(tPhase); clearTimeout(tCpu); clearTimeout(tRetry); schedKey = ''; }
 function schedule() {
 if (!S || NET.mode === 'guest') return;
 const key = S.gameId + ':' + S.step + ':' + S.phase + ':' + S.finalPicks.length;
@@ -1312,7 +4209,7 @@ schedKey = key; clearTimeout(tPhase); clearTimeout(tCpu);
 const ph = S.phase;
 if (ph === 'spinning') tPhase = setTimeout(() => dispatch({ t: 'spinEnd' }), S.spin.dur + 450);
 else if (ph === 'revealing') tPhase = setTimeout(() => dispatch({ t: 'revealDone' }), S.revealMs);
-else if (ph === 'roundEnd') tPhase = setTimeout(() => dispatch({ t: 'nextRound' }), 5500);
+else if (ph === 'roundEnd') tPhase = setTimeout(() => dispatch({ t: 'nextRound' }), 10000);
 else if (ph === 'finalSolve') tPhase = setTimeout(() => dispatch({ t: 'finalTimeout' }), FINAL_TIME + 300);
 if (curP(S).type === 'cpu' && ['turn', 'consonant', 'vowel', 'solve', 'finalPick', 'finalSolve'].includes(ph)) {
 const d = ph === 'finalSolve' ? 4000 + Math.random() * 12000 : ph === 'finalPick' ? 900 : 1300 + Math.random() * 800;
@@ -1324,12 +4221,18 @@ function myName() { return ($('#myName').value.trim() || 'Giocatore').slice(0, 1
 function hostCreate() {
 if (!window.Peer) return toast('Online in caricamento: riprova tra qualche secondo');
 netCleanup();
+const tk = joinToken;
 NET.mode = 'host'; NET.code = genCode();
 NET.seats = [{ type: 'human', name: myName(), peer: 'host' }, { type: 'empty' }, { type: 'empty' }];
-setStatus('<span class="spinner"></span>&nbsp; Creazione stanza con codice 11...');
-const peer = new Peer(PREFIX + NET.code, { debug: 0 });
+setStatus('<span class="spinner"></span>&nbsp; Creazione stanza 11...');
+const peer = new Peer(PREFIX + NET.code, PEER_OPTS);
 NET.peer = peer;
-peer.on('open', () => { NET.myId = peer.id; show('lobby'); renderLobby(); });
+peer.on('open', () => {
+if (tk !== joinToken) return;
+NET.myId = peer.id;
+show('lobby'); renderLobby();
+setStatus('Stanza aperta con codice <b>11</b>: chi apre il tuo link entra subito.');
+});
 peer.on('connection', conn => {
 conn.on('data', d => onHostData(conn, d));
 conn.on('close', () => onGuestLeave(conn));
@@ -1337,12 +4240,12 @@ conn.on('error', () => onGuestLeave(conn));
 });
 peer.on('disconnected', () => { try { peer.reconnect(); } catch (e) { /* ignore */ } });
 peer.on('error', e => {
+if (tk !== joinToken) return;
 if (e.type === 'unavailable-id') {
 try { peer.destroy(); } catch (err) { /* ignore */ }
 NET.peer = null; NET.mode = 'local'; NET.started = false;
-show('online');
-setStatus('Esiste già una stanza attiva con codice 11: usa "Entra nella stanza" e digita 11.');
-toast('Stanza già esistente: entra con codice 11');
+toast('Stanza già attiva: entro come ospite');
+guestJoin(ROOM_CODE, false);
 return;
 }
 if (e.type === 'peer-unavailable') return;
@@ -1359,8 +4262,11 @@ if (i < 0) { conn.send({ t: 'full', msg: 'La stanza è piena.' }); return; }
 NET.seats[i] = { type: 'remote', name: String(d.name || 'Ospite').slice(0, 12), peer: conn.peer };
 NET.conns.set(conn.peer, conn);
 conn.send({ t: 'welcome', id: conn.peer });
+conn.send({ t: 'recs', recs: loadRecs() });
 broadcastLobby(); SFX.ding();
 toast(`${NET.seats[i].name} è entrato nella stanza`);
+} else if (d.t === 'recs') {
+mergeRecs(d.recs);
 } else if (d.t === 'act' && S && NET.started) {
 const p = curP(S);
 if (p.peer !== conn.peer || !d.a || typeof d.a.t !== 'string') return;
@@ -1380,33 +4286,66 @@ if (p) { p.type = 'cpu'; p.peer = null; s.msg = `${p.name} si è disconnesso: or
 } else broadcastLobby();
 toast(`${name} ha lasciato la partita`);
 }
-function guestJoin(code) {
+function guestJoin(code, allowCreate) {
 if (!window.Peer) return toast('Online in caricamento: riprova tra qualche secondo');
-code = String(code || '').replace(/\D/g, '').slice(0, 2);
+code = String(code || ROOM_CODE).replace(/\D/g, '').slice(0, 2);
 if (code !== ROOM_CODE) return toast('Il codice della stanza è sempre 11: digita 11');
 netCleanup();
+const tk = joinToken;
 NET.mode = 'guest'; NET.code = ROOM_CODE;
 setStatus('<span class="spinner"></span>&nbsp; Connessione alla stanza 11...');
-const peer = new Peer({ debug: 0 });
+const peer = new Peer(PEER_OPTS);
 NET.peer = peer;
+let done = false;
+const makeRoom = () => {
+if (done || tk !== joinToken) return;
+done = true;
+try { peer.destroy(); } catch (e) { /* ignore */ }
+NET.peer = null; NET.host = null; NET.mode = 'local'; NET.started = false;
+hostCreate();
+};
+const giveUp = msg => {
+if (done || tk !== joinToken) return;
+done = true;
+try { peer.destroy(); } catch (e) { /* ignore */ }
+NET.peer = null; NET.mode = 'local'; NET.started = false;
+setStatus(msg);
+};
+peer.on('error', e => {
+if (done || tk !== joinToken) return;
+if (e.type === 'peer-unavailable') {
+if (allowCreate) makeRoom();
+else giveUp('Nessuna stanza attiva con codice 11: creala tu con "Gioca subito".');
+return;
+}
+if (['network', 'server-error', 'socket-error', 'timeout'].includes(e.type)) {
+if (allowCreate) makeRoom(); else giveUp('Errore di connessione. Riprova.');
+}
+});
 peer.on('open', id => {
+if (done || tk !== joinToken) return;
 NET.myId = id;
 const conn = peer.connect(PREFIX + ROOM_CODE, { reliable: true });
 NET.host = conn;
-const failT = setTimeout(() => { if (!conn.open) { setStatus('Impossibile connettersi: nessuna stanza attiva con codice 11.'); netCleanup(); } }, 12000);
-conn.on('open', () => { clearTimeout(failT); conn.send({ t: 'hello', name: myName() }); });
+const failT = setTimeout(() => { if (done || tk !== joinToken) return; try { conn.close(); } catch (e) { /* ignore */ } if (allowCreate) makeRoom(); else giveUp('Impossibile connettersi: la stanza 11 non risponde.'); }, 4200);
+conn.on('open', () => {
+if (done || tk !== joinToken) return;
+clearTimeout(failT); done = true;
+conn.send({ t: 'hello', name: myName() });
+conn.send({ t: 'recs', recs: loadRecs() });
+});
 conn.on('data', onGuestData);
 conn.on('close', () => { if (NET.mode === 'guest') { toast("Connessione con l'host persa"); goMenu(); } });
 });
-peer.on('error', e => {
-if (e.type === 'peer-unavailable') setStatus('Stanza non trovata: nessuno ha creato la stanza con codice 11.');
-else setStatus('Errore di connessione. Riprova.');
-netCleanup();
-});
+}
+function quickPlay() {
+if (!window.Peer) return toast('Online in caricamento: riprova tra qualche secondo');
+guestJoin(ROOM_CODE, true);
 }
 function onGuestData(d) {
 if (!d || typeof d !== 'object') return;
 if (d.t === 'welcome') { NET.myId = d.id; }
+else if (d.t === 'recs') { mergeRecs(d.recs); }
 else if (d.t === 'full') { setStatus(esc(d.msg)); toast(d.msg); netCleanup(); }
 else if (d.t === 'lobby') { NET.seats = d.seats; NET.code = d.code; NET.started = false; S = null; resetClient(); show('lobby'); renderLobby(); }
 else if (d.t === 'state') {
@@ -1415,13 +4354,15 @@ S = d.s; NET.started = true; render();
 }
 }
 function netCleanup() {
+joinToken++;
+stopAutoStart();
 clearSched();
 try { if (NET.peer) NET.peer.destroy(); } catch (e) { /* ignore */ }
 NET.peer = null; NET.host = null; NET.conns = new Map(); NET.mode = 'local'; NET.started = false; NET.myId = null;
 }
 const cellEls = [];
 let boardPid = null, shownCells = new Set(), pendingCells = new Set(), revealTimers = [];
-let lastFx = 0, lastSpinId = null, localKey = '', draft = null, spinRaf = 0, timerInt = 0, wheelSize = 0, lastRounds = [];
+let lastFx = 0, lastSpinId = null, localKey = '', draft = null, spinRaf = 0, timerInt = 0, wheelSize = 0, wheelFull = false, lastRounds = [];
 function resetClient() {
 boardPid = null; lastFx = 0; lastSpinId = null; localKey = ''; draft = null; lastRounds = [];
 revealTimers.forEach(clearTimeout); revealTimers = []; pendingCells.clear(); shownCells.clear();
@@ -1451,6 +4392,7 @@ $('#cat').textContent = S.puzzle ? S.puzzle.cat : '';
 const m = $('#msg');
 if (m.textContent !== S.msg) { m.textContent = S.msg; m.classList.remove('pop'); void m.offsetWidth; m.classList.add('pop'); }
 handleSpin(); handleFx(); renderControls(); renderPanel();
+if (S.phase === 'gameOver') saveGameRecords();
 $('#swipeHint').classList.toggle('on', S.phase === 'turn' && canAct() && canSpin(S));
 }
 function syncLocal() {
@@ -1484,7 +4426,7 @@ el.innerHTML = S.players.map((p, i) => {
 const tags = (p.type === 'cpu' ? '<span class="tag">CPU</span>' : '') + (NET.mode !== 'local' && isMine(p) ? '<span class="tag">TU</span>' : '');
 const bump = lastRounds[i] !== undefined && p.round > lastRounds[i] ? ' bump' : '';
 return `<div class="pl ${i === S.cur && showActive ? 'on' : ''}" style="--c:${p.color}">
-<div class="pl-name">${esc(p.name)}${tags}</div>
+<div class="pl-name">${esc(p.name)}${tags}${(p.streak || 0) >= 2 ? `<span class="cb">×${p.streak}</span>` : ''}</div>
 <div class="pl-round${bump}">${S.final ? eur(p.total) : eur(p.round)}</div>
 <div class="pl-tot">${S.final ? 'Totale' : 'Tot. ' + eur(p.total)}${p.jolly ? `<span class="jk">J${p.jolly > 1 ? '×' + p.jolly : ''}</span>` : ''}</div></div>`;
 }).join('');
@@ -1543,6 +4485,7 @@ if (ph === 'turn') {
 ctl = me
 ? `<button class="btn spin" data-a="spin" ${canSpin(S) ? '' : 'disabled'}>GIRA</button>
 <button class="btn vow" data-a="buyVowel" ${canBuy(S) ? '' : 'disabled'}>VOCALE<small>${VOWEL_COST} €</small></button>
+<button class="btn hint" data-a="hint" ${(p.hint && hiddenCons(S).length) ? '' : 'disabled'}><span class="bulb">💡</span><small>INDIZIO</small></button>
 <button class="btn sol" data-a="solveStart">RISOLVI</button>`
 : waitBox(`Tocca a ${who}${p.type === 'cpu' ? ' <span class="spinner"></span>' : ''}`);
 } else if (ph === 'spinning') ctl = waitBox('La ruota gira...');
@@ -1594,7 +4537,8 @@ pn.innerHTML = `<h3>FINE ROUND ${S.roundNum}</h3>
 <div>vince <b>${eur(w.round)}</b></div>
 <div class="phrase">${esc(S.puzzle.text)}</div>
 <div class="note">${S.roundNum < ROUNDS ? 'Preparatevi al prossimo round!' : 'Chi ha più soldi va al Round Finale!'}</div>
-<div class="bar"><i style="animation-duration:5.4s"></i></div>`;
+<div class="bar"><i style="animation-duration:10s"></i></div>
+${NET.mode !== 'guest' ? '<div class="row"><button class="btn gold" data-a="next">Continua</button></div>' : ''}`;
 } else if (ph === 'gameOver') {
 const fp = curP(S);
 const rank = S.players.map((p, i) => ({ p, i })).sort((a, b) => b.p.total - a.p.total);
@@ -1646,6 +4590,8 @@ case 'round': SFX.whoosh(); splash(f.text); break;
 case 'final': SFX.fanfare(); splash(f.text); break;
 case 'win': SFX.fanfare(); splash(f.text); confetti(220); break;
 case 'fail': SFX.fail(); splash(f.text, 'ps'); break;
+case 'combo': SFX.jolly(); splash(f.text, 'jk'); break;
+case 'hint': SFX.ding(); splash(f.text); break;
 }
 }
 }
@@ -1682,16 +4628,106 @@ const m = $('#modal'), card = $('#modalCard');
 card.innerHTML = html + `<div class="row">${buttons.map((b, i) => `<button class="btn ${b.cls || 'ghost'}" data-mi="${i}">${b.label}</button>`).join('')}</div>`;
 m.classList.add('open');
 card.querySelectorAll('[data-mi]').forEach(btn => btn.onclick = () => { m.classList.remove('open'); const fn = buttons[+btn.dataset.mi].fn; if (fn) fn(); });
+m.onclick = e => { if (e.target === m) m.classList.remove('open'); };
+}
+function modalClose() { $('#modal').classList.remove('open'); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { const mm = $('#modal'); if (mm.classList.contains('open')) mm.classList.remove('open'); } });
+const REC_KEY = 'rdf-records-v1';
+const REC_META = [
+{ k: 'total', label: 'Miglior totale di partita' },
+{ k: 'final', label: 'Miglior premio finale' },
+{ k: 'round', label: 'Miglior montepremi di round' },
+{ k: 'combo', label: 'Miglior serie di consonanti' },
+];
+let recs = null, lastRecGame = null;
+function loadRecs() {
+if (recs) return recs;
+recs = {};
+try { recs = JSON.parse(localStorage.getItem(REC_KEY)) || {}; } catch (e) { recs = {}; }
+REC_META.forEach(m => { if (!Array.isArray(recs[m.k])) recs[m.k] = []; });
+return recs;
+}
+function saveRecs(r) {
+try { localStorage.setItem(REC_KEY, JSON.stringify(r)); } catch (e) { /* ignore */ }
+}
+function addRec(k, entry) {
+const r = loadRecs(), list = r[k];
+const same = e => e && e.name === entry.name && e.value === entry.value && e.cat === entry.cat && e.date === entry.date;
+if (list.some(same)) return false;
+list.push(entry);
+list.sort((a, b) => b.value - a.value);
+r[k] = list.slice(0, 6);
+saveRecs(r);
+return r[k][0] === entry;
+}
+function mergeRecs(incoming) {
+if (!incoming || typeof incoming !== 'object') return false;
+const r = loadRecs(), key = e => e ? [e.name, e.value, e.cat, e.date].join('|') : '';
+let changed = false;
+REC_META.forEach(m => {
+const rows = Array.isArray(incoming[m.k]) ? incoming[m.k] : [];
+if (!rows.length) return;
+const seen = new Set(r[m.k].map(key));
+rows.forEach(e => {
+const k = key(e);
+if (!k || seen.has(k)) return;
+seen.add(k); r[m.k].push(e); changed = true;
+});
+r[m.k].sort((a, b) => b.value - a.value);
+r[m.k] = r[m.k].slice(0, 6);
+});
+if (changed) saveRecs(r);
+return changed;
+}
+function saveRoundRecords(s) {
+if (!s || !s.bestRound) return;
+const date = new Date().toLocaleDateString('it-IT');
+const mode = NET.mode === 'local' ? 'locale' : 'online';
+addRec('round', { name: s.bestRound.name, value: s.bestRound.amount, cat: s.bestRound.cat, date, mode });
+const w = s.players[s.roundWinner];
+if (w && (w.maxStreak || 0) >= 2) addRec('combo', { name: w.name, value: w.maxStreak, cat: 'consonanti', date, mode });
+}
+function saveGameRecords() {
+if (!S || lastRecGame === S.gameId) return;
+lastRecGame = S.gameId;
+const date = new Date().toLocaleDateString('it-IT');
+const mode = NET.mode === 'local' ? 'locale' : 'online';
+const beat = [];
+S.players.forEach(p => {
+const entry = { name: p.name, value: p.total, cat: 'partita', date, mode };
+if (p.total > 0 && addRec('total', entry)) beat.push('totale');
+if ((p.maxStreak || 0) >= 2 && addRec('combo', { name: p.name, value: p.maxStreak, cat: 'consonanti', date, mode })) beat.push('serie');
+});
+if (S.bestRound && addRec('round', { name: S.bestRound.name, value: S.bestRound.amount, cat: S.bestRound.cat, date, mode })) beat.push('round');
+if (S.finalWon && addRec('final', { name: curP(S).name, value: S.prize, cat: S.puzzle.cat, date, mode })) beat.push('finale');
+if (beat.length) { SFX.fanfare(); splash('NUOVO RECORD!', 'rd'); confetti(120); }
+if (NET.mode === 'host') {
+const table = loadRecs();
+for (const c of NET.conns.values()) if (c.open) c.send({ t: 'recs', recs: table });
+}
+}
+function recordsModal() {
+const r = loadRecs();
+const block = m => {
+const list = r[m.k];
+const rows = list.length
+? list.map((e, i) => `<div class="rec"><b>${i + 1}</b><span>${esc(e.name)} · ${esc(e.cat)}</span><em>${m.k === 'combo' ? e.value + ' di fila' : eur(e.value)}</em></div>`).join('')
+: '<div class="note">Ancora nessun record: gioca una partita!</div>';
+return `<h4>${m.label}</h4><div class="recs">${rows}</div>`;
+};
+modal(`<h3>Tabellone record</h3>${REC_META.map(block).join('')}<div class="note">Online la classifica viene scambiata con l'altro dispositivo.</div>`,
+[{ label: 'Chiudi', cls: 'gold' }, { label: 'Azzera', fn: () => { recs = null; try { localStorage.removeItem(REC_KEY); } catch (e) { /* ignore */ } loadRecs(); toast('Record azzerati'); } }]);
 }
 function sizeWheel() {
 const st = $('#stage'); if (!st.clientWidth) return;
 const W = st.clientWidth, H = st.clientHeight;
-let size = Math.floor((2 * W + 16) / 3);
-size = Math.min(size, Math.floor((H - 8) / 0.55));
+const full = H >= W * 0.86;
+let size = Math.floor(full ? Math.min(W * 0.95, H * 0.94, 560) : Math.min(W * 0.93, H * 1.9, 560));
 size = Math.max(120, size);
-if (size === wheelSize) return;
-wheelSize = size;
+if (size === wheelSize && full === wheelFull) return;
+wheelSize = size; wheelFull = full;
 const box = $('#wheelBox'); box.style.width = box.style.height = size + 'px';
+box.style.top = full ? '50%' : '100%';
 drawWheel($('#wheel'), size);
 }
 new ResizeObserver(sizeWheel).observe($('#stage'));
@@ -1702,7 +4738,7 @@ $('#btnMute').innerHTML = SFX.muted
 $('#btnMute').setAttribute('aria-label', SFX.muted ? 'Attiva audio' : 'Disattiva audio');
 }
 function goMenu() {
-netCleanup(); clearSched(); S = null; resetClient();
+netCleanup(); stopAutoStart(); clearSched(); S = null; resetClient();
 $('#modal').classList.remove('open');
 show('menu');
 }
@@ -1741,8 +4777,41 @@ $('#lobbyStart').style.display = host ? '' : 'none';
 $('#shareRow').style.display = host ? '' : 'none';
 $('#lobbyWait').style.display = host ? 'none' : '';
 $('#lobbyStart').disabled = (NET.seats || []).filter(s => s.type !== 'empty').length < 2;
+armAutoStart();
 }
-function shareUrl() { return location.origin + location.pathname + '?stanza=' + ROOM_CODE; }
+function startHostGame() {
+if (NET.mode !== 'host' || NET.started) return;
+stopAutoStart();
+const players = NET.seats.map((s, i) => ({ s, i })).filter(x => x.s.type !== 'empty').map(({ s, i }) => ({
+name: s.name, type: s.type === 'cpu' ? 'cpu' : 'human', peer: s.type === 'cpu' ? null : s.peer, color: COLORS[i],
+}));
+if (players.length < 2) return toast('Servono almeno 2 concorrenti');
+NET.started = true;
+launchGame(players);
+}
+let autoT = null;
+function stopAutoStart() {
+if (autoT) { clearInterval(autoT); autoT = null; }
+const b = $('#lobbyStart');
+if (b && NET.mode === 'host') b.textContent = 'Inizia la partita';
+}
+function armAutoStart() {
+if (autoT) { clearInterval(autoT); autoT = null; }
+const b = $('#lobbyStart');
+if (!b || NET.mode !== 'host' || NET.started || !NET.seats) return;
+const hasRemote = NET.seats.some(s => s.type === 'remote');
+const humans = NET.seats.filter(s => s.type !== 'empty').length;
+if (!hasRemote || humans < 2) { b.textContent = 'Inizia la partita'; return; }
+const end = Date.now() + 5000;
+const upd = () => {
+const left = Math.max(0, Math.ceil((end - Date.now()) / 1000));
+b.textContent = left ? 'Inizia tra ' + left + '...' : 'Inizia la partita';
+if (!left) { clearInterval(autoT); autoT = null; startHostGame(); }
+};
+autoT = setInterval(upd, 200);
+upd();
+}
+function shareUrl() { return location.origin + location.pathname + '?stanza=' + ROOM_CODE + '&auto=1'; }
 function rulesModal() {
 modal(`<h3>Come si gioca</h3><ul>
 <li><b>3 round</b> + Round Finale. Gira la ruota e chiama una consonante: vinci il valore dello spicchio per ogni lettera presente.</li>
@@ -1752,7 +4821,10 @@ modal(`<h3>Come si gioca</h3><ul>
 <li><b>JOLLY</b>: lo conservi e ti salva automaticamente la prossima volta che perderesti il turno.</li>
 <li>Lettera assente o soluzione sbagliata: il turno passa al prossimo concorrente.</li>
 <li>Chi risolve incassa il montepremi del round (minimo ${eur(MIN_WIN)}).</li>
-<li><b>Online</b>: la stanza usa sempre il codice <b>11</b>.</li>
+<li><b>Combo</b>: ogni consonante azzeccata di fila vale un bonus (fino a ${eur(1000)} in più) e non si perde mai il turno per una combo.</li>
+<li><b>Indizio</b>: una volta per round puoi far apparire gratis la consonante più utile.</li>
+<li><b>Record</b>: il tabellone record conserva i migliori montepremi, premi finali e serie di consonanti su questo dispositivo.</li>
+<li><b>Online</b>: la stanza usa sempre il codice <b>11</b>. "Gioca subito" entra se esiste, altrimenti la crea; chi apre il link condiviso si collega da solo.</li>
 <li><b>Round Finale</b>: il concorrente con più soldi riceve R S T L N E, sceglie 3 consonanti e 1 vocale e ha ${FINAL_TIME / 1000} secondi per vincere il premio misterioso.</li></ul>`,
 [{ label: 'Ho capito', cls: 'gold' }]);
 }
@@ -1760,7 +4832,7 @@ document.addEventListener('pointerdown', () => SFX.unlock(), { once: true });
 $('#myName').value = localStorage.getItem('rdf-name') || '';
 $('#myName').addEventListener('input', e => localStorage.setItem('rdf-name', e.target.value.trim()));
 $('#goLocal').onclick = () => { localSeats[0].name = localSeats[0].name || myName(); renderLocal(); show('local'); };
-$('#goOnline').onclick = () => { setStatus('La stanza usa sempre il codice <b>11</b>: creala, oppure entra digitando 11.'); show('online'); };
+$('#goOnline').onclick = () => { setStatus('Un tocco solo: se la stanza esiste entri, altrimenti la crei tu. Il codice è sempre <b>11</b>.'); show('online'); };
 $('#goRules').onclick = rulesModal;
 document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => { netCleanup(); show('menu'); });
 $('#localSeats').addEventListener('click', e => {
@@ -1771,8 +4843,10 @@ renderLocal();
 });
 $('#localSeats').addEventListener('input', e => { if (e.target.dataset.i !== undefined) localSeats[+e.target.dataset.i].name = e.target.value; });
 $('#startLocal').onclick = startLocal;
+$('#quickPlay').onclick = quickPlay;
 $('#createRoom').onclick = hostCreate;
-$('#joinRoom').onclick = () => guestJoin($('#roomCode').value);
+$('#joinRoom').onclick = () => guestJoin($('#roomCode').value, false);
+$('#goRecords').onclick = recordsModal;
 $('#roomCode').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 2); });
 $('#roomCode').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing && e.keyCode !== 229) guestJoin(e.target.value); });
 $('#lobbySeats').addEventListener('click', e => {
@@ -1781,15 +4855,7 @@ const add = e.target.closest('[data-cpu]'), rm = e.target.closest('[data-rm]');
 if (add) { const i = +add.dataset.cpu; NET.seats[i] = { type: 'cpu', name: CPU_NAMES[i] }; broadcastLobby(); }
 if (rm) { NET.seats[+rm.dataset.rm] = { type: 'empty' }; broadcastLobby(); }
 });
-$('#lobbyStart').onclick = () => {
-if (NET.mode !== 'host') return;
-const players = NET.seats.map((s, i) => ({ s, i })).filter(x => x.s.type !== 'empty').map(({ s, i }) => ({
-name: s.name, type: s.type === 'cpu' ? 'cpu' : 'human', peer: s.type === 'cpu' ? null : s.peer, color: COLORS[i],
-}));
-if (players.length < 2) return toast('Servono almeno 2 concorrenti');
-NET.started = true;
-launchGame(players);
-};
+$('#lobbyStart').onclick = startHostGame;
 $('#leaveLobby').onclick = goMenu;
 $('#copyLink').onclick = async () => {
 try { await navigator.clipboard.writeText(shareUrl()); toast('Link copiato!'); } catch (e) { toast(shareUrl()); }
@@ -1825,7 +4891,8 @@ if (S.phase === 'finalSolve' && draftFull()) act({ t: 'finalSolve', guess: build
 });
 $('#panel').addEventListener('click', e => {
 const b = e.target.closest('button[data-a]'); if (!b) return;
-if (b.dataset.a === 'menu') goMenu();
+if (b.dataset.a === 'next') { clearSched(); dispatch({ t: 'nextRound' }); }
+else if (b.dataset.a === 'menu') goMenu();
 else if (b.dataset.a === 'rematch') {
 if (NET.mode === 'local') launchGame(S.players.map(p => ({ name: p.name, type: p.type, peer: p.peer, color: p.color })));
 else if (NET.mode === 'host') { NET.started = false; S = null; clearSched(); resetClient(); show('lobby'); broadcastLobby(); }
@@ -1850,9 +4917,17 @@ setupPwa();
 updateMuteIcon();
 renderLocal();
 initLogo();
-wheelSize = 0; sizeWheel();
-const qsRoom = new URLSearchParams(location.search).get('stanza');
-if (qsRoom) { $('#roomCode').value = qsRoom.replace(/\D/g, '').slice(0, 2); setStatus('Inserisci il tuo nome e premi "Entra nella stanza" (codice 11).'); show('online'); }
+wheelSize = 0; wheelFull = false; sizeWheel();
+const qs = new URLSearchParams(location.search);
+const qsRoom = qs.get('stanza');
+if (qsRoom) {
+$('#roomCode').value = qsRoom.replace(/\D/g, '').slice(0, 2);
+show('online');
+if (qs.get('auto') === '1') {
+setStatus('<span class="spinner"></span>&nbsp; Connessione automatica alla stanza 11...');
+setTimeout(quickPlay, 250);
+} else setStatus('Premi "Gioca subito": entrerai nella stanza 11.');
+}
 if (location.hostname === 'localhost') {
 const bad = PUZZLES.filter((p, i) => !LAYOUTS[i]).map(p => p[1]);
 if (bad.length) console.log('[rdf] Frasi scartate (troppo lunghe per il tabellone):', bad);
