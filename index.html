@@ -51,6 +51,32 @@ h1 span{display:block;font-size:.62em;color:#fff;text-shadow:0 3px 0 #2a3a9e,0 6
 .btn.ghost{background:rgba(255,255,255,.13)}
 .btn.spin{flex:1;font-size:20px;letter-spacing:1px}
 .link{background:none;border:none;color:var(--muted);font-weight:700;font-size:14px;min-height:44px;text-decoration:underline;text-underline-offset:3px}
+.link.adult{padding:0 14px;border:2px solid #ff4d6d;border-radius:999px;color:#ff8fa3;text-decoration:none;letter-spacing:.6px;font-weight:900;font-size:13px}
+.link.adult.on{background:#ff4d6d;border-color:#ff9fb2;color:#22060d}
+.cat.adult{background:linear-gradient(#ff2d55,#8a0b28);border-color:#ff9fb2}
+.adult-flag{display:inline-block;margin-top:8px;padding:3px 12px;border-radius:999px;border:1.5px solid #ff4d6d;color:#ff8fa3;font-weight:900;font-size:11px;letter-spacing:1.2px}
+.adult-flag[hidden]{display:none}
+body.adult{--navy:#1a0410;--gold:#ff5c9a;--gold2:#ff2d6f;--muted:#f0b9d2;background:#0d0209}
+body.adult #app{background:radial-gradient(120% 55% at 50% -5%,#8a0f3d 0%,transparent 60%),radial-gradient(90% 45% at 50% 105%,#4a0b5e 0%,transparent 70%),var(--navy)}
+body.adult h1{color:var(--gold);text-shadow:0 3px 0 #7a0030,0 6px 18px rgba(0,0,0,.65)}
+body.adult h1 span{text-shadow:0 3px 0 #6b0f4a,0 6px 14px rgba(0,0,0,.6)}
+body.adult .logo-wheel canvas{filter:drop-shadow(0 8px 24px rgba(255,45,111,.45))}
+body.adult .gold,body.adult .btn.spin{background:linear-gradient(#ff9ec4,#d81b60);color:#2a0010}
+body.adult .blue,body.adult .btn.vow{background:linear-gradient(#b06bff,#6a1b9a)}
+body.adult .seg button.on{color:#2a0010}
+body.adult .board-frame{background:linear-gradient(#ffb3cf,#a3124a 60%,#ff7eb0);box-shadow:inset 0 0 0 2px #5e0028,0 8px 22px rgba(0,0,0,.6)}
+body.adult .board{background:#2a0616}
+body.adult .cell{background:linear-gradient(160deg,#7d1636,#3d081b);box-shadow:inset 0 0 0 1px rgba(0,0,0,.4)}
+body.adult .cell.p{background:linear-gradient(#fff6fa,#ffd9e6)}
+body.adult .cell.lit{background:linear-gradient(#ff9ec4,#c2185b);box-shadow:0 0 12px #ff4d8d,inset 0 0 0 1px #fff}
+body.adult .cell:not(.p) span{color:#ffe6f0}
+body.adult .cell.cursor{box-shadow:inset 0 0 0 2px var(--gold2)}
+body.adult .round-lbl{text-shadow:0 2px 0 #6b0030}
+body.adult .code{text-shadow:0 3px 0 #7a0030}
+body.adult .pl.on{box-shadow:0 0 18px rgba(255,45,111,.6)}
+body.adult .modal-card{background:linear-gradient(#4a0b2a,#1a0410);border-color:rgba(255,92,154,.6)}
+body.adult .cat{background:linear-gradient(#ff2d6f,#5a0620)}
+body.adult .toast{background:#ffd7e6;color:#3a0018}
 .head{display:flex;align-items:center;gap:8px;min-height:44px}
 .head h2{font-family:var(--disp);font-weight:400;font-size:22px;color:var(--gold);flex:1;text-align:center;margin-right:44px}
 .icon-btn{width:44px;height:44px;flex:none;border-radius:12px;border:none;background:rgba(255,255,255,.1);display:grid;place-items:center}
@@ -196,7 +222,7 @@ h1 span{display:block;font-size:.62em;color:#fff;text-shadow:0 3px 0 #2a3a9e,0 6
 <button class="btn big gold" id="goLocal">Gioca in locale</button>
 <button class="btn big blue" id="goOnline">Gioca online</button>
 </div>
-<div class="menu-links"><button class="link" id="goRules">Come si gioca</button><button class="link" id="goRecords">Record</button></div>
+<div class="menu-links"><button class="link" id="goRules">Come si gioca</button><button class="link" id="goRecords">Record</button><button class="link adult" id="goAdult" aria-pressed="false" title="Modalità 18+">18+</button></div>
 </section>
 <section id="scr-local" class="screen" aria-label="Partita locale">
 <div class="head"><button class="icon-btn" data-back aria-label="Indietro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg></button><h2>Partita locale</h2></div>
@@ -219,7 +245,7 @@ h1 span{display:block;font-size:.62em;color:#fff;text-shadow:0 3px 0 #2a3a9e,0 6
 <section id="scr-lobby" class="screen" aria-label="Sala d'attesa">
 <div class="head"><button class="icon-btn" id="leaveLobby" aria-label="Esci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg></button><h2>Sala d&apos;attesa</h2></div>
 <div class="body">
-<div class="code-box"><small>Codice stanza</small><div class="code" id="lobbyCode">--</div></div>
+<div class="code-box"><small>Codice stanza</small><div class="code" id="lobbyCode">--</div><div class="adult-flag" id="lobbyAdult" hidden>18+</div></div>
 <div class="row" id="shareRow"><button class="btn ghost" id="copyLink">Copia link</button><button class="btn ghost" id="shareLink">Condividi</button></div>
 <div class="seats" id="lobbySeats"></div>
 <p class="note" id="lobbyWait"><span class="spinner"></span>&nbsp; In attesa che l&apos;host avvii la partita...</p>
@@ -281,6 +307,12 @@ const N = WEDGES.length, SEG = 360 / N;
 const MEGA_SUBS = ['BANCAROTTA', 'RADDOPPIA', 'BANCAROTTA'];
 const PALETTE = ['#e53935', '#ffb300', '#1e88e5', '#43a047', '#8e24aa', '#fb8c00', '#d81b60', '#00acc1'];
 const HINT_FREE = 1;
+const ADULT_CATS = new Set(['Ruoli', 'Luoghi hot', 'Outfit', 'Accessori', 'Situazioni', 'Posizioni', 'Segreti', 'Digitale', 'Comiche', 'Fantasie']);
+const isAdultCat = c => ADULT_CATS.has(c);
+const ADULT_PALETTE = ['#c2185b', '#7b1fa2', '#d81b60', '#5a0f2e', '#ad1457', '#6a1b9a', '#e91e63', '#8e1b3a'];
+let ADULT = false;
+let themeAdult = null;
+try { ADULT = localStorage.getItem('rdf-adult') === '1'; } catch (e) { /* ignore */ }
 const ICE_CFG = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:global.stun.twilio.com:3478' }] };
 const PEER_OPTS = { debug: 0, config: ICE_CFG };
 /* ============ ARCHIVIO FRASI (tutto nello stesso file) ============
@@ -3703,6 +3735,736 @@ Feste|TORTA DI COMPLEANNO
 Feste|SCARTARE I REGALI
 Feste|STELLE DI NATALE
 Feste|FESTA DELLA MAMMA
+Situazioni|NOTTE DI PASSIONE
+Segreti|TRADIMENTO AL MOTEL
+Segreti|SCAPPATELA DI MEZZANOTTE
+Situazioni|MASSAGGIO MOLTO PROIBITO
+Luoghi hot|DOPPIO SENSO AL BAR
+Segreti|MARITO TRADITO E FELICE
+Accessori|SUOCERA IN VISITA
+Comiche|VICINO DI CASA
+Situazioni|UNA NOTTE BRAVA
+Comiche|CENA A LUME DI CANDELE
+Outfit|LINGERIE DI PIZZO
+Comiche|DIVANO MOLTO SFONDATO
+Segreti|TRADIMENTO ASSAI CONDOMINIALE
+Situazioni|SEDUZIONE AL BUIO
+Situazioni|MASSAGGIO TANTRICO ORIENTALE
+Luoghi hot|NOTTE IN ALBERGO
+Segreti|AMANTE MOLTO GELOSO
+Segreti|APPUNTAMENTO AL BUIO
+Luoghi hot|PASSIONE IN UFFICIO
+Digitale|SCANDALO SUL WEB
+Digitale|FOTO MOLTO SPINTA
+Situazioni|UNA SERA MALIZIOSA
+Situazioni|BACIO DI MEZZANOTTE
+Segreti|AMORE ASSAI CLANDESTINO
+Luoghi hot|FLIRT AL BAR
+Segreti|CUORE MOLTO INFEDELE
+Situazioni|UNA NOTTE FOLLE
+Segreti|DOPPIA VITA SEGRETA
+Outfit|LINGERIE ROSSO FUOCO
+Situazioni|TANGO MOLTO SENSUALE
+Segreti|VIZIO MOLTO SEGRETO
+Situazioni|GIOCO EROTICO DI COPPIA
+Situazioni|SPOGLIARELLO DI MEZZANOTTE
+Situazioni|LETTO A TRE
+Segreti|TRADIMENTO VIRALE ONLINE
+Ruoli|MARITO IN FUGA
+Ruoli|MOGLIE ASSAI FURIOSA
+Digitale|CHAT HOT DI NOTTE
+Situazioni|SEXTING DI MEZZANOTTE
+Luoghi hot|SCANDALO IN UFFICIO
+Segreti|TRADIMENTO AL CONDOMINIO
+Luoghi hot|AMORE IN UFFICIO
+Segreti|PASSIONE AL MOTEL
+Situazioni|BACIO AL BUIO
+Outfit|TANGA DI PIZZO
+Accessori|NOTTE CON LA SUOCERA
+Segreti|PRIMO APPUNTAMENTO AL BUIO
+Situazioni|COPPIA IN CRISI
+Situazioni|UN BACIO APPASSIONATO
+Luoghi hot|BACIO IN SPIAGGIA
+Segreti|NOTTE AL MOTEL
+Segreti|AMANTE IN FUGA
+Comiche|LETTO ASSAI SFATTO
+Situazioni|GELOSIA MOLTO MALATA
+Segreti|TRADIMENTO IN DIRETTA
+Situazioni|BACIO CON LA LINGUA
+Situazioni|NOTTE DI FOLLIA
+Ruoli|MOGLIE IN FUGA
+Segreti|AMANTE MOLTO SEGRETO
+Situazioni|VICINI MOLTO CURIOSI
+Luoghi hot|FESTA IN PISCINA
+Outfit|BIKINI DI PIZZO
+Situazioni|CUORE IN FIAMME
+Segreti|APPUNTAMENTO ASSAI SEGRETO
+Situazioni|TANGO IN SALOTTO
+Luoghi hot|SEDUZIONE IN UFFICIO
+Segreti|SCANDALO AL MOTEL
+Situazioni|AMORE A MEZZANOTTE
+Situazioni|BACIO MOLTO SPINTO
+Situazioni|NOTTE DI PECCATO
+Situazioni|VIBRATORE NEL CASSETTO
+Situazioni|VIBRATORE A PILE
+Situazioni|UOVO VIBRANTE ROSA
+Segreti|ANELLO VIBRANTE SEGRETO
+Situazioni|SFERA VIBRANTE IN VETRO
+Accessori|CUSCINO CON VIBRAZIONE
+Situazioni|PALLINE CINESI IN VETRO
+Accessori|MANETTE AL LETTO
+Accessori|MANETTE DI VELLUTO
+Situazioni|CATENE MOLTO DORATE
+Accessori|BENDA SUL COMODINO
+Accessori|BENDARE SENZA GUARDARE
+Accessori|CORDA DI SETA
+Accessori|FRUSTINO DI VELLUTO
+Accessori|FRUSTINO MOLTO DISCRETO
+Accessori|OLIO DA MASSAGGIO
+Accessori|OLIO ALLA MANDORLA
+Accessori|CREMA MOLTO IDRATANTE
+Situazioni|PENNELLO DI PIUME
+Situazioni|PIUMA SUL COLLO
+Outfit|MASCHERA DI PIZZO
+Outfit|GUANTO DI VELLUTO
+Situazioni|POLTRONA DEL PIACERE
+Luoghi hot|GIOCHI PROIBITI IN CAMERA
+Situazioni|KIT DI GIOCHI EROTICI
+Segreti|KIT MOLTO SEGRETO
+Situazioni|SCATOLA IN LEGNO
+Situazioni|PACCO MOLTO DISCRETO
+Situazioni|CONSEGNA A DOMICILIO
+Situazioni|CORRIERE MOLTO DISCRETO
+Situazioni|NEGOZIO PER ADULTI
+Situazioni|VETRINA MOLTO CURIOSA
+Situazioni|CATALOGO DI NOVITA
+Situazioni|LISTA DEI DESIDERI
+Situazioni|PAGINA DEI DESIDERI
+Situazioni|SCONTO SUI GIOCHI
+Comiche|TELECOMANDO SOTTO IL LETTO
+Situazioni|BATTERIA MOLTO SCARICA
+Accessori|CANDELA PROFUMATA ALLA VANIGLIA
+Accessori|LUCI ROSSE IN CAMERA
+Accessori|LUCI BASSE IN SALOTTO
+Accessori|SPECCHIO SUL SOFFITTO
+Luoghi hot|CAMINO MOLTO ACCESO
+Accessori|MUSICA MOLTO SENSUALE
+Situazioni|TANGO FINO A NOTTE
+Situazioni|SLOW DANCE AL BUIO
+Outfit|DIVANO DI VELLUTO
+Comiche|PETALI SUL LETTO
+Accessori|ROSE SUL CUSCINO
+Accessori|CUSCINO IN DISORDINE
+Situazioni|LENZUOLA MOLTO STROPICCIATE
+Situazioni|COPERTA SUL VISO
+Segreti|SEGRETO SOTTO LE COPERTE
+Segreti|PROFUMO SUL CUSCINO
+Outfit|PROFUMO ALLA VANIGLIA
+Situazioni|SAPONE MOLTO PROFUMATO
+Situazioni|SCHIUMA NELLA VASCA
+Luoghi hot|DOCCIA A DUE
+Situazioni|VASCA CON IDROMASSAGGIO
+Situazioni|IDROMASSAGGIO AL BUIO
+Luoghi hot|SPA IN CAMERA
+Luoghi hot|SAUNA MOLTO PRIVATA
+Outfit|ASCIUGAMANO DI SETA
+Outfit|ACCAPPATOIO MOLTO APERTO
+Situazioni|TELO MOLTO CADUTO
+Segreti|CIABATTE AL MOTEL
+Luoghi hot|CHIAVE DELLA CAMERA
+Accessori|CHIAVE SOTTO IL CUSCINO
+Luoghi hot|NOTTE IN SUITE
+Comiche|COLAZIONE A LETTO
+Outfit|PIGIAMA DI SETA
+Outfit|VESTAGLIA MOLTO APERTA
+Outfit|TACCHI A SPILLO
+Luoghi hot|TANGA SUL BALCONE
+Outfit|REGGISENO MOLTO SLACCIATO
+Outfit|SLIP SUL LAMPADARIO
+Outfit|CALZE A RETE
+Outfit|CALZE MOLTO VELATE
+Outfit|VESTITO SENZA SPALLINE
+Outfit|SCARPE SOTTO IL LETTO
+Outfit|CINTURA SUL DIVANO
+Situazioni|BOTTONE MOLTO SLACCIATO
+Situazioni|ZIP MOLTO APERTA
+Outfit|CRAVATTA MOLTO ALLENTATA
+Outfit|CAMICIA MOLTO APERTA
+Outfit|SENZA MUTANDE SOTTO IL VESTITO
+Outfit|ROSSETTO SUL COLLO
+Situazioni|SEGNO SUL COLLO
+Segreti|PROFUMO SULLA CAMICIA
+Outfit|ORECCHINI A CERCHIO
+Situazioni|MASSAGGIO A QUATTRO MANI
+Accessori|MASSAGGIO CON OLIO
+Situazioni|CAREZZA MOLTO LENTA
+Accessori|CAREZZA SULLA SPALLA
+Situazioni|MANO SULLA GAMBA
+Situazioni|MANO NEI CAPELLI
+Situazioni|UN ABBRACCIO INTERMINABILE
+Situazioni|BACIO SULLA GUANCIA
+Situazioni|BACIO MOLTO LENTO
+Situazioni|BACI SUL COLLO
+Situazioni|UN BACIO RUBATO
+Situazioni|PRIMO BACIO AL BUIO
+Situazioni|COLPO DI FULMINE
+Situazioni|ATTRAZIONE MOLTO FATALE
+Situazioni|CHIMICA MOLTO PERFETTA
+Situazioni|UNO SGUARDO MALIZIOSO
+Situazioni|UN SORRISO COMPLICE
+Situazioni|SUSSURRO MOLTO VICINO
+Situazioni|VOCE MOLTO PROFONDA
+Situazioni|CUORE CHE BATTE
+Situazioni|FARFALLE NELLO STOMACO
+Situazioni|GELOSIA DA COPPIA
+Segreti|SEGRETO DI COPPIA
+Situazioni|PROMESSA A MEZZANOTTE
+Luoghi hot|FLIRT IN ASCENSORE
+Luoghi hot|SGUARDI IN UFFICIO
+Situazioni|BACI IN ARCHIVIO
+Situazioni|RIUNIONE MOLTO PRIVATA
+Situazioni|PAUSA PRANZO LUNGA
+Segreti|APPUNTAMENTO IN HOTEL
+Segreti|SCONTRINO AL MOTEL
+Situazioni|PORTA CHIUSA A CHIAVE
+Situazioni|NOTTE SENZA SONNO
+Situazioni|ALBA IN COMPAGNIA
+Situazioni|COCCOLE AL MATTINO
+Comiche|DOMENICA A LETTO
+Luoghi hot|POMERIGGIO IN CAMERA
+Situazioni|SIESTA IN COMPAGNIA
+Outfit|GIORNATA IN PIGIAMA
+Comiche|SVEGLIA MOLTO SPENTA
+Comiche|COLAZIONE MOLTO TARDI
+Situazioni|VINO ROSSO E BACI
+Accessori|PIZZA A LUME DI CANDELA
+Comiche|CIOCCOLATO SUL DIVANO
+Accessori|CIOCCOLATINO SUL CUSCINO
+Situazioni|FRAGOLA SUL COLLO
+Digitale|DOPPIO SENSO IN CHAT
+Digitale|UN MESSAGGIO PICCANTE
+Digitale|CHAT A TARDI
+Digitale|FOTO ALLO SPECCHIO
+Digitale|SELFIE MOLTO AUDACE
+Digitale|UNA VIDEOCHIAMATA COMPLICE
+Situazioni|EMOJI MOLTO AMBIGUA
+Segreti|SEGRETO IN CANTINA
+Situazioni|PIACERE DI CONOSCERTI
+Situazioni|VOGLIA DI CONOSCERSI
+Situazioni|TRUCCO MOLTO SBARAZZATO
+Outfit|ROSSETTO MOLTO SBARAZZATO
+Situazioni|NOTTE IN BIANCO
+Segreti|PROFUMO SULLA PELLE
+Posizioni|MANUALE DEL KAMASUTRA
+Posizioni|PAGINE DEL KAMASUTRA
+Posizioni|CAPITOLO DEL KAMASUTRA
+Posizioni|EDIZIONE DEL KAMASUTRA
+Posizioni|POSIZIONI DEL KAMASUTRA
+Posizioni|FIGURE DEL KAMASUTRA
+Posizioni|KAMASUTRA SOTTO IL CUSCINO
+Posizioni|KAMASUTRA SUL COMODINO
+Posizioni|KAMASUTRA IN CAMERA
+Posizioni|KAMASUTRA IN ALBERGO
+Posizioni|KAMASUTRA IN VACANZA
+Posizioni|KAMASUTRA AL MARE
+Posizioni|KAMASUTRA IN PISCINA
+Posizioni|KAMASUTRA IN TERRAZZA
+Posizioni|KAMASUTRA SUL BALCONE
+Posizioni|KAMASUTRA IN CUCINA
+Posizioni|KAMASUTRA SUL DIVANO
+Posizioni|KAMASUTRA TRA I CUSCINI
+Posizioni|KAMASUTRA TRA LE LENZUOLA
+Posizioni|KAMASUTRA SOTTO LE COPERTE
+Posizioni|KAMASUTRA DI NASCOSTO
+Posizioni|KAMASUTRA IN CANTINA
+Posizioni|KAMASUTRA IN SOFFITTA
+Posizioni|KAMASUTRA NEL BAULE
+Posizioni|KAMASUTRA MOLTO SEGRETO
+Posizioni|KAMASUTRA MOLTO PROIBITO
+Posizioni|KAMASUTRA PER PRINCIPIANTI
+Posizioni|CORSO DI KAMASUTRA AVANZATO
+Posizioni|KAMASUTRA PER COPPIE
+Posizioni|KAMASUTRA MOLTO ILLUSTRATO
+Posizioni|KAMASUTRA CON FIGURE
+Posizioni|KAMASUTRA A COLORI
+Posizioni|KAMASUTRA CON SEGNALIBRO
+Posizioni|KAMASUTRA TUTTO SGUALCITO
+Posizioni|KAMASUTRA IN PRESTITO
+Posizioni|KAMASUTRA MAI RESTITUITO
+Posizioni|KAMASUTRA DI SECONDA MANO
+Posizioni|KAMASUTRA PRIMA EDIZIONE
+Posizioni|KAMASUTRA DA COLLEZIONE
+Posizioni|KAMASUTRA RILEGATO IN PELLE
+Posizioni|KAMASUTRA CON DEDICA
+Posizioni|KAMASUTRA IN BIBLIOTECA
+Posizioni|KAMASUTRA NELLO ZAINO
+Posizioni|KAMASUTRA SOTTO IL PIGIAMA
+Posizioni|KAMASUTRA E VINO ROSSO
+Posizioni|KAMASUTRA E CIOCCOLATINI
+Posizioni|KAMASUTRA E MUSICA LENTA
+Posizioni|KAMASUTRA E PETALI DI ROSA
+Posizioni|KAMASUTRA E OLIO
+Posizioni|KAMASUTRA E MASSAGGIO
+Posizioni|KAMASUTRA ALLO SPECCHIO
+Posizioni|KAMASUTRA A LUCI ROSSE
+Posizioni|POSIZIONE DEL LOTUS
+Posizioni|POSIZIONE DELLA CANDELA
+Posizioni|POSIZIONE DELLA FARFALLA
+Posizioni|POSIZIONE DEL DELFINO
+Posizioni|POSIZIONE DEL PONTE
+Posizioni|POSIZIONE DELLA ROCCA
+Posizioni|POSIZIONE DEL GATTO
+Posizioni|POSIZIONE DELLA TIGRE
+Ruoli|GIOCHIAMO AL DOTTORE
+Situazioni|VISITA MOLTO PRIVATA
+Ruoli|DOTTORESSA IN CAMICE
+Ruoli|INFERMIERA IN TURNO
+Situazioni|PAZIENTE MOLTO AGITATO
+Situazioni|LEZIONE DI ANATOMIA
+Ruoli|PROFESSORESSA MOLTO SEVERA
+Situazioni|ALUNNO MOLTO DISTRATTO
+Situazioni|COMPITO IN CLASSE
+Situazioni|INTERROGAZIONE A SORPRESA
+Situazioni|PUNIZIONE DOPO SCUOLA
+Ruoli|CAPO MOLTO ESIGENTE
+Segreti|SEGRETARIA IN UFFICIO
+Situazioni|RIUNIONE DOPO CENA
+Situazioni|COLLOQUIO MOLTO PRIVATO
+Situazioni|AUMENTO DI STIPENDIO
+Ruoli|IDRAULICO A DOMICILIO
+Situazioni|TUBO MOLTO OTTURATO
+Luoghi hot|RIPARAZIONE IN CAMERA
+Ruoli|ELETTRICISTA IN NERO
+Situazioni|UN CORTO CIRCUITO
+Ruoli|MECCANICO MOLTO SPORCO
+Situazioni|MOTORE MOLTO CALDO
+Ruoli|POMPIERE IN SERVIZIO
+Situazioni|SCALA MOLTO LUNGA
+Ruoli|POLIZIOTTA MOLTO SEVERA
+Accessori|MANETTE DI ORDINANZA
+Situazioni|FERMO IN QUESTURA
+Situazioni|SPIA IN INCOGNITO
+Segreti|MISSIONE MOLTO SEGRETA
+Ruoli|PIRATA SENZA TIMONE
+Comiche|TESORO SOTTO IL LETTO
+Luoghi hot|VAMPIRA IN CAMERA
+Situazioni|MORSO SUL COLLO
+Situazioni|STREGA MOLTO CURIOSA
+Situazioni|MAGIA MOLTO PROIBITA
+Outfit|DOMINATRICE IN TACCHI
+Ruoli|PADRONE DELLA SITUAZIONE
+Ruoli|SCHIAVO PER UNA NOTTE
+Ruoli|REGOLE DELLA PADRONA
+Luoghi hot|ASCENSORE MOLTO STRETTO
+Luoghi hot|SPOGLIATOIO DELLA PALESTRA
+Luoghi hot|DOCCIA DOPO LA PALESTRA
+Luoghi hot|SAUNA MOLTO AFFOLLATA
+Luoghi hot|BAGNO TURCO AL BUIO
+Situazioni|IDROMASSAGGIO IN COPPIA
+Luoghi hot|CAMERINO DEL TEATRO
+Luoghi hot|CINEMA IN ULTIMA FILA
+Situazioni|POLTRONA MOLTO COMODA
+Luoghi hot|PARCO DI NOTTE
+Situazioni|PANCHINA MOLTO ISOLATA
+Luoghi hot|SPIAGGIA PER NUDISTI
+Situazioni|OMBRELLONE MOLTO LARGO
+Situazioni|BARCA IN MEZZO AL MARE
+Situazioni|CAMPER IN MONTAGNA
+Situazioni|TENDA MOLTO PICCOLA
+Luoghi hot|CASCINA IN CAMPAGNA
+Situazioni|AGRITURISMO MOLTO TRANQUILLO
+Segreti|MOTEL SULLA STATALE
+Luoghi hot|HOTEL A QUATTRO STELLE
+Luoghi hot|SUITE CON VASCA
+Luoghi hot|BALCONE SUL MARE
+Luoghi hot|TERRAZZA MOLTO PRIVATA
+Luoghi hot|CANTINA MOLTO BUIA
+Luoghi hot|SOFFITTA MOLTO POLVEROSA
+Situazioni|ARCHIVIO MOLTO POLVEROSO
+Situazioni|RETROBOTTEGA MOLTO BUIA
+Ruoli|STUDIO DEL CAPO
+Luoghi hot|SALA RIUNIONI VUOTA
+Luoghi hot|UFFICIO DOPO CENA
+Luoghi hot|ASCENSORE MOLTO BLOCCATO
+Situazioni|SCALE DI SERVIZIO
+Luoghi hot|GARAGE MOLTO BUIO
+Luoghi hot|AUTO IN SOSTA
+Luoghi hot|TRENO MOLTO NOTTURNO
+Outfit|REGGICALZE DI PIZZO
+Outfit|AUTOREGGENTI IN SETA
+Outfit|CALZE CON BORDO
+Situazioni|TANGA DI LATEX
+Outfit|PERIZOMA MOLTO MINIMO
+Outfit|PIZZO NERO E ROSSO
+Outfit|CORSETTO MOLTO STRINGATO
+Outfit|SOTTILI SPALLINE DI SETA
+Outfit|VESTITO MOLTO CORTO
+Outfit|GONNA MOLTO STRETTA
+Outfit|CAMICETTA DI PIZZO
+Situazioni|BABY DOLL ROSSO
+Outfit|SCIALLE DI VELLUTO
+Outfit|CAPPOTTO SENZA NULLA SOTTO
+Outfit|CAMICIA DI SETA
+Situazioni|UN BOTTONE MANCANTE
+Situazioni|ZIP MOLTO ABBASSATA
+Outfit|TACCHI MOLTO ALTI
+Outfit|STIVALI DI CUOIO
+Outfit|CUOIO E CATENE
+Outfit|GUANTI DI LATEX
+Outfit|MASCHERA DI VELLUTO
+Situazioni|COLLANT A RETE
+Outfit|CULOTTE DI SETA
+Outfit|SLIP MOLTO PICCOLI
+Outfit|REGGISENO SENZA SPALLINE
+Outfit|VESTAGLIA DI RASO
+Outfit|ACCAPPATOIO TROPPO CORTO
+Outfit|ROSSETTO ROSSO FUOCO
+Outfit|SMALTO MOLTO ROSSO
+Accessori|CORDA MOLTO RESISTENTE
+Situazioni|NODO MOLTO STRETTO
+Accessori|BENDATO SENZA VEDERCI
+Accessori|BENDATA IN ATTESA
+Accessori|MANETTE AL RADIATORE
+Comiche|CATENE AL LETTO
+Accessori|COLLARE CON GUINZAGLIO
+Accessori|GUINZAGLIO IN MANO
+Accessori|FRUSTA SUL COMODINO
+Accessori|FRUSTINO DI CUOIO
+Situazioni|PUNIZIONE MOLTO LENTA
+Situazioni|REGOLA NUMERO UNO
+Situazioni|OBBEDIENZA MOLTO ASSOLUTA
+Ruoli|PADRONE MOLTO SEVERO
+Ruoli|PADRONA MOLTO ESIGENTE
+Ruoli|SCHIAVO MOLTO UBBIDIENTE
+Situazioni|PREMIO MOLTO SPECIALE
+Situazioni|CASTIGO MOLTO DOLCE
+Situazioni|GIOCO DI RUOLO
+Luoghi hot|CAMERA DELLE PUNIZIONI
+Accessori|SPECCHIO DAVANTI AL LETTO
+Accessori|GHIACCIO SULLA SCHIENA
+Accessori|CANDELA MOLTO CALDA
+Accessori|CERA MOLTO CALDA
+Situazioni|PIUMA SULLA PELLE
+Segreti|TRADIMENTO COL VICINO
+Situazioni|VICINO MOLTO DISPONIBILE
+Ruoli|MOGLIE MOLTO DISTRATTA
+Ruoli|MARITO MOLTO ASSENTE
+Segreti|AMANTE IN SOFFITTA
+Segreti|AMANTE NEL RETRO
+Segreti|SCAPPATELA MOLTO BREVE
+Situazioni|SCUSA MOLTO CREATIVA
+Digitale|UN MESSAGGIO CANCELLATO
+Digitale|UNA CHIAMATA MUTA
+Outfit|PROFUMO DI UN ALTRO
+Outfit|SEGNO DI ROSSETTO
+Comiche|BOTTONE NEL LETTO
+Situazioni|OREFICINA MOLTO DIMENTICATA
+Outfit|CALZE NEL CASSETTO
+Segreti|ALIBI MOLTO DEBOLE
+Digitale|TELEFONO IN SILENZIO
+Ruoli|MOGLIE MOLTO GELOSA
+Ruoli|MARITO MOLTO GELOSO
+Situazioni|COPPIA MOLTO APERTA
+Situazioni|SERATA TRA AMICI
+Situazioni|AMICO MOLTO INTIMO
+Situazioni|CONFIDENZA A MEZZANOTTE
+Segreti|SEGRETO NEL CONDOMINIO
+Situazioni|CHIACCHIERE DI CONDOMINIO
+Digitale|DIRETTA MOLTO PRIVATA
+Digitale|WEBCAM MOLTO ACCESA
+Situazioni|MICROFONO MOLTO ACCESO
+Accessori|LUCI DELLO STUDIO
+Digitale|CHAT MOLTO SPINTA
+Digitale|UN MESSAGGIO VOCALE
+Situazioni|EMOJI MOLTO SPINTA
+Digitale|UNA FOTO CANCELLATA
+Digitale|SELFIE SENZA VELI
+Digitale|STORIA MOLTO BREVE
+Segreti|PROFILO MOLTO SEGRETO
+Digitale|MATCH MOLTO VELOCE
+Digitale|APP DI INCONTRI
+Digitale|NOTIFICA A MEZZANOTTE
+Digitale|TELEFONO MOLTO VIBRANTE
+Digitale|VIDEOCHIAMATA AL BUIO
+Situazioni|SCHERMO MOLTO LUMINOSO
+Segreti|PASSWORD MOLTO SEGRETA
+Situazioni|ACCOUNT MOLTO PRIVATO
+Situazioni|UNA STANZA VIRTUALE
+Accessori|SUOCERA NEL LETTO
+Accessori|SUOCERA MOLTO CURIOSA
+Comiche|CUGINO MOLTO AFFETTUOSO
+Ruoli|IDRAULICO MOLTO FASCINOSO
+Ruoli|PANETTIERE MOLTO MUSCOLOSO
+Ruoli|POSTINO MOLTO PUNTUALE
+Comiche|TECNICO DELLA CALDAIA
+Comiche|CALDAIA MOLTO CALDA
+Comiche|FRIGORIFERO MOLTO ROTTO
+Comiche|LAVATRICE IN PANNE
+Situazioni|PIZZA MOLTO PICANTE
+Situazioni|PEPERONCINO SUL MENU
+Situazioni|DOLCE MOLTO PICCANTE
+Ruoli|CHEF MOLTO CREATIVO
+Segreti|UNA RICETTA SEGRETA
+Ruoli|CAMERIERE MOLTO GENTILE
+Situazioni|TASSO MOLTO ALTO
+Comiche|BOLLETTA MOLTO SALATA
+Situazioni|CONTO MOLTO SALATO
+Situazioni|MANCE MOLTO GENEROSE
+Ruoli|BANCONIERE MOLTO DISPONIBILE
+Ruoli|CONSULENTE MOLTO INTIMO
+Ruoli|AVVOCATO MOLTO PERSUASIVO
+Ruoli|SCIENZIATO MOLTO CURIOSO
+Digitale|ALGORITMO MOLTO MALIZIOSO
+Outfit|IDRAULICO SENZA CINTURA
+Luoghi hot|CABINA DEL TRAGHETTO
+Outfit|CRAVATTA MOLTO STRETTA
+Ruoli|ELETTRICISTA IN TUTA
+Luoghi hot|SOTTOSCALA MOLTO BUIA
+Outfit|CAMICIA TROPPO APERTA
+Ruoli|MURATORE MOLTO ATLETICO
+Luoghi hot|MANSARDA MOLTO POLVEROSA
+Outfit|GONNA MOLTO CORTA
+Ruoli|CUOCO MOLTO APPASSIONATO
+Luoghi hot|GARAGE MOLTO SILENZIOSO
+Outfit|CORSETTO MOLTO STRETTO
+Ruoli|CAMERIERE MOLTO SERVITEVOLE
+Segreti|SOFFITTA MOLTO SEGRETA
+Outfit|CINTURA MOLTO LARGA
+Ruoli|AUTISTA CON MANI SUL VOLANTE
+Luoghi hot|BAGNO DEL LOCALE
+Outfit|PROFUMO MOLTO INTENSO
+Ruoli|BARISTA MOLTO CREMOSO
+Luoghi hot|RETRO DEL CINEMA
+Outfit|CAMICIA DA NOTTE
+Ruoli|PARRUCCHIERE MOLTO PRECISO
+Luoghi hot|PARCO A MEZZANOTTE
+Outfit|MUTANDINE DI PIZZO
+Ruoli|FOTOGRAFO MOLTO INSISTENTE
+Luoghi hot|SPIAGGIA MOLTO DESERTA
+Situazioni|REGGIPETTO MOLTO SFRONTATO
+Ruoli|PITTORE SENZA PENNELLO
+Luoghi hot|MOLO MOLTO VENTOSO
+Outfit|TOP MOLTO ADERENTE
+Ruoli|ARCHITETTO MOLTO CREATIVO
+Luoghi hot|PORTO MOLTO TRANQUILLO
+Outfit|JEANS MOLTO STRETTI
+Ruoli|NOTAIO MOLTO DISCRETO
+Luoghi hot|ALBERGO A QUATTRO STELLE
+Outfit|SCARPE MOLTO SCOMODE
+Ruoli|AVVOCATO SENZA CAVATTA
+Luoghi hot|SUITE MOLTO DISCRETA
+Outfit|ORECCHINI MOLTO LUNGHI
+Ruoli|BANCHIERE MOLTO GENEROSO
+Luoghi hot|HOTEL SENZA PORTIERE
+Outfit|COLLANA MOLTO PREZIOSA
+Ruoli|ASSICURATORE MOLTO PERSUASIVO
+Luoghi hot|VILLA CON PISCINA PRIVATA
+Outfit|GUANTI DI LATTICE
+Outfit|TASSISTA MOLTO VELOCE
+Situazioni|TERRAZZO MOLTO ROMANTICO
+Outfit|VELO MOLTO TRASPARENTE
+Outfit|GIARDINIERE SENZA GUANTI
+Luoghi hot|CUCINA MOLTO AFFOLLATA
+Accessori|MANETTE MOLTO MORBIDE
+Situazioni|PRIMA DI DORMIRE
+Posizioni|POSIZIONE DEL GIRASOLE
+Accessori|BENDA DI RASO
+Luoghi hot|DOPO LA PALESTRA
+Posizioni|POSIZIONE DELLA COMETA
+Accessori|FRUSTA MOLTO LEGGERA
+Situazioni|DURANTE LA PAUSA
+Posizioni|POSIZIONE DEL FARO
+Accessori|PALLA MOLTO VIBRANTE
+Luoghi hot|IN PIENO UFFICIO
+Posizioni|POSIZIONE DELLA VELA
+Accessori|ANELLO MOLTO VIBRANTE
+Accessori|A LUCI SPENTE
+Posizioni|POSIZIONE DELL'ANCORA DORATA
+Accessori|OLIO MOLTO PROFUMATO
+Situazioni|CON LA PORTA APERTA
+Posizioni|POSIZIONE DEL CIGNO
+Accessori|CREMA MOLTO SCIVOLOSA
+Situazioni|SENZA GUARDARE TROPPO
+Posizioni|POSIZIONE DELLA LUNA
+Accessori|GHIACCIO SUL COLLO
+Situazioni|SOTTO LE COPERTE
+Posizioni|POSIZIONE DEL VULCANO
+Accessori|PENNA MOLTO SPECIALE
+Comiche|SUL DIVANO MOLTO COMODO
+Posizioni|POSIZIONE DELLA NUVOLA
+Accessori|PIUMINO MOLTO SOFFICE
+Luoghi hot|IN CUCINA DI NOTTE
+Posizioni|POSIZIONE DEL LOTO
+Accessori|SPECCHIO MOLTO GRANDE
+Luoghi hot|SULLA TERRAZZA AL BUIO
+Posizioni|POSIZIONE DEL PONTE SOSPESO
+Accessori|LUCI MOLTO BASSE
+Luoghi hot|SOTTO LA DOCCIA
+Posizioni|POSIZIONE DEI DUE SPECCHI
+Accessori|CANDELA MOLTO PROFUMATA
+Luoghi hot|DAVANTI AL CAMINO
+Posizioni|POSIZIONE CON CUSCINO
+Accessori|MUSICA MOLTO LENTA
+Luoghi hot|DIETRO LE QUINTE
+Posizioni|POSIZIONE SOTTO LE STELLE
+Accessori|PLAYLIST MOLTO PRIVATA
+Luoghi hot|IN MACCHINA AL BUIO
+Posizioni|POSIZIONE MOLTO ACROBATICA
+Accessori|DADO MOLTO MALIZIOSO
+Luoghi hot|AL PARCO DI NOTTE
+Posizioni|POSIZIONE DA MANUALE
+Accessori|CARTE MOLTO SPINTE
+Luoghi hot|IN ASCENSORE FERMO
+Segreti|SEGRETO MOLTO PESANTE
+Digitale|VIDEOCHIAMATA MOLTO LUNGA
+Accessori|SUOCERA MOLTO PRESENTE
+Segreti|ALIBI MOLTO CREATIVO
+Digitale|PROFILO MOLTO MISTERIOSO
+Comiche|VICINA DI CASA
+Digitale|MESSAGGIO MOLTO CANCELLATO
+Digitale|LIKE MOLTO SOSPETTO
+Comiche|GATTO SUL LETTO
+Digitale|CHIAMATA A NUMERO OCCULTO
+Digitale|STORIA MOLTO VISUALIZZATA
+Comiche|CANE MOLTO GELOSO
+Segreti|TRACCIA MOLTO SFUGGENTE
+Digitale|MESSAGGIO IN BOZZA
+Comiche|PAPPAGALLO MOLTO LOQUACE
+Segreti|SCUSE MOLTO POCO CONVINCENTI
+Digitale|BOZZA MAI INVIATA
+Outfit|CONIGLIO MOLTO VELOCE
+Segreti|PORTA MOLTO SOCCHIUSA
+Digitale|CONTATTO SENZA NOME
+Comiche|FRIGO MOLTO VUOTO
+Segreti|FINESTRA LASCIATA APERTA
+Digitale|GRUPPO MOLTO SILENZIOSO
+Comiche|LAVATRICE IN CENTRIFUGA
+Segreti|VICINO MOLTO CURIOSO
+Digitale|LIVE MOLTO PRIVATA
+Comiche|FORNO MOLTO CALDO
+Segreti|AMICA MOLTO DISCRETA
+Digitale|SELFIE MOLTO SFOCATO
+Comiche|TV MOLTO ALTA
+Segreti|COLLEGA MOLTO SOLERTE
+Digitale|CLOUD MOLTO AFFOLLATO
+Comiche|TELECOMANDO MOLTO LONTANO
+Segreti|CAPO MOLTO COMPRENSIVO
+Digitale|BACKUP MOLTO DISCRETO
+Comiche|DIVANO MOLTO PROFONDO
+Segreti|EX MOLTO PENTITO
+Digitale|ALGORITMO MOLTO CURIOSO
+Comiche|TRAPUNTO MOLTO PESANTE
+Segreti|EX MOLTO PERSISTENTE
+Digitale|NOTIFICA MOLTO INSISTENTE
+Accessori|CUSCINO MOLTO MORBIDO
+Segreti|PRIMO AMORE RITROVATO
+Digitale|AUDIO MOLTO CONFUSO
+Comiche|PIATTI DA LAVARE
+Digitale|MESSAGGIO A MEZZANOTTE
+Digitale|CHAT MOLTO PRIVATA
+Comiche|SPESA MOLTO PESANTE
+Digitale|TELEFONO SEMPRE SPENTO
+Comiche|BUSTA MOLTO PIENA
+Ruoli|SINDACO MOLTO DISPONIBILE
+Ruoli|ASSESSORE MOLTO PRESENTE
+Ruoli|GIUDICE MOLTO SEVERO
+Ruoli|CARABINIERE MOLTO GENTILE
+Ruoli|FINANZIERE MOLTO CURIOSO
+Ruoli|DOGANIERE MOLTO PRECISO
+Ruoli|VIGILE URBANO MOLTO SEVERO
+Ruoli|POSTINO CON SORPRESA
+Ruoli|FALEGNAME MOLTO ABILE
+Ruoli|IDRAULICO MOLTO RAPIDO
+Ruoli|ELETTRICISTA MOLTO VIVACE
+Ruoli|AUTISTA MOLTO DISPONIBILE
+Ruoli|TASSISTA MOLTO CONFIDENTE
+Ruoli|PILOTA MOLTO SPERICOLATO
+Ruoli|HOSTESS MOLTO ACCOGLIENTE
+Ruoli|STEWARD MOLTO SERVITEVOLE
+Ruoli|MARINAIO MOLTO SOLITARIO
+Ruoli|PIRATA MOLTO GALANTE
+Ruoli|CUOCO MOLTO SPEZIATO
+Ruoli|CAMERIERE MOLTO RAPIDO
+Ruoli|ESTETISTA MOLTO DELICATA
+Ruoli|MASSAGGIATORE MOLTO ESPERTO
+Ruoli|MASSAGGIATRICE MOLTO LENTA
+Ruoli|DENTISTA MOLTO PAZIENTE
+Ruoli|OCULISTA MOLTO VICINO
+Ruoli|PSICOLOGO MOLTO ATTENTO
+Ruoli|INGEGNERE MOLTO PRECISO
+Ruoli|FARMACISTA MOLTO DISPONIBILE
+Ruoli|DOTTORESSA MOLTO SEVERA
+Ruoli|PROFESSORESSA MOLTO ESIGENTE
+Ruoli|MAESTRA MOLTO PAZIENTE
+Ruoli|ALLENATORE MOLTO SEVERO
+Ruoli|ISTRUTTRICE MOLTO ATLETICA
+Ruoli|BAGNINO MOLTO ABBRONZATO
+Ruoli|SALVAGENTE MOLTO ATTENTO
+Ruoli|CONTADINO MOLTO ROBUSTO
+Ruoli|PESCATORE MOLTO PAZIENTE
+Ruoli|FIORAIO MOLTO ROMANTICO
+Ruoli|GIOIELLIERE MOLTO PREZIOSO
+Ruoli|COMMESSO MOLTO SERVITEVOLE
+Ruoli|CASSIERA MOLTO VELOCE
+Ruoli|ASTRONAUTA MOLTO SOLITARIO
+Ruoli|POMPIERE MOLTO CORAGGIOSO
+Ruoli|MILITARE MOLTO RIGIDO
+Ruoli|DETECTIVE MOLTO OSSERVATORE
+Ruoli|SPIA MOLTO DISCRETA
+Ruoli|GUARDIA DEL CORPO
+Ruoli|BUTTAFUORI MOLTO GENTILE
+Ruoli|BARMAN MOLTO MISTERIOSO
+Ruoli|DJ MOLTO NOTTURNO
+Fantasie|FANTASIA DELLA SEGRETARIA
+Fantasie|FANTASIA DEL CAPO
+Fantasie|FANTASIA CON LA VICINA
+Fantasie|FANTASIA IN DIVISA
+Fantasie|FANTASIA DEL DOTTORE
+Fantasie|FANTASIA DELLA PROFESSORESSA
+Fantasie|FANTASIA DELLA POLIZIOTTA
+Fantasie|FANTASIA DEL POMPIERE
+Fantasie|FANTASIA DEL PIRATA
+Fantasie|FANTASIA DELLA PRINCIPESSA
+Fantasie|FANTASIA DEL PRINCIPE
+Fantasie|FANTASIA DELLA REGINA
+Fantasie|FANTASIA DELLA DOMINATRICE
+Fantasie|FANTASIA DEL GIOCO DI RUOLO
+Fantasie|GIOCO DI RUOLO AL BUIO
+Fantasie|GIOCO DI RUOLO IN HOTEL
+Fantasie|GIOCO DI RUOLO IN UFFICIO
+Fantasie|GIOCO DI RUOLO A CENA
+Fantasie|SCENA MOLTO CONVINCENTE
+Fantasie|COPIONE MOLTO SEGRETO
+Fantasie|PARTE MOLTO DIFFICILE
+Fantasie|PERSONAGGIO MOLTO MISTERIOSO
+Fantasie|COSTUME MOLTO ADERENTE
+Fantasie|MASCHERA MOLTO ELEGANTE
+Fantasie|PALCOSCENICO MOLTO INTIMO
+Fantasie|CAMERINO MOLTO AFFOLLATO
+Fantasie|PROVA GENERALE MOLTO LUNGA
+Fantasie|ULTIMO ATTO MOLTO CALDO
+Fantasie|SCAMBIO DI RUOLI
+Fantasie|RUOLO MOLTO CONVINCENTE
+Fantasie|PARTE DEL CATTIVO
+Fantasie|PARTE DELLA VITTIMA
+Fantasie|PARTE DEL SALVATORE
+Fantasie|PARTE DELLA MAESTRA
+Fantasie|PARTE DELLO STUDENTE
+Fantasie|PARTE DEL MEDICO
+Fantasie|PARTE DELLA PAZIENTE
+Fantasie|PARTE DEL CAPO
+Fantasie|PARTE DELLA SEGRETARIA
+Fantasie|PARTE DEL POLIZIOTTO
+Fantasie|PARTE DELLA LADRA
+Fantasie|PARTE DEL LADRO
+Fantasie|PARTE DELLA SPIA
+Fantasie|PARTE DEL DETECTIVE
+Fantasie|COLLOQUIO DI LAVORO
+Fantasie|COLLOQUIO MOLTO CONVINCENTE
+Fantasie|LEZIONE MOLTO PRIVATA
+Fantasie|LEZIONE MOLTO PARTICOLARE
+Fantasie|INTERROGAZIONE MOLTO SEVERA
+Fantasie|VERIFICA MOLTO DIFFICILE
 `;
 const PUZZLES = RAW.trim().split('\n').map(l => { const i = l.indexOf('|'); return [l.slice(0, i).trim(), l.slice(i + 1).trim()]; })
 .filter(p => p[0] && p[1] && p[1].split(' ').filter(Boolean).length >= 3);
@@ -3758,15 +4520,19 @@ const sub = Math.min(2, Math.floor((a % SEG) / (SEG / 3)));
 return MEGA_SUBS[sub];
 }
 function pickPuzzle(s) {
-let pool = PUZZLES.map((_, i) => i).filter(i => LAYOUTS[i] && !s.used.includes(i));
-if (!pool.length) { s.used = []; pool = PUZZLES.map((_, i) => i).filter(i => LAYOUTS[i]); }
+const adult = !!s.adult;
+const ok = i => LAYOUTS[i] && isAdultCat(PUZZLES[i][0]) === adult;
+let pool = PUZZLES.map((_, i) => i).filter(i => ok(i) && !s.used.includes(i));
+if (!pool.length) { s.used = []; pool = PUZZLES.map((_, i) => i).filter(ok); }
+if (!pool.length) pool = PUZZLES.map((_, i) => i).filter(i => LAYOUTS[i]);
 const i = pool[rnd(pool.length)];
 s.used.push(i);
 return { id: s.gameId + '-' + s.used.length, cat: PUZZLES[i][0], text: PUZZLES[i][1], cells: LAYOUTS[i] };
 }
-function newGame(players) {
+function newGame(players, adult = ADULT) {
 return {
 gameId: Math.random().toString(36).slice(2, 9),
+adult: !!adult,
 players: players.map(p => ({ name: p.name, type: p.type, peer: p.peer || null, color: p.color, total: 0, round: 0, jolly: 0, streak: 0, maxStreak: 0, hint: HINT_FREE })),
 roundNum: 0, final: false, cur: 0, phase: 'idle', step: 0, puzzle: null, called: [], fx: [], fxId: 0, msg: '',
 spin: null, angle: 0, wedge: -1, wedgeVal: null, value: 0, used: [], revealAll: false, revealMs: 0, stagger: 600, revealDelay: 0,
@@ -4033,7 +4799,8 @@ if (w === 'RADDOPPIA') return { bg: '#ffd700', fg: '#1a1a1a', special: true };
 if (w === 'PASSA') return { bg: '#f4f4f4', fg: '#111' };
 if (w === 'JOLLY') return { bg: '#1f7a34', fg: '#ffd54f' };
 if (w === 1500) return { bg: 'silver', fg: '#1a1a1a', special: true };
-const bg = PALETTE[i % PALETTE.length];
+const pal = themeAdult ? ADULT_PALETTE : PALETTE;
+const bg = pal[i % pal.length];
 return { bg, fg: bg === '#ffb300' ? '#2b1a00' : '#fff' };
 }
 function drawWheel(cv, size) {
@@ -4169,7 +4936,7 @@ if (ml) ml.href = URL.createObjectURL(new Blob([JSON.stringify(man)], { type: 'a
 } catch (e) { /* ignore */ }
 }
 /* ================= NETWORK ================= */
-const NET = { mode: 'local', peer: null, conns: new Map(), host: null, myId: null, code: null, seats: null, started: false };
+const NET = { mode: 'local', peer: null, conns: new Map(), host: null, myId: null, code: null, seats: null, started: false, adult: false };
 let joinToken = 0;
 let S = null;
 const isMine = p => NET.mode === 'host' ? p.peer === 'host' : NET.mode === 'guest' ? p.peer === NET.myId : p.type === 'human';
@@ -4196,7 +4963,7 @@ for (const c of NET.conns.values()) if (c.open) c.send({ t: 'state', s: S });
 }
 function broadcastLobby() {
 if (NET.mode !== 'host') return;
-for (const c of NET.conns.values()) if (c.open) c.send({ t: 'lobby', seats: NET.seats, code: NET.code });
+for (const c of NET.conns.values()) if (c.open) c.send({ t: 'lobby', seats: NET.seats, code: NET.code, adult: ADULT });
 renderLobby();
 }
 let tPhase = null, tCpu = null, tRetry = null, schedKey = '';
@@ -4347,7 +5114,7 @@ if (!d || typeof d !== 'object') return;
 if (d.t === 'welcome') { NET.myId = d.id; }
 else if (d.t === 'recs') { mergeRecs(d.recs); }
 else if (d.t === 'full') { setStatus(esc(d.msg)); toast(d.msg); netCleanup(); }
-else if (d.t === 'lobby') { NET.seats = d.seats; NET.code = d.code; NET.started = false; S = null; resetClient(); show('lobby'); renderLobby(); }
+else if (d.t === 'lobby') { NET.seats = d.seats; NET.code = d.code; NET.adult = !!d.adult; NET.started = false; S = null; resetClient(); show('lobby'); renderLobby(); }
 else if (d.t === 'state') {
 if (!S || S.gameId !== d.s.gameId) resetClient();
 S = d.s; NET.started = true; render();
@@ -4358,7 +5125,7 @@ joinToken++;
 stopAutoStart();
 clearSched();
 try { if (NET.peer) NET.peer.destroy(); } catch (e) { /* ignore */ }
-NET.peer = null; NET.host = null; NET.conns = new Map(); NET.mode = 'local'; NET.started = false; NET.myId = null;
+NET.peer = null; NET.host = null; NET.conns = new Map(); NET.mode = 'local'; NET.started = false; NET.myId = null; NET.adult = false;
 }
 const cellEls = [];
 let boardPid = null, shownCells = new Set(), pendingCells = new Set(), revealTimers = [];
@@ -4385,10 +5152,13 @@ const isCorner = i => i === 0 || i === 13 || i === 42 || i === 55;
 function render() {
 if (!S) return;
 if (!$('#scr-game').classList.contains('active')) show('game');
+applyAdultTheme(!!S.adult);
 syncLocal();
 $('#roundLbl').textContent = S.final ? 'ROUND FINALE' : `ROUND ${S.roundNum} / ${ROUNDS}`;
 renderPlayers(); renderBoard();
-$('#cat').textContent = S.puzzle ? S.puzzle.cat : '';
+const cat = S.puzzle ? S.puzzle.cat : '';
+$('#cat').textContent = cat;
+$('#cat').classList.toggle('adult', isAdultCat(cat));
 const m = $('#msg');
 if (m.textContent !== S.msg) { m.textContent = S.msg; m.classList.remove('pop'); void m.offsetWidth; m.classList.add('pop'); }
 handleSpin(); handleFx(); renderControls(); renderPanel();
@@ -4741,6 +5511,7 @@ function goMenu() {
 netCleanup(); stopAutoStart(); clearSched(); S = null; resetClient();
 $('#modal').classList.remove('open');
 show('menu');
+applyAdultTheme(ADULT);
 }
 const localSeats = [{ type: 'human', name: '' }, { type: 'cpu', name: 'Giulia' }, { type: 'cpu', name: 'Marco' }];
 function renderLocal() {
@@ -4757,12 +5528,16 @@ launchGame(players);
 }
 function launchGame(players) {
 resetClient(); clearSched();
-S = newGame(players);
+S = newGame(players, ADULT);
 startRound(S);
 show('game'); broadcast(); render(); schedule();
 }
 function renderLobby() {
 const host = NET.mode === 'host';
+const roomAdult = host ? ADULT : !!NET.adult;
+const flag = $('#lobbyAdult');
+if (flag) flag.hidden = !roomAdult;
+applyAdultTheme(roomAdult);
 $('#lobbyCode').textContent = NET.code || '--';
 $('#lobbySeats').innerHTML = (NET.seats || []).map((s, i) => {
 let label, right = '';
@@ -4834,7 +5609,33 @@ $('#myName').addEventListener('input', e => localStorage.setItem('rdf-name', e.t
 $('#goLocal').onclick = () => { localSeats[0].name = localSeats[0].name || myName(); renderLocal(); show('local'); };
 $('#goOnline').onclick = () => { setStatus('Un tocco solo: se la stanza esiste entri, altrimenti la crei tu. Il codice è sempre <b>11</b>.'); show('online'); };
 $('#goRules').onclick = rulesModal;
-document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => { netCleanup(); show('menu'); });
+function applyAdultTheme(on) {
+on = !!on;
+if (themeAdult === on) return;
+themeAdult = on;
+document.body.classList.toggle('adult', on);
+const mt = document.querySelector('meta[name="theme-color"]');
+if (mt) mt.content = on ? '#1a0410' : '#0a1236';
+try { initLogo(); } catch (e) { /* ignore */ }
+if (S && document.getElementById('scr-game').classList.contains('active')) sizeWheel();
+}
+function renderAdult() {
+const b = $('#goAdult'); if (!b) return;
+b.classList.toggle('on', ADULT);
+b.setAttribute('aria-pressed', ADULT ? 'true' : 'false');
+b.title = ADULT ? 'Modalità 18+ attiva' : 'Attiva la modalità 18+';
+applyAdultTheme(ADULT);
+}
+function setAdult(on) { ADULT = on; try { localStorage.setItem('rdf-adult', on ? '1' : '0'); } catch (e) { /* ignore */ } renderAdult(); }
+$('#goAdult').onclick = () => {
+if (ADULT) { setAdult(false); toast('Modalità 18+ disattivata'); return; }
+modal(`<h3>Modalità 18+</h3><p>Frasi piccanti, doppi sensi e linguaggio adulto. Nessun contenuto esplicito.</p><p><b>Confermi di avere almeno 18 anni?</b></p>`, [
+{ label: 'Sì, ho 18 anni', cls: 'gold', fn: () => { setAdult(true); toast('Modalità 18+ attiva'); } },
+{ label: 'Annulla' },
+]);
+};
+renderAdult();
+document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => { netCleanup(); show('menu'); applyAdultTheme(ADULT); });
 $('#localSeats').addEventListener('click', e => {
 const b = e.target.closest('button[data-t]'); if (!b) return;
 const s = localSeats[+b.dataset.i]; s.type = b.dataset.t;
