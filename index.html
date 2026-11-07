@@ -45,6 +45,7 @@ h1 span{display:block;font-size:.62em;color:#fff;text-shadow:0 3px 0 #2a3a9e,0 6
 .btn:disabled{filter:grayscale(.85) brightness(.55);cursor:default}
 .btn small{font-size:11px;font-weight:700;opacity:.9;margin-top:2px}
 .btn.big{flex:none;min-height:56px;font-size:18px}
+.btn[hidden]{display:none}
 .gold,.btn.spin{background:linear-gradient(#ffe07a,#ff9f1c);color:#3a2300}
 .blue,.btn.vow{background:linear-gradient(#5aa0ff,#2457d6)}
 .green,.btn.sol{background:linear-gradient(#3fd68d,#139a5a)}
@@ -200,6 +201,9 @@ body.adult .toast{background:#ffd7e6;color:#3a0018}
 .btn.hint .bulb{font-size:17px;line-height:1}
 .cb{display:inline-block;background:linear-gradient(#ff8a65,#e64a19);color:#fff;font-weight:900;border-radius:4px;padding:0 3px;margin-left:3px;font-size:9px}
 .menu-links{display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:center}
+.room-pill{display:flex;align-items:center;justify-content:center;gap:8px;margin:12px auto 0;padding:8px 14px;border-radius:999px;border:1px solid rgba(255,200,61,.45);background:rgba(255,200,61,.1);color:var(--gold);font-weight:800;font-size:12px;letter-spacing:.3px;cursor:pointer}
+.room-pill[hidden]{display:none}
+.room-pill .dot{width:8px;height:8px;border-radius:50%;background:#4ade80;box-shadow:0 0 8px #4ade80}
 .recs{display:flex;flex-direction:column;gap:5px;width:100%}
 .recs h4{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);margin:6px 0 2px}
 .rec{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:10px;background:rgba(255,255,255,.07);font-weight:700;font-size:13px}
@@ -222,6 +226,7 @@ body.adult .toast{background:#ffd7e6;color:#3a0018}
 <button class="btn big gold" id="goLocal">Gioca in locale</button>
 <button class="btn big blue" id="goOnline">Gioca online</button>
 </div>
+<button class="room-pill" id="roomResume" hidden aria-live="polite"><span class="dot"></span><span id="roomResumeTxt">Stanza attiva</span></button>
 <div class="menu-links"><button class="link" id="goRules">Come si gioca</button><button class="link" id="goRecords">Record</button><button class="link adult" id="goAdult" aria-pressed="false" title="Modalità 18+">18+</button></div>
 </section>
 <section id="scr-local" class="screen" aria-label="Partita locale">
@@ -251,6 +256,7 @@ body.adult .toast{background:#ffd7e6;color:#3a0018}
 <p class="note" id="lobbyWait"><span class="spinner"></span>&nbsp; In attesa che l&apos;host avvii la partita...</p>
 </div>
 <button class="btn big gold" id="lobbyStart">Inizia la partita</button>
+<button class="btn big ghost" id="lobbyPropose" hidden>Proponi nuova partita</button>
 </section>
 <section id="scr-game" class="screen" aria-label="Partita">
 <header class="topbar">
@@ -313,8 +319,15 @@ const ADULT_PALETTE = ['#c2185b', '#7b1fa2', '#d81b60', '#5a0f2e', '#ad1457', '#
 let ADULT = false;
 let themeAdult = null;
 try { ADULT = localStorage.getItem('rdf-adult') === '1'; } catch (e) { /* ignore */ }
-const ICE_CFG = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:global.stun.twilio.com:3478' }] };
+const ICE_CFG = {
+  iceServers: [
+    { urls: ['stun:stun.l.google.com:19302', 'stun:stun.cloudflare.com:3478'] },
+    { urls: 'stun:global.stun.twilio.com:3478' }
+  ],
+  iceTransportPolicy: 'all'
+};
 const PEER_OPTS = { debug: 0, config: ICE_CFG };
+const SIGNAL_TIMEOUT = 20000, CONNECT_TIMEOUT = 15000, HANDSHAKE_TIMEOUT = 10000;
 /* ============ ARCHIVIO FRASI (tutto nello stesso file) ============
    Una riga = una frase, formato: Categoria|FRASE
    Per aggiungerne altre: aggiungi righe qui. Quelle che non stanno
@@ -4936,20 +4949,21 @@ if (ml) ml.href = URL.createObjectURL(new Blob([JSON.stringify(man)], { type: 'a
 } catch (e) { /* ignore */ }
 }
 /* ================= NETWORK ================= */
-const NET = { mode: 'local', peer: null, conns: new Map(), host: null, myId: null, code: null, seats: null, started: false, adult: false };
+const NET = { mode: 'local', localPlay: false, played: false, peer: null, conns: new Map(), host: null, myId: null, code: null, seats: null, started: false, adult: false, pendingInvite: null, pendingRequest: null, incomingInvite: null, incomingRequest: null };
 let joinToken = 0;
 let S = null;
-const isMine = p => NET.mode === 'host' ? p.peer === 'host' : NET.mode === 'guest' ? p.peer === NET.myId : p.type === 'human';
+const inRoom = () => NET.mode === 'host' || NET.mode === 'guest';
+const isMine = p => (NET.localPlay || NET.mode === 'local') ? p.type === 'human' : NET.mode === 'host' ? p.peer === 'host' : p.peer === NET.myId;
 function canAct() {
 if (!S || !S.players.length) return false;
 const p = curP(S);
-if (NET.mode === 'local') return p.type === 'human';
+if (NET.localPlay || NET.mode === 'local') return p.type === 'human';
 return isMine(p);
 }
 function act(a) {
 if (!canAct()) return;
 SFX.click();
-if (NET.mode === 'guest') { if (NET.host && NET.host.open) NET.host.send({ t: 'act', a }); }
+if (!NET.localPlay && NET.mode === 'guest') { if (NET.host && NET.host.open) NET.host.send({ t: 'act', a }); }
 else dispatch(a);
 }
 function dispatch(a) {
@@ -4958,18 +4972,18 @@ S = reduce(clone(S), a);
 broadcast(); render(); schedule();
 }
 function broadcast() {
-if (NET.mode !== 'host') return;
+if (NET.localPlay || NET.mode !== 'host') return;
 for (const c of NET.conns.values()) if (c.open) c.send({ t: 'state', s: S });
 }
 function broadcastLobby() {
 if (NET.mode !== 'host') return;
-for (const c of NET.conns.values()) if (c.open) c.send({ t: 'lobby', seats: NET.seats, code: NET.code, adult: ADULT });
+for (const c of NET.conns.values()) if (c.open) c.send({ t: 'lobby', seats: NET.seats, code: NET.code, adult: ADULT, played: !!NET.played });
 renderLobby();
 }
 let tPhase = null, tCpu = null, tRetry = null, schedKey = '';
 function clearSched() { clearTimeout(tPhase); clearTimeout(tCpu); clearTimeout(tRetry); schedKey = ''; }
 function schedule() {
-if (!S || NET.mode === 'guest') return;
+if (!S || (!NET.localPlay && NET.mode === 'guest')) return;
 const key = S.gameId + ':' + S.step + ':' + S.phase + ':' + S.finalPicks.length;
 if (key === schedKey) return;
 schedKey = key; clearTimeout(tPhase); clearTimeout(tCpu);
@@ -4985,11 +4999,14 @@ tCpu = setTimeout(cpuAct, d);
 }
 function genCode() { return ROOM_CODE; }
 function myName() { return ($('#myName').value.trim() || 'Giocatore').slice(0, 12); }
+function modeLabel(adult) { return adult ? '18+' : 'Standard'; }
 function hostCreate() {
 if (!window.Peer) return toast('Online in caricamento: riprova tra qualche secondo');
+if (inRoom()) { openRoom(); return toast('Sei già nella stanza 11'); }
 netCleanup();
+NET.played = false; NET.localPlay = false;
 const tk = joinToken;
-NET.mode = 'host'; NET.code = genCode();
+NET.mode = 'host'; NET.code = genCode(); NET.adult = ADULT;
 NET.seats = [{ type: 'human', name: myName(), peer: 'host' }, { type: 'empty' }, { type: 'empty' }];
 setStatus('<span class="spinner"></span>&nbsp; Creazione stanza 11...');
 const peer = new Peer(PREFIX + NET.code, PEER_OPTS);
@@ -4997,7 +5014,7 @@ NET.peer = peer;
 peer.on('open', () => {
 if (tk !== joinToken) return;
 NET.myId = peer.id;
-show('lobby'); renderLobby();
+show('lobby'); renderLobby(); renderRoomBadge();
 setStatus('Stanza aperta con codice <b>11</b>: chi apre il tuo link entra subito.');
 });
 peer.on('connection', conn => {
@@ -5010,7 +5027,7 @@ peer.on('error', e => {
 if (tk !== joinToken) return;
 if (e.type === 'unavailable-id') {
 try { peer.destroy(); } catch (err) { /* ignore */ }
-NET.peer = null; NET.mode = 'local'; NET.started = false;
+NET.peer = null; NET.mode = 'local'; NET.localPlay = false; NET.started = false;
 toast('Stanza già attiva: entro come ospite');
 guestJoin(ROOM_CODE, false);
 return;
@@ -5034,12 +5051,74 @@ broadcastLobby(); SFX.ding();
 toast(`${NET.seats[i].name} è entrato nella stanza`);
 } else if (d.t === 'recs') {
 mergeRecs(d.recs);
-} else if (d.t === 'act' && S && NET.started) {
+} else if (d.t === 'act' && S && NET.started && !NET.localPlay) {
 const p = curP(S);
 if (p.peer !== conn.peer || !d.a || typeof d.a.t !== 'string') return;
 if (['spinEnd', 'revealDone', 'nextRound', 'finalTimeout'].includes(d.a.t)) return;
 dispatch(d.a);
+} else if (d.t === 'matchRequest') {
+hostHandleMatchRequest(conn, d);
+} else if (d.t === 'inviteReply') {
+hostHandleInviteReply(conn, d);
 }
+}
+function hostInvite(adult) {
+if (NET.mode !== 'host') return;
+if (NET.started && S && S.phase !== 'gameOver') return toast('Finisci la partita in corso: poi potrai invitare un\'altra partita.');
+const guests = [...NET.conns.values()].filter(c => c.open);
+if (!guests.length) return toast('Non c’è ancora un avversario collegato');
+const id = 'm' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+NET.pendingInvite = { id, adult: !!adult, waiting: new Set(guests.map(c => c.peer)) };
+guests.forEach(c => c.send({ t: 'matchInvite', id, adult: !!adult, from: myName() }));
+toast(`Invito inviato (${modeLabel(adult)}). La stanza resta attiva.`);
+}
+function hostHandleInviteReply(conn, d) {
+const p = NET.pendingInvite;
+if (!p || !d || d.id !== p.id) return;
+p.waiting.delete(conn.peer);
+if (d.accept) {
+NET.pendingInvite = null;
+NET.localPlay = false;
+startHostGame(!!p.adult, true);
+return;
+}
+if (!p.waiting.size) {
+NET.pendingInvite = null;
+toast('Nessuno ha accettato. La stanza resta attiva.');
+} else {
+const si = NET.seats.findIndex(s => s.peer === conn.peer);
+toast(`${si >= 0 ? NET.seats[si].name : 'Un giocatore'} ha rifiutato. Attendo gli altri.`);
+}
+}
+function hostHandleMatchRequest(conn, d) {
+if (!d || typeof d.id !== 'string' || !d.id) return;
+const si = NET.seats.findIndex(s => s.peer === conn.peer);
+const name = si >= 0 ? NET.seats[si].name : 'Un ospite';
+if (NET.started && S && S.phase !== 'gameOver') {
+conn.send({ t: 'inviteReply', id: d.id, accept: false, msg: 'Partita in corso' });
+return;
+}
+if (NET.incomingRequest) {
+conn.send({ t: 'inviteReply', id: d.id, accept: false, msg: 'Richiesta già in corso' });
+return;
+}
+const adult = !!d.adult;
+NET.incomingRequest = { id: d.id, adult, peer: conn.peer, name };
+modal(`<h3>Nuova partita?</h3><p style="text-align:center"><b>${esc(name)}</b> vuole giocare un’altra partita.</p><p style="text-align:center">Modalità scelta: <b>${modeLabel(adult)}</b>.</p>${adult ? '<p style="text-align:center"><b>Confermando dichiari di avere almeno 18 anni.</b></p>' : ''}<p style="text-align:center">Se rifiuti, restate collegati nella stanza fino alla chiusura dell’app.</p>`, [
+{ label: adult ? 'Sì, ho 18 anni' : 'Sì, gioca', cls: 'gold', fn: () => {
+const r = NET.incomingRequest; if (!r || r.id !== d.id) return;
+NET.incomingRequest = null;
+try { if (conn.open) conn.send({ t: 'inviteReply', id: d.id, accept: true }); } catch (e) { /* ignore */ }
+setAdult(r.adult); NET.localPlay = false;
+startHostGame(r.adult, true);
+} },
+{ label: 'No', fn: () => {
+const r = NET.incomingRequest; if (!r || r.id !== d.id) return;
+NET.incomingRequest = null;
+try { if (conn.open) conn.send({ t: 'inviteReply', id: d.id, accept: false }); } catch (e) { /* ignore */ }
+toast('Richiesta rifiutata. La stanza resta attiva.');
+} }
+], { sticky: true });
 }
 function onGuestLeave(conn) {
 if (!NET.conns.has(conn.peer)) return;
@@ -5047,37 +5126,52 @@ NET.conns.delete(conn.peer);
 const si = NET.seats.findIndex(s => s.peer === conn.peer);
 const name = si >= 0 ? NET.seats[si].name : 'Un giocatore';
 if (si >= 0) NET.seats[si] = { type: 'empty' };
-if (NET.started && S) {
+if (NET.pendingInvite) {
+NET.pendingInvite.waiting.delete(conn.peer);
+if (!NET.pendingInvite.waiting.size) NET.pendingInvite = null;
+}
+if (NET.incomingRequest && NET.incomingRequest.peer === conn.peer) { NET.incomingRequest = null; modalClose(); }
+if (NET.started && S && !NET.localPlay) {
 const s = clone(S), p = s.players.find(x => x.peer === conn.peer);
 if (p) { p.type = 'cpu'; p.peer = null; s.msg = `${p.name} si è disconnesso: ora gioca la CPU.`; S = s; broadcast(); render(); schedKey = ''; schedule(); }
 } else broadcastLobby();
-toast(`${name} ha lasciato la partita`);
+renderRoomBadge();
+toast(`${name} ha lasciato la stanza`);
 }
 function guestJoin(code, allowCreate) {
 if (!window.Peer) return toast('Online in caricamento: riprova tra qualche secondo');
+if (inRoom()) { openRoom(); return toast('Sei già nella stanza 11'); }
 code = String(code || ROOM_CODE).replace(/\D/g, '').slice(0, 2);
 if (code !== ROOM_CODE) return toast('Il codice della stanza è sempre 11: digita 11');
 netCleanup();
+NET.played = false; NET.localPlay = false;
 const tk = joinToken;
-NET.mode = 'guest'; NET.code = ROOM_CODE;
+NET.mode = 'guest'; NET.code = ROOM_CODE; NET.adult = false;
 setStatus('<span class="spinner"></span>&nbsp; Connessione alla stanza 11...');
 const peer = new Peer(PEER_OPTS);
 NET.peer = peer;
 let done = false;
+let signalT = 0, connectT = 0, ackT = 0;
+const clearTimers = () => { clearTimeout(signalT); clearTimeout(connectT); clearTimeout(ackT); signalT = connectT = ackT = 0; };
 const makeRoom = () => {
 if (done || tk !== joinToken) return;
-done = true;
+done = true; clearTimers();
 try { peer.destroy(); } catch (e) { /* ignore */ }
-NET.peer = null; NET.host = null; NET.mode = 'local'; NET.started = false;
+NET.peer = null; NET.host = null; NET.mode = 'local'; NET.localPlay = false; NET.played = false; NET.started = false;
 hostCreate();
 };
 const giveUp = msg => {
 if (done || tk !== joinToken) return;
-done = true;
+done = true; clearTimers();
 try { peer.destroy(); } catch (e) { /* ignore */ }
-NET.peer = null; NET.mode = 'local'; NET.started = false;
+NET.peer = null; NET.host = null; NET.mode = 'local'; NET.localPlay = false; NET.played = false; NET.started = false;
 setStatus(msg);
+renderRoomBadge();
 };
+signalT = setTimeout(() => {
+if (done || tk !== joinToken) return;
+giveUp('La stanza 11 non risponde in tempo. Controlla la rete e premi di nuovo Entra.');
+}, SIGNAL_TIMEOUT);
 peer.on('error', e => {
 if (done || tk !== joinToken) return;
 if (e.type === 'peer-unavailable') {
@@ -5086,46 +5180,118 @@ else giveUp('Nessuna stanza attiva con codice 11: creala tu con "Gioca subito".'
 return;
 }
 if (['network', 'server-error', 'socket-error', 'timeout'].includes(e.type)) {
-if (allowCreate) makeRoom(); else giveUp('Errore di connessione. Riprova.');
+giveUp('Errore di connessione. Riprova.');
 }
 });
 peer.on('open', id => {
 if (done || tk !== joinToken) return;
+clearTimeout(signalT); signalT = 0;
 NET.myId = id;
 const conn = peer.connect(PREFIX + ROOM_CODE, { reliable: true });
 NET.host = conn;
-const failT = setTimeout(() => { if (done || tk !== joinToken) return; try { conn.close(); } catch (e) { /* ignore */ } if (allowCreate) makeRoom(); else giveUp('Impossibile connettersi: la stanza 11 non risponde.'); }, 4200);
+connectT = setTimeout(() => {
+if (done || tk !== joinToken) return;
+try { conn.close(); } catch (e) { /* ignore */ }
+giveUp('La stanza 11 esiste ma la connessione non si apre. Riprova.');
+}, CONNECT_TIMEOUT);
 conn.on('open', () => {
 if (done || tk !== joinToken) return;
-clearTimeout(failT); done = true;
+clearTimeout(connectT); connectT = 0;
 conn.send({ t: 'hello', name: myName() });
 conn.send({ t: 'recs', recs: loadRecs() });
+ackT = setTimeout(() => {
+if (done || tk !== joinToken) return;
+try { conn.close(); } catch (e) { /* ignore */ }
+giveUp('La stanza 11 non ha completato l’ingresso. Riprova.');
+}, HANDSHAKE_TIMEOUT);
 });
-conn.on('data', onGuestData);
-conn.on('close', () => { if (NET.mode === 'guest') { toast("Connessione con l'host persa"); goMenu(); } });
+conn.on('data', d => {
+if (d && (d.t === 'lobby' || d.t === 'state' || d.t === 'full')) { done = true; clearTimers(); }
+onGuestData(d);
+});
+conn.on('close', () => { if (NET.mode === 'guest') { NET.incomingInvite = null; toast("La stanza è stata chiusa dall'host."); goMenu(true); } });
 });
 }
 function quickPlay() {
 if (!window.Peer) return toast('Online in caricamento: riprova tra qualche secondo');
+if (inRoom()) return openRoom();
 guestJoin(ROOM_CODE, true);
+}
+function guestProposeMatch(adult) {
+if (NET.mode !== 'guest') return;
+if (!NET.host || !NET.host.open) return toast('Connessione con l’host non disponibile');
+const id = 'm' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+NET.pendingRequest = { id, adult: !!adult };
+NET.host.send({ t: 'matchRequest', id, adult: !!adult, name: myName() });
+toast(`Richiesta inviata (${modeLabel(adult)}). La stanza resta attiva.`);
+}
+function guestHandleInvite(d) {
+if (NET.mode !== 'guest' || !d || typeof d.id !== 'string' || !d.id) return;
+const adult = !!d.adult;
+NET.incomingInvite = { id: d.id, adult, from: String(d.from || 'L’host').slice(0, 12) };
+modal(`<h3>Nuova partita?</h3><p style="text-align:center"><b>${esc(NET.incomingInvite.from)}</b> ti invita a giocare un’altra partita.</p><p style="text-align:center">Modalità scelta: <b>${modeLabel(adult)}</b>.</p>${adult ? '<p style="text-align:center"><b>Confermando dichiari di avere almeno 18 anni.</b></p>' : ''}<p style="text-align:center">Accettando la partita inizia subito. Rifiutando restate collegati nella stanza fino alla chiusura dell’app.</p>`, [
+{ label: adult ? 'Sì, ho 18 anni' : 'Sì, gioco', cls: 'gold', fn: () => answerGuestInvite(true) },
+{ label: 'No, resto qui', fn: () => answerGuestInvite(false) }
+], { sticky: true });
+}
+function answerGuestInvite(accept) {
+const inv = NET.incomingInvite;
+if (!inv || NET.mode !== 'guest') return;
+NET.incomingInvite = null;
+modalClose();
+try { if (NET.host && NET.host.open) NET.host.send({ t: 'inviteReply', id: inv.id, accept: !!accept }); } catch (e) { /* ignore */ }
+if (!accept) { toast('Hai rifiutato. La stanza resta attiva.'); return; }
+setAdult(!!inv.adult);
+NET.adult = !!inv.adult;
+NET.localPlay = false;
+stopAutoStart();
+S = null; resetClient();
+show('lobby'); renderLobby();
+toast('Invito accettato: in attesa dell’host...');
+}
+function guestHandleReply(d) {
+if (!NET.pendingRequest || !d || d.id !== NET.pendingRequest.id) return;
+NET.pendingRequest = null;
+toast(d.accept ? 'L’host ha accettato: la partita sta per iniziare.' : 'L’host ha rifiutato. La stanza resta attiva.');
 }
 function onGuestData(d) {
 if (!d || typeof d !== 'object') return;
 if (d.t === 'welcome') { NET.myId = d.id; }
 else if (d.t === 'recs') { mergeRecs(d.recs); }
-else if (d.t === 'full') { setStatus(esc(d.msg)); toast(d.msg); netCleanup(); }
-else if (d.t === 'lobby') { NET.seats = d.seats; NET.code = d.code; NET.adult = !!d.adult; NET.started = false; S = null; resetClient(); show('lobby'); renderLobby(); }
-else if (d.t === 'state') {
-if (!S || S.gameId !== d.s.gameId) resetClient();
-S = d.s; NET.started = true; render();
+else if (d.t === 'full') { setStatus(esc(d.msg)); toast(d.msg); netCleanup(); show('online'); }
+else if (d.t === 'lobby') {
+NET.seats = Array.isArray(d.seats) ? d.seats : NET.seats;
+NET.code = d.code || NET.code;
+NET.adult = !!d.adult;
+NET.played = !!d.played;
+NET.started = false;
+if (NET.localPlay || $('#scr-menu').classList.contains('active')) { renderRoomBadge(); return; }
+S = null; resetClient(); show('lobby'); renderLobby();
 }
+else if (d.t === 'state') {
+if (NET.incomingInvite) { NET.incomingInvite = null; modalClose(); }
+NET.pendingRequest = null;
+NET.localPlay = false;
+NET.played = true;
+NET.started = true;
+NET.adult = !!d.s.adult;
+if (!!d.s.adult !== ADULT) setAdult(!!d.s.adult);
+if (!S || S.gameId !== d.s.gameId) resetClient();
+S = d.s; render(); renderRoomBadge();
+}
+else if (d.t === 'matchInvite') { guestHandleInvite(d); }
+else if (d.t === 'inviteReply') { guestHandleReply(d); }
 }
 function netCleanup() {
 joinToken++;
 stopAutoStart();
 clearSched();
+if (NET.incomingInvite || NET.incomingRequest) { try { modalClose(); } catch (e) { /* ignore */ } }
 try { if (NET.peer) NET.peer.destroy(); } catch (e) { /* ignore */ }
-NET.peer = null; NET.host = null; NET.conns = new Map(); NET.mode = 'local'; NET.started = false; NET.myId = null; NET.adult = false;
+NET.peer = null; NET.host = null; NET.conns = new Map(); NET.mode = 'local';
+NET.localPlay = false; NET.played = false; NET.started = false; NET.myId = null; NET.code = null; NET.seats = null; NET.adult = false;
+NET.pendingInvite = null; NET.pendingRequest = null; NET.incomingInvite = null; NET.incomingRequest = null;
+renderRoomBadge();
 }
 const cellEls = [];
 let boardPid = null, shownCells = new Set(), pendingCells = new Set(), revealTimers = [];
@@ -5193,7 +5359,7 @@ const el = $('#players');
 el.style.gridTemplateColumns = `repeat(${S.players.length},1fr)`;
 const showActive = !['roundEnd', 'gameOver'].includes(S.phase);
 el.innerHTML = S.players.map((p, i) => {
-const tags = (p.type === 'cpu' ? '<span class="tag">CPU</span>' : '') + (NET.mode !== 'local' && isMine(p) ? '<span class="tag">TU</span>' : '');
+const tags = (p.type === 'cpu' ? '<span class="tag">CPU</span>' : '') + (!NET.localPlay && NET.mode !== 'local' && isMine(p) ? '<span class="tag">TU</span>' : '');
 const bump = lastRounds[i] !== undefined && p.round > lastRounds[i] ? ' bump' : '';
 return `<div class="pl ${i === S.cur && showActive ? 'on' : ''}" style="--c:${p.color}">
 <div class="pl-name">${esc(p.name)}${tags}${(p.streak || 0) >= 2 ? `<span class="cb">×${p.streak}</span>` : ''}</div>
@@ -5308,16 +5474,17 @@ pn.innerHTML = `<h3>FINE ROUND ${S.roundNum}</h3>
 <div class="phrase">${esc(S.puzzle.text)}</div>
 <div class="note">${S.roundNum < ROUNDS ? 'Preparatevi al prossimo round!' : 'Chi ha più soldi va al Round Finale!'}</div>
 <div class="bar"><i style="animation-duration:10s"></i></div>
-${NET.mode !== 'guest' ? '<div class="row"><button class="btn gold" data-a="next">Continua</button></div>' : ''}`;
+${(NET.localPlay || NET.mode !== 'guest') ? '<div class="row"><button class="btn gold" data-a="next">Continua</button></div>' : ''}`;
 } else if (ph === 'gameOver') {
 const fp = curP(S);
 const rank = S.players.map((p, i) => ({ p, i })).sort((a, b) => b.p.total - a.p.total);
-const canRematch = NET.mode !== 'guest';
+const onlineRoom = inRoom() && !NET.localPlay;
+const rematchLabel = onlineRoom ? 'Nuova partita' : 'Rivincita';
 pn.innerHTML = `<h3>${S.finalWon ? 'ROUND FINALE VINTO!' : 'ROUND FINALE'}</h3>
 <div class="big">${S.finalWon ? 'Premio ' + eur(S.prize) : 'Peccato!'}</div>
 <div class="note">${S.finalWon ? `${esc(fp.name)} ha risolto la frase!` : `La frase era: <b>${esc(S.puzzle.text)}</b><br>In palio c'erano ${eur(S.prize)}`}</div>
 <div class="rank">${rank.map((r, k) => `<div style="--c:${r.p.color}"><span>${k + 1}</span><span>${esc(r.p.name)}</span><span>${eur(r.p.total)}</span></div>`).join('')}</div>
-<div class="row">${canRematch ? '<button class="btn gold" data-a="rematch">Rivincita</button>' : ''}<button class="btn ghost" data-a="menu">Menu</button></div>`;
+<div class="row"><button class="btn gold" data-a="rematch">${rematchLabel}</button><button class="btn ghost" data-a="${onlineRoom ? 'room' : 'menu'}">${onlineRoom ? 'Stanza' : 'Menu'}</button></div>`;
 }
 pn.classList.toggle('open', ph === 'roundEnd' || ph === 'gameOver');
 }
@@ -5393,15 +5560,16 @@ requestAnimationFrame(f);
 let toastT = 0;
 function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 2600); }
 function setStatus(html) { $('#onlineStatus').innerHTML = html; }
-function modal(html, buttons) {
+function modal(html, buttons, opts = {}) {
 const m = $('#modal'), card = $('#modalCard');
 card.innerHTML = html + `<div class="row">${buttons.map((b, i) => `<button class="btn ${b.cls || 'ghost'}" data-mi="${i}">${b.label}</button>`).join('')}</div>`;
+m.dataset.sticky = opts.sticky ? '1' : '';
 m.classList.add('open');
 card.querySelectorAll('[data-mi]').forEach(btn => btn.onclick = () => { m.classList.remove('open'); const fn = buttons[+btn.dataset.mi].fn; if (fn) fn(); });
-m.onclick = e => { if (e.target === m) m.classList.remove('open'); };
+m.onclick = opts.sticky ? null : e => { if (e.target === m) m.classList.remove('open'); };
 }
-function modalClose() { $('#modal').classList.remove('open'); }
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { const mm = $('#modal'); if (mm.classList.contains('open')) mm.classList.remove('open'); } });
+function modalClose() { const m = $('#modal'); m.classList.remove('open'); delete m.dataset.sticky; }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { const mm = $('#modal'); if (mm.classList.contains('open') && !mm.dataset.sticky) mm.classList.remove('open'); } });
 const REC_KEY = 'rdf-records-v1';
 const REC_META = [
 { k: 'total', label: 'Miglior totale di partita' },
@@ -5452,7 +5620,7 @@ return changed;
 function saveRoundRecords(s) {
 if (!s || !s.bestRound) return;
 const date = new Date().toLocaleDateString('it-IT');
-const mode = NET.mode === 'local' ? 'locale' : 'online';
+const mode = (NET.localPlay || NET.mode === 'local') ? 'locale' : 'online';
 addRec('round', { name: s.bestRound.name, value: s.bestRound.amount, cat: s.bestRound.cat, date, mode });
 const w = s.players[s.roundWinner];
 if (w && (w.maxStreak || 0) >= 2) addRec('combo', { name: w.name, value: w.maxStreak, cat: 'consonanti', date, mode });
@@ -5461,7 +5629,7 @@ function saveGameRecords() {
 if (!S || lastRecGame === S.gameId) return;
 lastRecGame = S.gameId;
 const date = new Date().toLocaleDateString('it-IT');
-const mode = NET.mode === 'local' ? 'locale' : 'online';
+const mode = (NET.localPlay || NET.mode === 'local') ? 'locale' : 'online';
 const beat = [];
 S.players.forEach(p => {
 const entry = { name: p.name, value: p.total, cat: 'partita', date, mode };
@@ -5471,7 +5639,7 @@ if ((p.maxStreak || 0) >= 2 && addRec('combo', { name: p.name, value: p.maxStrea
 if (S.bestRound && addRec('round', { name: S.bestRound.name, value: S.bestRound.amount, cat: S.bestRound.cat, date, mode })) beat.push('round');
 if (S.finalWon && addRec('final', { name: curP(S).name, value: S.prize, cat: S.puzzle.cat, date, mode })) beat.push('finale');
 if (beat.length) { SFX.fanfare(); splash('NUOVO RECORD!', 'rd'); confetti(120); }
-if (NET.mode === 'host') {
+if (NET.mode === 'host' && !NET.localPlay) {
 const table = loadRecs();
 for (const c of NET.conns.values()) if (c.open) c.send({ t: 'recs', recs: table });
 }
@@ -5507,11 +5675,48 @@ $('#btnMute').innerHTML = SFX.muted
 : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 010 7M19 5a10 10 0 010 14"/></svg>';
 $('#btnMute').setAttribute('aria-label', SFX.muted ? 'Attiva audio' : 'Disattiva audio');
 }
-function goMenu() {
+function goMenu(closeRoom = false) {
+if (inRoom() && !closeRoom) {
+stopAutoStart(); clearSched();
+$('#modal').classList.remove('open');
+show('menu'); renderRoomBadge(); applyAdultTheme(ADULT);
+return;
+}
 netCleanup(); stopAutoStart(); clearSched(); S = null; resetClient();
 $('#modal').classList.remove('open');
-show('menu');
-applyAdultTheme(ADULT);
+show('menu'); renderRoomBadge(); applyAdultTheme(ADULT);
+}
+function renderRoomBadge() {
+const el = $('#roomResume'); if (!el) return;
+const on = inRoom();
+el.hidden = !on;
+if (!on) return;
+const n = (NET.seats || []).filter(s => s.type !== 'empty').length;
+$('#roomResumeTxt').textContent = `Stanza ${NET.code || ROOM_CODE} attiva · ${n} ${n === 1 ? 'collegato' : 'collegati'}`;
+}
+function openRoom() {
+if (!inRoom()) { show('online'); return false; }
+if (NET.localPlay) {
+NET.localPlay = false; NET.started = false;
+S = null; resetClient();
+if (NET.mode === 'host') broadcastLobby();
+show('lobby'); renderLobby(); return true;
+}
+if (S && NET.started) {
+show('game'); render(); schedKey = ''; schedule();
+return true;
+}
+show('lobby'); renderLobby();
+return true;
+}
+function goRoomLobby() {
+if (!inRoom()) { goMenu(); return; }
+NET.localPlay = false;
+stopAutoStart(); clearSched();
+NET.started = false;
+S = null; resetClient();
+if (NET.mode === 'host') broadcastLobby();
+show('lobby'); renderLobby();
 }
 const localSeats = [{ type: 'human', name: '' }, { type: 'cpu', name: 'Giulia' }, { type: 'cpu', name: 'Marco' }];
 function renderLocal() {
@@ -5523,12 +5728,18 @@ function startLocal() {
 const players = localSeats.map((s, i) => ({ ...s, i })).filter(s => s.type !== 'empty')
 .map(s => ({ name: (s.name.trim() || (s.type === 'cpu' ? CPU_NAMES[s.i] : 'Giocatore ' + (s.i + 1))).slice(0, 12), type: s.type, peer: s.type === 'human' ? 'local' : null, color: COLORS[s.i] }));
 if (players.length < 2) return toast('Servono almeno 2 concorrenti');
-netCleanup(); NET.mode = 'local';
+const room = inRoom();
+if (!room) { netCleanup(); NET.mode = 'local'; }
+else {
+NET.localPlay = true; NET.started = false;
+stopAutoStart(); clearSched();
+if (NET.mode === 'host') broadcastLobby();
+}
 launchGame(players);
 }
-function launchGame(players) {
+function launchGame(players, adult = ADULT) {
 resetClient(); clearSched();
-S = newGame(players, ADULT);
+S = newGame(players, !!adult);
 startRound(S);
 show('game'); broadcast(); render(); schedule();
 }
@@ -5548,21 +5759,55 @@ if (host && s.type === 'cpu') right = `<button class="mini" data-rm="${i}">Rimuo
 }
 return `<div class="seat" style="--c:${COLORS[i]}"><div class="seat-name">${label}</div>${right}</div>`;
 }).join('');
-$('#lobbyStart').style.display = host ? '' : 'none';
+const seatedCount = (NET.seats || []).filter(s => s.type !== 'empty').length;
+$('#lobbyStart').style.display = host && !NET.played && !NET.localPlay ? '' : 'none';
 $('#shareRow').style.display = host ? '' : 'none';
-$('#lobbyWait').style.display = host ? 'none' : '';
-$('#lobbyStart').disabled = (NET.seats || []).filter(s => s.type !== 'empty').length < 2;
+$('#lobbyPropose').hidden = !NET.played;
+$('#lobbyPropose').textContent = host ? 'Proponi nuova partita' : 'Chiedi nuova partita';
+$('#lobbyPropose').disabled = seatedCount < 2;
+$('#lobbyWait').style.display = host || NET.played ? 'none' : '';
+$('#lobbyStart').disabled = seatedCount < 2;
 armAutoStart();
+renderRoomBadge();
 }
-function startHostGame() {
-if (NET.mode !== 'host' || NET.started) return;
+function startHostGame(adult = ADULT) {
+if (NET.mode !== 'host' || NET.localPlay) return;
+if (NET.started && S && S.phase !== 'gameOver') return toast('La partita è già in corso');
 stopAutoStart();
 const players = NET.seats.map((s, i) => ({ s, i })).filter(x => x.s.type !== 'empty').map(({ s, i }) => ({
 name: s.name, type: s.type === 'cpu' ? 'cpu' : 'human', peer: s.type === 'cpu' ? null : s.peer, color: COLORS[i],
 }));
 if (players.length < 2) return toast('Servono almeno 2 concorrenti');
+setAdult(!!adult);
+NET.adult = !!adult;
+NET.localPlay = false;
+NET.played = true;
 NET.started = true;
-launchGame(players);
+launchGame(players, !!adult);
+}
+function requestNewMatch(adult) {
+if (NET.mode === 'host') hostInvite(adult);
+else if (NET.mode === 'guest') guestProposeMatch(adult);
+}
+function requestAdultMode() {
+if (ADULT) return requestNewMatch(true);
+modal(`<h3>Modalità 18+</h3><p>Frasi piccanti, doppi sensi e linguaggio adulto. Nessun contenuto esplicito.</p><p><b>Confermi di avere almeno 18 anni?</b></p>`, [
+{ label: 'Sì, ho 18 anni', cls: 'gold', fn: () => { setAdult(true); requestNewMatch(true); } },
+{ label: 'Annulla' }
+]);
+}
+function proposeNewGame() {
+if (NET.mode === 'local' || NET.localPlay) {
+if (!S) return;
+launchGame(S.players.map(p => ({ name: p.name, type: p.type, peer: p.peer, color: p.color })), ADULT);
+return;
+}
+if (!inRoom()) return;
+modal(`<h3>Nuova partita</h3><p style="text-align:center">Scegli la modalità da proporre. L’avversario riceverà la richiesta e potrà accettare o rifiutare.</p><p style="text-align:center"><b>Standard</b> · frasi classiche<br><b>18+</b> · contenuti allusivi</p>`, [
+{ label: 'Standard', cls: 'gold', fn: () => requestNewMatch(false) },
+{ label: '18+', fn: requestAdultMode },
+{ label: 'Annulla' }
+]);
 }
 let autoT = null;
 function stopAutoStart() {
@@ -5573,7 +5818,8 @@ if (b && NET.mode === 'host') b.textContent = 'Inizia la partita';
 function armAutoStart() {
 if (autoT) { clearInterval(autoT); autoT = null; }
 const b = $('#lobbyStart');
-if (!b || NET.mode !== 'host' || NET.started || !NET.seats) return;
+if (!b || NET.mode !== 'host' || NET.started || NET.localPlay || !NET.seats) return;
+if (NET.played) { b.textContent = 'Inizia la partita'; return; }
 const hasRemote = NET.seats.some(s => s.type === 'remote');
 const humans = NET.seats.filter(s => s.type !== 'empty').length;
 if (!hasRemote || humans < 2) { b.textContent = 'Inizia la partita'; return; }
@@ -5600,6 +5846,7 @@ modal(`<h3>Come si gioca</h3><ul>
 <li><b>Indizio</b>: una volta per round puoi far apparire gratis la consonante più utile.</li>
 <li><b>Record</b>: il tabellone record conserva i migliori montepremi, premi finali e serie di consonanti su questo dispositivo.</li>
 <li><b>Online</b>: la stanza usa sempre il codice <b>11</b>. "Gioca subito" entra se esiste, altrimenti la crea; chi apre il link condiviso si collega da solo.</li>
+<li><b>Stanza persistente</b>: dopo una partita restate collegati. Per una nuova partita scegli <b>Standard</b> o <b>18+</b>: l’avversario deve accettare. Se rifiuta, la stanza resta attiva fino alla chiusura dell’app.</li>
 <li><b>Round Finale</b>: il concorrente con più soldi riceve R S T L N E, sceglie 3 consonanti e 1 vocale e ha ${FINAL_TIME / 1000} secondi per vincere il premio misterioso.</li></ul>`,
 [{ label: 'Ho capito', cls: 'gold' }]);
 }
@@ -5607,7 +5854,8 @@ document.addEventListener('pointerdown', () => SFX.unlock(), { once: true });
 $('#myName').value = localStorage.getItem('rdf-name') || '';
 $('#myName').addEventListener('input', e => localStorage.setItem('rdf-name', e.target.value.trim()));
 $('#goLocal').onclick = () => { localSeats[0].name = localSeats[0].name || myName(); renderLocal(); show('local'); };
-$('#goOnline').onclick = () => { setStatus('Un tocco solo: se la stanza esiste entri, altrimenti la crei tu. Il codice è sempre <b>11</b>.'); show('online'); };
+$('#goOnline').onclick = () => { if (inRoom()) return openRoom(); setStatus('Un tocco solo: se la stanza esiste entri, altrimenti la crei tu. Il codice è sempre <b>11</b>.'); show('online'); };
+$('#roomResume').onclick = openRoom;
 $('#goRules').onclick = rulesModal;
 function applyAdultTheme(on) {
 on = !!on;
@@ -5635,7 +5883,7 @@ modal(`<h3>Modalità 18+</h3><p>Frasi piccanti, doppi sensi e linguaggio adulto.
 ]);
 };
 renderAdult();
-document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => { netCleanup(); show('menu'); applyAdultTheme(ADULT); });
+document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => goMenu());
 $('#localSeats').addEventListener('click', e => {
 const b = e.target.closest('button[data-t]'); if (!b) return;
 const s = localSeats[+b.dataset.i]; s.type = b.dataset.t;
@@ -5656,8 +5904,9 @@ const add = e.target.closest('[data-cpu]'), rm = e.target.closest('[data-rm]');
 if (add) { const i = +add.dataset.cpu; NET.seats[i] = { type: 'cpu', name: CPU_NAMES[i] }; broadcastLobby(); }
 if (rm) { NET.seats[+rm.dataset.rm] = { type: 'empty' }; broadcastLobby(); }
 });
-$('#lobbyStart').onclick = startHostGame;
-$('#leaveLobby').onclick = goMenu;
+$('#lobbyStart').onclick = () => startHostGame(ADULT);
+$('#lobbyPropose').onclick = proposeNewGame;
+$('#leaveLobby').onclick = () => goMenu();
 $('#copyLink').onclick = async () => {
 try { await navigator.clipboard.writeText(shareUrl()); toast('Link copiato!'); } catch (e) { toast(shareUrl()); }
 };
@@ -5667,8 +5916,15 @@ if (navigator.share) { try { await navigator.share(data); } catch (e) { /* annul
 else { try { await navigator.clipboard.writeText(shareUrl()); toast('Link copiato!'); } catch (e) { toast(shareUrl()); } }
 };
 $('#btnMute').onclick = () => { SFX.toggle(); updateMuteIcon(); };
-$('#btnExit').onclick = () => modal('<h3>Uscire dalla partita?</h3><p style="text-align:center">La partita in corso andrà persa.</p>',
-[{ label: 'Resta' }, { label: 'Esci', cls: 'gold', fn: goMenu }]);
+$('#btnExit').onclick = () => {
+if (inRoom() && !NET.localPlay) {
+modal('<h3>Tornare alla stanza?</h3><p style="text-align:center">La stanza resta attiva e collegata. La partita in corso verrà abbandonata.</p>',
+[{ label: 'Resta' }, { label: 'Torna alla stanza', cls: 'gold', fn: goRoomLobby }]);
+} else {
+modal('<h3>Uscire dalla partita?</h3><p style="text-align:center">La stanza resta attiva fino alla chiusura dell’app.</p>',
+[{ label: 'Resta' }, { label: 'Esci', cls: 'gold', fn: () => goMenu() }]);
+}
+};
 $('#controls').addEventListener('click', e => {
 const b = e.target.closest('button[data-a]'); if (!b || b.disabled) return;
 const a = b.dataset.a;
@@ -5694,9 +5950,10 @@ $('#panel').addEventListener('click', e => {
 const b = e.target.closest('button[data-a]'); if (!b) return;
 if (b.dataset.a === 'next') { clearSched(); dispatch({ t: 'nextRound' }); }
 else if (b.dataset.a === 'menu') goMenu();
+else if (b.dataset.a === 'room') goRoomLobby();
 else if (b.dataset.a === 'rematch') {
-if (NET.mode === 'local') launchGame(S.players.map(p => ({ name: p.name, type: p.type, peer: p.peer, color: p.color })));
-else if (NET.mode === 'host') { NET.started = false; S = null; clearSched(); resetClient(); show('lobby'); broadcastLobby(); }
+if (NET.mode === 'local' || NET.localPlay) launchGame(S.players.map(p => ({ name: p.name, type: p.type, peer: p.peer, color: p.color })), ADULT);
+else proposeNewGame();
 }
 });
 let swipe = null;
@@ -5709,6 +5966,7 @@ swipe = null;
 if (dist < 30 || S.phase !== 'turn' || !canAct() || !canSpin(S)) return;
 act({ t: 'spin', power: Math.max(0.25, Math.min(1, (dist / dt) / 2)) });
 });
+addEventListener('pagehide', () => { try { if (NET.peer) NET.peer.destroy(); } catch (e) { /* ignore */ } });
 function initLogo() {
 const cv = $('#logoWheel'), w = cv.parentElement.clientWidth || 220;
 drawWheel(cv, w);
